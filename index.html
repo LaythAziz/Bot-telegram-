@@ -3,145 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر الخدمات الرقمية</title>
-    <!-- مكتبة تليجرام الرسمية -->
+    <title>رويال سوشال - متجر الخدمات الرقمية</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Tailwind CSS للتصميم السريع والحديث -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background-color: #0f172a;
+            background-color: #0b0f19;
             color: #f8fafc;
             font-family: system-ui, -apple-system, sans-serif;
-            padding-bottom: 80px; /* مساحة للشريط السفلي */
+            padding-bottom: 90px;
         }
         .custom-card {
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid rgba(51, 65, 85, 0.4);
-            backdrop-filter: blur(12px);
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            backdrop-filter: blur(16px);
+        }
+        /* أنيميشن الظهور السلس */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col p-4">
 
-    <!-- شريط الإشعارات العلوي -->
-    <div id="alertBox" class="custom-card p-3 rounded-xl mb-4 flex items-center justify-between text-xs text-amber-300 shadow-lg">
-        <div class="flex items-center gap-2">
-            <span>🔔</span>
-            <span>أهلاً بك! تصفح أقسام الخدمات واطلب ما تحتاجه بكل سهولة.</span>
+    <!-- رأس التطبيق (الرصيد والمعلومات) -->
+    <div class="custom-card p-4 rounded-2xl mb-5 flex items-center justify-between shadow-xl">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-gradient-to-tr from-amber-500 to-yellow-300 rounded-xl flex items-center justify-center text-slate-950 font-bold text-xl shadow-lg">
+                👑
+            </div>
+            <div>
+                <h1 id="username" class="font-bold text-sm">مرحباً، جارٍ التحميل...</h1>
+                <p class="text-[11px] text-slate-400">ID الحساب: <span id="userId" class="text-amber-400">---</span></p>
+            </div>
         </div>
-        <button onclick="hideAlert()" class="text-slate-400 hover:text-white px-1">✕</button>
+        <div class="text-left bg-slate-900/80 px-3 py-2 rounded-xl border border-slate-800">
+            <span class="block text-[10px] text-slate-400">رصيدك الحالي</span>
+            <span id="userBalance" class="font-black text-amber-400 text-sm">0.00 $</span>
+        </div>
     </div>
 
-    <!-- شريط البحث السريع -->
-    <div class="relative mb-6">
-        <span class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400">🔍</span>
-        <input type="text" placeholder="ابحث بالاسم أو رقم الخدمة (ID)..." class="w-full custom-card py-3 pr-11 pl-4 rounded-xl text-sm focus:outline-none focus:border-amber-500 transition-all text-white placeholder-slate-400">
+    <!-- محتوى الصفحات الديناميكي -->
+    <div id="appContent" class="fade-in">
+        <!-- سيتم تحميل الصفحة الرئيسية افتراضياً هنا -->
     </div>
 
-    <!-- عنوان القسم -->
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="font-bold text-base">المنصات المتاحة</h2>
-        <span class="text-xs text-slate-400">10 منصات</span>
-    </div>
-
-    <!-- شبكة المنصات (الأقسام) -->
-    <div class="grid grid-cols-2 gap-3 mb-6">
-        
-        <!-- إنستغرام -->
-        <div onclick="selectPlatform('إنستغرام')" class="custom-card p-4 rounded-2xl cursor-pointer hover:border-amber-500/50 transition-all active:scale-95 flex flex-col justify-between h-28">
-            <div class="flex justify-between items-start">
-                <span class="text-2xl">📸</span>
-                <span class="text-[10px] bg-pink-500/10 text-pink-400 px-2 py-0.5 rounded-full font-medium">22 خدمة</span>
-            </div>
-            <div>
-                <h3 class="font-bold text-sm">إنستغرام</h3>
-                <p class="text-[11px] text-slate-400">متابعين، لايكات، مشاهدات</p>
-            </div>
-        </div>
-
-        <!-- تليجرام -->
-        <div onclick="selectPlatform('تليجرام')" class="custom-card p-4 rounded-2xl cursor-pointer hover:border-blue-500/50 transition-all active:scale-95 flex flex-col justify-between h-28">
-            <div class="flex justify-between items-start">
-                <span class="text-2xl">✈️</span>
-                <span class="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-full font-medium">50 خدمة</span>
-            </div>
-            <div>
-                <h3 class="font-bold text-sm">تليجرام</h3>
-                <p class="text-[11px] text-slate-400">رشق أعضاء، تفاعل، تصويت</p>
-            </div>
-        </div>
-
-        <!-- تيك توك -->
-        <div onclick="selectPlatform('تيك توك')" class="custom-card p-4 rounded-2xl cursor-pointer hover:border-cyan-500/50 transition-all active:scale-95 flex flex-col justify-between h-28">
-            <div class="flex justify-between items-start">
-                <span class="text-2xl">🎵</span>
-                <span class="text-[10px] bg-cyan-500/10 text-cyan-400 px-2 py-0.5 rounded-full font-medium">20 خدمة</span>
-            </div>
-            <div>
-                <h3 class="font-bold text-sm">تيك توك</h3>
-                <p class="text-[11px] text-slate-400">متابعين، مشاهدات، لايكات</p>
-            </div>
-        </div>
-
-        <!-- يوتيوب -->
-        <div onclick="selectPlatform('يوتيوب')" class="custom-card p-4 rounded-2xl cursor-pointer hover:border-red-500/50 transition-all active:scale-95 flex flex-col justify-between h-28">
-            <div class="flex justify-between items-start">
-                <span class="text-2xl">▶️</span>
-                <span class="text-[10px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded-full font-medium">14 خدمة</span>
-            </div>
-            <div>
-                <h3 class="font-bold text-sm">يوتيوب</h3>
-                <p class="text-[11px] text-slate-400">مشتركين، ساعات مشاهدة</p>
-            </div>
-        </div>
-
-        <!-- فيسبوك -->
-        <div onclick="selectPlatform('فيسبوك')" class="custom-card p-4 rounded-2xl cursor-pointer hover:border-blue-600/50 transition-all active:scale-95 flex flex-col justify-between h-28">
-            <div class="flex justify-between items-start">
-                <span class="text-2xl">📘</span>
-                <span class="text-[10px] bg-blue-600/10 text-blue-500 px-2 py-0.5 rounded-full font-medium">14 خدمة</span>
-            </div>
-            <div>
-                <h3 class="font-bold text-sm">فيسبوك</h3>
-                <p class="text-[11px] text-slate-400">متابعين صفحة، لايكات</p>
-            </div>
-        </div>
-
-        <!-- خدمات مجانية -->
-        <div onclick="selectPlatform('خدمات مجانية')" class="custom-card p-4 rounded-2xl cursor-pointer hover:border-emerald-500/50 transition-all active:scale-95 flex flex-col justify-between h-28">
-            <div class="flex justify-between items-start">
-                <span class="text-2xl">🎁</span>
-                <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full font-medium">8 خدمات</span>
-            </div>
-            <div>
-                <h3 class="font-bold text-sm">خدمات مجانية</h3>
-                <p class="text-[11px] text-slate-400">هدايا وتجارب مجانية</p>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- شريط التنقل السفلي (Bottom Navigation Bar) -->
-    <nav class="fixed bottom-0 right-0 left-0 bg-slate-900/90 border-t border-slate-800 backdrop-blur-lg py-2 px-6 flex justify-between items-center text-xs text-slate-400 z-50">
-        <button onclick="switchTab('more')" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all">
-            <span class="text-lg">☰</span>
+    <!-- شريط التنقل السفلي الاحترافي -->
+    <nav class="fixed bottom-0 right-0 left-0 bg-slate-950/95 border-t border-slate-800/80 backdrop-blur-xl py-2.5 px-6 flex justify-between items-center text-xs text-slate-400 z-50">
+        <button onclick="switchTab('more')" id="nav-more" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all">
+            <span class="text-lg">⚙️</span>
             <span>المزيد</span>
         </button>
-        <button onclick="switchTab('notifications')" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all relative">
+        <button onclick="switchTab('notifications')" id="nav-notifications" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all relative">
             <span class="absolute -top-1 -right-1 bg-amber-500 text-slate-950 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">1</span>
             <span class="text-lg">🔔</span>
             <span>الإشعارات</span>
         </button>
-        <button onclick="switchTab('wallet')" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all">
+        <button onclick="switchTab('wallet')" id="nav-wallet" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all">
             <span class="text-lg">💳</span>
             <span>شحن</span>
         </button>
-        <button onclick="switchTab('orders')" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all">
+        <button onclick="switchTab('orders')" id="nav-orders" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all">
             <span class="text-lg">📋</span>
             <span>طلباتي</span>
         </button>
-        <button onclick="switchTab('home')" class="flex flex-col items-center gap-1 text-amber-400 font-bold">
+        <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 text-amber-400 font-bold">
             <span class="text-lg">🏠</span>
             <span>الرئيسية</span>
         </button>
@@ -151,23 +81,234 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        function hideAlert() {
-            document.getElementById('alertBox').style.display = 'none';
+        // بيانات وهمية حية للمستخدم والطلبات والرصيد
+        let userData = {
+            name: "مستخدم تليجرام",
+            id: "10928347",
+            balance: 2.50,
+            orders: [
+                { id: "#119320136", service: "متابعين إنستغرام حقيقي", status: "مكتمل", time: "منذ 15 دقيقة" }
+            ],
+            notifications: [
+                { title: "اكتمل طلبك #119320136", desc: "تم تنفيذ الطلب بالكامل بنجاح.", time: "منذ 15 دقيقة" }
+            ]
+        };
+
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            userData.name = tg.initDataUnsafe.user.first_name;
+            userData.id = tg.initDataUnsafe.user.id;
         }
 
-        function selectPlatform(platformName) {
-            tg.showAlert(`تم اختيار قسم: ${platformName}. جاري تجهيز الخدمات قريباً!`);
-        }
+        document.getElementById('username').innerText = userData.name;
+        document.getElementById('userId').innerText = userData.id;
+        document.getElementById('userBalance').innerText = userData.balance.toFixed(2) + ' $';
 
-        function switchTab(tabName) {
-            if(tabName === 'wallet') {
-                tg.showAlert('قسم شحن الرصيد قيد التفعيل.');
-            } else if(tabName === 'orders') {
-                tg.showAlert('ليس لديك طلبات سابقة حالياً.');
-            } else if(tabName === 'notifications') {
-                tg.showAlert('لا توجد إشعارات جديدة.');
+        // قائمة الخدمات لكل منصة
+        const servicesData = {
+            'إنستغرام': [
+                { id: 101, name: 'متابعين إنستغرام (ضمان 30 يوم)', price: '0.50$ / 1k' },
+                { id: 102, name: 'لايكات إنستغرام سرعة عالية', price: '0.10$ / 1k' },
+                { id: 103, name: 'مشاهدات ريلز ومقاطع فيديو', price: '0.05$ / 1k' }
+            ],
+            'تليجرام': [
+                { id: 201, name: 'أعضاء قناة تليجرام (حقيقيين)', price: '1.20$ / 1k' },
+                { id: 202, name: 'مشاهدات منشورات آخر 10 منشورات', price: '0.02$ / 1k' },
+                { id: 203, name: 'تصويت استطلاع الرأي (Poll Votes)', price: '0.80$ / 1k' }
+            ],
+            'تيك توك': [
+                { id: 301, name: 'متابعين تيك توك ضمان عدم النقصان', price: '0.90$ / 1k' },
+                { id: 302, name: 'لايكات تيك توك تفاعلي', price: '0.20$ / 1k' }
+            ],
+            'يوتيوب': [
+                { id: 401, name: 'مشتركين قناة يوتيوب', price: '3.50$ / 1k' },
+                { id: 402, name: 'ساعات مشاهدة يوتيوب حقيقية', price: '5.00$ / 100 ساعة' }
+            ]
+        };
+
+        // تبديل الصفحات بداخل الـ Mini App
+        function switchTab(tab) {
+            // تحديث ألوان الأزرار السفلية
+            document.querySelectorAll('nav button').forEach(btn => btn.className = "flex flex-col items-center gap-1 text-slate-400 hover:text-amber-400 transition-all");
+            document.getElementById('nav-' + tab).className = "flex flex-col items-center gap-1 text-amber-400 font-bold";
+
+            let content = document.getElementById('appContent');
+            content.className = "fade-in";
+
+            if (tab === 'home') {
+                renderHome();
+            } else if (tab === 'orders') {
+                renderOrders();
+            } else if (tab === 'wallet') {
+                renderWallet();
+            } else if (tab === 'notifications') {
+                renderNotifications();
+            } else if (tab === 'more') {
+                renderMore();
             }
         }
+
+        // عرض الصفحة الرئيسية والمنصات
+        function renderHome() {
+            let html = `
+                <div class="relative mb-5">
+                    <span class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400">🔍</span>
+                    <input type="text" placeholder="ابحث بالاسم أو رقم الخدمة (ID)..." class="w-full custom-card py-3 pr-11 pl-4 rounded-xl text-sm focus:outline-none focus:border-amber-500 transition-all text-white placeholder-slate-400">
+                </div>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-bold text-sm text-slate-200">المنصات المتاحة</h2>
+                    <span class="text-xs text-slate-400">4 منصات رئيسية</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div onclick="openPlatformServices('إنستغرام')" class="custom-card p-4 rounded-2xl cursor-pointer hover:border-amber-500/60 transition-all active:scale-95 flex flex-col justify-between h-28">
+                        <div class="flex justify-between items-start"><span class="text-2xl">📸</span><span class="text-[10px] bg-pink-500/10 text-pink-400 px-2 py-0.5 rounded-full font-medium">3 خدمات</span></div>
+                        <div><h3 class="font-bold text-sm">إنستغرام</h3><p class="text-[11px] text-slate-400">متابعين، لايكات، مشاهدات</p></div>
+                    </div>
+                    <div onclick="openPlatformServices('تليجرام')" class="custom-card p-4 rounded-2xl cursor-pointer hover:border-blue-500/60 transition-all active:scale-95 flex flex-col justify-between h-28">
+                        <div class="flex justify-between items-start"><span class="text-2xl">✈️</span><span class="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-full font-medium">3 خدمات</span></div>
+                        <div><h3 class="font-bold text-sm">تليجرام</h3><p class="text-[11px] text-slate-400">أعضاء، مشاهدات، تصويت</p></div>
+                    </div>
+                    <div onclick="openPlatformServices('تيك توك')" class="custom-card p-4 rounded-2xl cursor-pointer hover:border-cyan-500/60 transition-all active:scale-95 flex flex-col justify-between h-28">
+                        <div class="flex justify-between items-start"><span class="text-2xl">🎵</span><span class="text-[10px] bg-cyan-500/10 text-cyan-400 px-2 py-0.5 rounded-full font-medium">2 خدمات</span></div>
+                        <div><h3 class="font-bold text-sm">تيك توك</h3><p class="text-[11px] text-slate-400">متابعين، لايكات سريعة</p></div>
+                    </div>
+                    <div onclick="openPlatformServices('يوتيوب')" class="custom-card p-4 rounded-2xl cursor-pointer hover:border-red-500/60 transition-all active:scale-95 flex flex-col justify-between h-28">
+                        <div class="flex justify-between items-start"><span class="text-2xl">▶️</span><span class="text-[10px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded-full font-medium">2 خدمات</span></div>
+                        <div><h3 class="font-bold text-sm">يوتيوب</h3><p class="text-[11px] text-slate-400">مشتركين، ساعات مشاهدة</p></div>
+                    </div>
+                </div>`;
+            document.getElementById('appContent').innerHTML = html;
+        }
+
+        // فتح خدمات منصة معينة
+        function openPlatformServices(platformName) {
+            let list = servicesData[platformName] || [];
+            let itemsHtml = list.map(s => `
+                <div class="custom-card p-3.5 rounded-xl mb-3 flex justify-between items-center">
+                    <div>
+                        <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-md font-mono">ID: ${s.id}</span>
+                        <h4 class="font-bold text-xs mt-1 text-slate-200">${s.name}</h4>
+                        <span class="text-[11px] text-amber-400 font-semibold">${s.price}</span>
+                    </div>
+                    <button onclick="orderService(${s.id}, '${s.name}')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs py-2 px-4 rounded-xl transition-all active:scale-95 shadow-lg shadow-amber-500/20">
+                        اطلب الآن
+                    </button>
+                </div>
+            `).join('');
+
+            document.getElementById('appContent').innerHTML = `
+                <div class="flex items-center gap-2 mb-4">
+                    <button onclick="switchTab('home')" class="bg-slate-800 p-2 rounded-xl text-xs">رجوع ⬅</button>
+                    <h2 class="font-bold text-base">خدمات ${platformName}</h2>
+                </div>
+                ${itemsHtml}
+            `;
+        }
+
+        // نافذة طلب الخدمة الحقيقية
+        function orderService(id, name) {
+            let link = prompt(`أدخل رابط الحساب أو المنشور للخدمة (${name}):`);
+            if (link) {
+                let qty = prompt("أدخل الكمية المطلوبة (مثلاً: 1000):", "1000");
+                if (qty) {
+                    userData.orders.unshift({ id: '#' + Math.floor(Math.random() * 899999 + 100000), service: name + ` (${qty})`, status: "قيد التنفيذ", time: "الآن" });
+                    tg.showAlert('تم إرسال طلبك بنجاح! سيتم البدء بالتنفيذ قريباً.');
+                    switchTab('orders');
+                }
+            }
+        }
+
+        // عرض صفحة الطلبات
+        function renderOrders() {
+            let html = `<h2 class="font-bold text-base mb-4">طلباتي السابقة</h2>`;
+            if(userData.orders.length === 0) {
+                html += `<p class="text-center text-slate-500 text-xs py-10">ليس لديك طلبات سابقة.</p>`;
+            } else {
+                html += userData.orders.map(o => `
+                    <div class="custom-card p-4 rounded-xl mb-3 border-l-4 border-l-amber-500">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-xs text-amber-400">${o.id}</span>
+                            <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full">${o.status}</span>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-200">${o.service}</p>
+                        <span class="text-[10px] text-slate-400 block mt-2">${o.time}</span>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('appContent').innerHTML = html;
+        }
+
+        // صفحة شحن الرصيد (آسيا سيل، زين كاش، ماستر كارد)
+        function renderWallet() {
+            document.getElementById('appContent').innerHTML = `
+                <h2 class="font-bold text-base mb-4">شحن رصيد الحساب</h2>
+                <div class="custom-card p-4 rounded-2xl mb-4">
+                    <p class="text-xs text-slate-300 mb-3">اختر طريقة الدفع المناسبة للشحن الفوري:</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="selectPayment('رصيد آسيا سيل (Asiacell)')" class="bg-slate-800 hover:bg-slate-700 p-3 rounded-xl border border-slate-700 text-xs font-bold text-right flex items-center gap-2">
+                            <span>🏷️</span> آسيا سيل (كارت)
+                        </button>
+                        <button onclick="selectPayment('زين كاش العراق (ZainCash)')" class="bg-slate-800 hover:bg-slate-700 p-3 rounded-xl border border-slate-700 text-xs font-bold text-right flex items-center gap-2">
+                            <span>📱</span> زين كاش العراق
+                        </button>
+                        <button onclick="selectPayment('ماستر كارد مصرف الرافدين')" class="bg-slate-800 hover:bg-slate-700 p-3 rounded-xl border border-slate-700 text-xs font-bold text-right flex items-center gap-2">
+                            <span>💳</span> ماستر الرافدين
+                        </button>
+                        <button onclick="selectPayment('تحويل USDT / فودافون كاش')" class="bg-slate-800 hover:bg-slate-700 p-3 rounded-xl border border-slate-700 text-xs font-bold text-right flex items-center gap-2">
+                            <span>🪙</span> عملات رقمية USDT
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectPayment(method) {
+            let amount = prompt(`أدخل المبلغ المراد شحنه عبر (${method}) بالدولار:`, "5");
+            if (amount) {
+                alert(`لإتمام شحن مبلغ ${amount}$ عبر ${method}، يجدر بك التواصل مع الدعم الفني لإرسال الوصل أو الكارت وسيتم شحن الحساب فوراً.`);
+                tg.openTelegramLink('https://t.me/RoyalSocial_bot'); // أو تحويل للدعم
+            }
+        }
+
+        // صفحة الإشعارات
+        function renderNotifications() {
+            document.getElementById('appContent').innerHTML = `
+                <h2 class="font-bold text-base mb-4">الإشعارات والتنبيهات</h2>
+                ${userData.notifications.map(n => `
+                    <div class="custom-card p-4 rounded-xl mb-3 flex items-start gap-3">
+                        <span class="text-xl">🔔</span>
+                        <div>
+                            <h4 class="font-bold text-xs text-slate-200">${n.title}</h4>
+                            <p class="text-[11px] text-slate-400 mt-0.5">${n.desc}</p>
+                            <span class="text-[9px] text-slate-500 block mt-2">${n.time}</span>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        // صفحة المزيد
+        function renderMore() {
+            document.getElementById('appContent').innerHTML = `
+                <h2 class="font-bold text-base mb-4">لوحة التحكم والمزيد</h2>
+                <div class="custom-card p-4 rounded-2xl space-y-3">
+                    <div class="flex justify-between items-center py-2 border-b border-slate-800 text-xs">
+                        <span>قناة المتجر الرسمية</span>
+                        <span class="text-amber-400 font-bold">@Ciner_FX</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-slate-800 text-xs">
+                        <span>الدعم الفني والإبلاغ عن مشكلة</span>
+                        <span class="text-amber-400 font-bold">متاح 24/7</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2 text-xs">
+                        <span>نسخة النظام</span>
+                        <span class="text-slate-400 font-mono">v2.5.0 Pro</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // تشغيل الصفحة الرئيسية عند الفتح
+        renderHome();
     </script>
 </body>
 </html>
