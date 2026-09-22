@@ -3,70 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيقي الاحترافي</title>
-    <!-- تضمين مكتبة تليجرام Web App -->
+    <title>متجر الخدمات الرقمية</title>
+    <!-- مكتبة تليجرام الرسمية -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- تضمين Tailwind CSS للتصميم السريع والاحترافي -->
+    <!-- Tailwind CSS للتصميم السريع والحديث -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* استخدام ألوان تليجرام المتوافقة تلقائياً مع الثيم (فاتح/داكن) */
         body {
-            background-color: var(--tg-theme-bg-color, #0f172a);
-            color: var(--tg-theme-text-color, #f8fafc);
+            background-color: #0f172a;
+            color: #f8fafc;
             font-family: system-ui, -apple-system, sans-serif;
+            padding-bottom: 80px; /* مساحة للشريط السفلي */
+        }
+        .custom-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.4);
+            backdrop-filter: blur(12px);
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between p-6">
+<body class="min-h-screen flex flex-col p-4">
 
-    <!-- رأس الصفحة -->
-    <header class="text-center mt-6">
-        <div class="w-20 h-20 bg-blue-500/10 text-blue-400 rounded-2xl mx-auto flex items-center justify-center text-3xl mb-4 shadow-inner">
-            🚀
+    <!-- شريط الإشعارات العلوي -->
+    <div id="alertBox" class="custom-card p-3 rounded-xl mb-4 flex items-center justify-between text-xs text-amber-300 shadow-lg">
+        <div class="flex items-center gap-2">
+            <span>🔔</span>
+            <span>أهلاً بك! تصفح أقسام الخدمات واطلب ما تحتاجه بكل سهولة.</span>
         </div>
-        <h1 id="username" class="text-2xl font-bold">أهلاً بك</h1>
-        <p class="text-sm text-slate-400 mt-1">لوحة التحكم الخاصة بك داخل تليجرام</p>
-    </header>
+        <button onclick="hideAlert()" class="text-slate-400 hover:text-white px-1">✕</button>
+    </div>
 
-    <!-- محتوى التطبيق (بطاقات تفاعلية) -->
-    <main class="space-y-4 my-auto">
-        <div class="bg-slate-800/50 border border-slate-700/50 p-4 rounded-2xl backdrop-blur-md shadow-sm">
-            <h2 class="font-semibold text-lg mb-1">الإحصائيات السريعة</h2>
-            <p class="text-xs text-slate-400">تابع نشاطك وحسابك بكل سهولة ويسر.</p>
-        </div>
+    <!-- شريط البحث السريع -->
+    <div class="relative mb-6">
+        <span class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400">🔍</span>
+        <input type="text" placeholder="ابحث بالاسم أو رقم الخدمة (ID)..." class="w-full custom-card py-3 pr-11 pl-4 rounded-xl text-sm focus:outline-none focus:border-amber-500 transition-all text-white placeholder-slate-400">
+    </div>
+
+    <!-- عنوان القسم -->
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="font-bold text-base">المنصات المتاحة</h2>
+        <span class="text-xs text-slate-400">10 منصات</span>
+    </div>
+
+    <!-- شبكة المنصات (الأقسام) -->
+    <div class="grid grid-cols-2 gap-3 mb-6">
         
-        <div class="bg-slate-800/50 border border-slate-700/50 p-4 rounded-2xl backdrop-blur-md shadow-sm flex items-center justify-between">
-            <span>حالة الاتصال</span>
-            <span class="px-3 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-medium rounded-full">متصل</span>
+        <!-- إنستغرام -->
+        <div onclick="selectPlatform('إنستغرام')" class="custom-card p-4 rounded-2xl cursor-pointer hover:border-amber-500/50 transition-all active:scale-95 flex flex-col justify-between h-28">
+            <div class="flex justify-between items-start">
+                <span class="text-2xl">📸</span>
+                <span class="text-[10px] bg-pink-500/10 text-pink-400 px-2 py-0.5 rounded-full font-medium">22 خدمة</span>
+            </div>
+            <div>
+                <h3 class="font-bold text-sm">إنستغرام</h3>
+                <p class="text-[11px] text-slate-400">متابعين، لايكات، مشاهدات</p>
+            </div>
         </div>
-    </main>
 
-    <!-- أزرار التحكم -->
-    <footer class="space-y-3 mb-4">
-        <button onclick="showAlert()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 px-4 rounded-xl transition-all shadow-lg shadow-blue-600/30 active:scale-95">
-            إرسال إشعار تليجرام
+        <!-- تليجرام -->
+        <div onclick="selectPlatform('تليجرام')" class="custom-card p-4 rounded-2xl cursor-pointer hover:border-blue-500/50 transition-all active:scale-95 flex flex-col justify-between h-28">
+            <div class="flex justify-between items-start">
+                <span class="text-2xl">✈️</span>
+                <span class="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-full font-medium">50 خدمة</span>
+            </div>
+            <div>
+                <h3 class="font-bold text-sm">تليجرام</h3>
+                <p class="text-[11px] text-slate-400">رشق أعضاء، تفاعل، تصويت</p>
+            </div>
+        </div>
+
+        <!-- تيك توك -->
+        <div onclick="selectPlatform('تيك توك')" class="custom-card p-4 rounded-2xl cursor-pointer hover:border-cyan-500/50 transition-all active:scale-95 flex flex-col justify-between h-28">
+            <div class="flex justify-between items-start">
+                <span class="text-2xl">🎵</span>
+                <span class="text-[10px] bg-cyan-500/10 text-cyan-400 px-2 py-0.5 rounded-full font-medium">20 خدمة</span>
+            </div>
+            <div>
+                <h3 class="font-bold text-sm">تيك توك</h3>
+                <p class="text-[11px] text-slate-400">متابعين، مشاهدات، لايكات</p>
+            </div>
+        </div>
+
+        <!-- يوتيوب -->
+        <div onclick="selectPlatform('يوتيوب')" class="custom-card p-4 rounded-2xl cursor-pointer hover:border-red-500/50 transition-all active:scale-95 flex flex-col justify-between h-28">
+            <div class="flex justify-between items-start">
+                <span class="text-2xl">▶️</span>
+                <span class="text-[10px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded-full font-medium">14 خدمة</span>
+            </div>
+            <div>
+                <h3 class="font-bold text-sm">يوتيوب</h3>
+                <p class="text-[11px] text-slate-400">مشتركين، ساعات مشاهدة</p>
+            </div>
+        </div>
+
+        <!-- فيسبوك -->
+        <div onclick="selectPlatform('فيسبوك')" class="custom-card p-4 rounded-2xl cursor-pointer hover:border-blue-600/50 transition-all active:scale-95 flex flex-col justify-between h-28">
+            <div class="flex justify-between items-start">
+                <span class="text-2xl">📘</span>
+                <span class="text-[10px] bg-blue-600/10 text-blue-500 px-2 py-0.5 rounded-full font-medium">14 خدمة</span>
+            </div>
+            <div>
+                <h3 class="font-bold text-sm">فيسبوك</h3>
+                <p class="text-[11px] text-slate-400">متابعين صفحة، لايكات</p>
+            </div>
+        </div>
+
+        <!-- خدمات مجانية -->
+        <div onclick="selectPlatform('خدمات مجانية')" class="custom-card p-4 rounded-2xl cursor-pointer hover:border-emerald-500/50 transition-all active:scale-95 flex flex-col justify-between h-28">
+            <div class="flex justify-between items-start">
+                <span class="text-2xl">🎁</span>
+                <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full font-medium">8 خدمات</span>
+            </div>
+            <div>
+                <h3 class="font-bold text-sm">خدمات مجانية</h3>
+                <p class="text-[11px] text-slate-400">هدايا وتجارب مجانية</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- شريط التنقل السفلي (Bottom Navigation Bar) -->
+    <nav class="fixed bottom-0 right-0 left-0 bg-slate-900/90 border-t border-slate-800 backdrop-blur-lg py-2 px-6 flex justify-between items-center text-xs text-slate-400 z-50">
+        <button onclick="switchTab('more')" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all">
+            <span class="text-lg">☰</span>
+            <span>المزيد</span>
         </button>
-        <button onclick="closeApp()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-3 px-4 rounded-xl transition-all active:scale-95">
-            إغلاق التطبيق
+        <button onclick="switchTab('notifications')" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all relative">
+            <span class="absolute -top-1 -right-1 bg-amber-500 text-slate-950 text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">1</span>
+            <span class="text-lg">🔔</span>
+            <span>الإشعارات</span>
         </button>
-    </footer>
+        <button onclick="switchTab('wallet')" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all">
+            <span class="text-lg">💳</span>
+            <span>شحن</span>
+        </button>
+        <button onclick="switchTab('orders')" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all">
+            <span class="text-lg">📋</span>
+            <span>طلباتي</span>
+        </button>
+        <button onclick="switchTab('home')" class="flex flex-col items-center gap-1 text-amber-400 font-bold">
+            <span class="text-lg">🏠</span>
+            <span>الرئيسية</span>
+        </button>
+    </nav>
 
     <script>
         let tg = window.Telegram.WebApp;
-        tg.expand(); // توسيع الواجهة لتعمل بملء الشاشة
+        tg.expand();
 
-        // تخصيص النص بناءً على اسم المستخدم في تليجرام إن وجد
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            document.getElementById('username').innerText = `أهلاً، ${tg.initDataUnsafe.user.first_name} 👋`;
+        function hideAlert() {
+            document.getElementById('alertBox').style.display = 'none';
         }
 
-        function showAlert() {
-            // استخدام نافذة تنبيه مدمجة ورسمية خاصة بتليجرام
-            tg.showAlert('تم النقر على الزر بنجاح!');
+        function selectPlatform(platformName) {
+            tg.showAlert(`تم اختيار قسم: ${platformName}. جاري تجهيز الخدمات قريباً!`);
         }
 
-        function closeApp() {
-            tg.close();
+        function switchTab(tabName) {
+            if(tabName === 'wallet') {
+                tg.showAlert('قسم شحن الرصيد قيد التفعيل.');
+            } else if(tabName === 'orders') {
+                tg.showAlert('ليس لديك طلبات سابقة حالياً.');
+            } else if(tabName === 'notifications') {
+                tg.showAlert('لا توجد إشعارات جديدة.');
+            }
         }
     </script>
 </body>
