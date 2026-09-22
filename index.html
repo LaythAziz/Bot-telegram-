@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>رويال سوشال - متجر الخدمات الرقمية</title>
+    <title>رويال سوشال - متجر الرشق الملكي</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -35,6 +35,7 @@
             opacity: 0.9;
         }
 
+        /* أنيميشن الانبثاق والفتح المنسدل */
         .tab-anim {
             animation: fadeInSlide 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
@@ -50,6 +51,17 @@
             }
         }
 
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s cubic-bezier(0, 1, 0, 1);
+        }
+
+        .accordion-content.open {
+            max-height: 2000px;
+            transition: max-height 0.5s ease-in-out;
+        }
+
         .btn-hover-effect {
             transition: all 0.2s ease;
         }
@@ -61,14 +73,14 @@
 </head>
 <body class="min-h-screen flex flex-col p-3">
 
-    <!-- خلفية النيون المضيئة -->
+    <!-- خلفية نيون مضيئة -->
     <div class="fixed top-0 left-1/2 -translate-x-1/2 w-72 h-72 bg-violet-600/15 rounded-full blur-3xl pointer-events-none"></div>
 
-    <!-- بطاقة المستخدم الحساب والرصيد -->
-    <div class="purple-card p-4 rounded-3xl mb-4 relative overflow-hidden">
+    <!-- بطاقة حساب المستخدم (الرصيد 0.00$) -->
+    <div class="purple-card p-4 rounded-3xl mb-3 relative overflow-hidden">
         <div class="flex items-center justify-between mb-3 relative z-10">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 purple-gradient-btn rounded-2xl flex items-center justify-center font-black text-2xl text-white shadow-lg shadow-violet-500/30">
+                <div class="w-11 h-11 purple-gradient-btn rounded-2xl flex items-center justify-center font-black text-2xl text-white shadow-lg shadow-violet-500/30">
                     👑
                 </div>
                 <div>
@@ -96,10 +108,10 @@
         </div>
     </div>
 
-    <!-- محتوى التطبيق المتغير -->
+    <!-- محتوى الصفحات الديناميكي -->
     <div id="appContent" class="tab-anim"></div>
 
-    <!-- نافذة طلب الخدمة (Modal) -->
+    <!-- النافذة المنبثقة للطلب (Modal) -->
     <div id="orderModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="purple-card w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 border-t border-violet-500/40 tab-anim">
             <div class="flex justify-between items-center mb-4">
@@ -157,7 +169,6 @@
         let currentPricePerThousand = 0;
         let currentServiceName = "";
 
-        // تعيين الرصيد الافتراضي 0.00$ لكل حساب جديد
         let appData = {
             balance: 0.00,
             orders: []
@@ -180,120 +191,237 @@
             void content.offsetWidth;
             content.className = "tab-anim";
 
-            if (tab === 'home') renderHome();
+            if (tab === 'home') renderPlatforms();
             else if (tab === 'orders') renderOrders();
             else if (tab === 'wallet') renderWallet();
             else if (tab === 'notifications') renderNotifications();
             else if (tab === 'more') renderMore();
         }
 
-        // الأقسام والخدمات الشاملة (مرتبة من الأرخص إلى الأغلى)
-        function renderHome() {
+        // 1. شبكة المنصات الرئيسية (مطابقة لصورة بيرفكت فولو)
+        function renderPlatforms() {
             document.getElementById('appContent').innerHTML = `
-                <div class="space-y-3">
-                    <h2 class="font-bold text-xs text-violet-300/70 tracking-wider">خدمات إنستغرام 📸</h2>
-                    
-                    <div onclick="openOrderModal('مشاهدات ريلز إنستغرام سريعة', 0.03)" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 flex items-center justify-between btn-hover-effect">
-                        <div class="flex items-center gap-3">
-                            <span class="text-2xl p-2 bg-purple-500/10 rounded-2xl">👁️</span>
-                            <div>
-                                <h3 class="font-bold text-xs text-purple-100">مشاهدات ريلز وانستغرام</h3>
-                                <div class="flex items-center gap-2 mt-0.5">
-                                    <span class="text-[10px] text-violet-300 font-semibold">$0.03 / 1000</span>
-                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.2 rounded">⏱️ غضون 15 دقيقة</span>
-                                </div>
-                            </div>
+                <!-- شريط البحث العلوي -->
+                <div class="mb-3">
+                    <input type="text" placeholder="ابحث بالاسم أو رقم الخدمة (ID)..." class="w-full bg-slate-950/80 border border-violet-500/20 p-3 rounded-2xl text-xs text-purple-100 placeholder-violet-300/40 focus:outline-none focus:border-violet-500">
+                </div>
+
+                <div class="flex justify-between items-center mb-2.5 px-1">
+                    <h2 class="font-bold text-xs text-violet-300/80">المنصات المتاحة</h2>
+                    <span class="text-[10px] text-violet-300/50">4 منصات</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2.5">
+                    <!-- إنستغرام -->
+                    <div onclick="openPlatform('instagram')" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 transition-all btn-hover-effect flex flex-col justify-between">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-2xl p-2 bg-pink-500/10 rounded-xl">📸</span>
+                            <span class="text-[9px] bg-pink-500/20 text-pink-300 px-2 py-0.5 rounded-full">22 خدمة</span>
                         </div>
-                        <span class="purple-gradient-btn text-white font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-md">طلب</span>
+                        <div>
+                            <h3 class="font-bold text-xs text-purple-100">إنستغرام</h3>
+                            <p class="text-[9px] text-violet-300/60 mt-0.5">متابعين، لايكات، مشاهدات</p>
+                        </div>
                     </div>
 
-                    <div onclick="openOrderModal('لايكات إنستغرام ريلز + بوست', 0.18)" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 flex items-center justify-between btn-hover-effect">
-                        <div class="flex items-center gap-3">
-                            <span class="text-2xl p-2 bg-red-500/10 rounded-2xl">❤️</span>
-                            <div>
-                                <h3 class="font-bold text-xs text-purple-100">لايكات إنستغرام ريلز وبوست</h3>
-                                <div class="flex items-center gap-2 mt-0.5">
-                                    <span class="text-[10px] text-violet-300 font-semibold">$0.18 / 1000</span>
-                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.2 rounded">⏱️ غضون 30 دقيقة</span>
-                                </div>
-                            </div>
+                    <!-- تليجرام -->
+                    <div onclick="openPlatform('telegram')" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 transition-all btn-hover-effect flex flex-col justify-between">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-2xl p-2 bg-blue-500/10 rounded-xl">✈️</span>
+                            <span class="text-[9px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">50 خدمة</span>
                         </div>
-                        <span class="purple-gradient-btn text-white font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-md">طلب</span>
+                        <div>
+                            <h3 class="font-bold text-xs text-purple-100">تليجرام</h3>
+                            <p class="text-[9px] text-violet-300/60 mt-0.5">أعضاء، تفاعل، ستوري</p>
+                        </div>
                     </div>
 
-                    <div onclick="openOrderModal('متابعين إنستغرام - بدون ضمان (اقتصادي)', 0.35)" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 flex items-center justify-between btn-hover-effect">
-                        <div class="flex items-center gap-3">
-                            <span class="text-2xl p-2 bg-pink-500/10 rounded-2xl">⚡</span>
-                            <div>
-                                <h3 class="font-bold text-xs text-purple-100">متابعين إنستغرام (اقتصادي)</h3>
-                                <div class="flex items-center gap-2 mt-0.5">
-                                    <span class="text-[10px] text-violet-300 font-semibold">$0.35 / 1000</span>
-                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.2 rounded">⏱️ غضون 44 دقيقة</span>
-                                </div>
-                            </div>
+                    <!-- تيك توك -->
+                    <div onclick="openPlatform('tiktok')" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 transition-all btn-hover-effect flex flex-col justify-between">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-2xl p-2 bg-purple-500/10 rounded-xl">🎵</span>
+                            <span class="text-[9px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full">20 خدمة</span>
                         </div>
-                        <span class="purple-gradient-btn text-white font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-md">طلب</span>
+                        <div>
+                            <h3 class="font-bold text-xs text-purple-100">تيك توك</h3>
+                            <p class="text-[9px] text-violet-300/60 mt-0.5">متابعين، تكبيسات، بثوث</p>
+                        </div>
                     </div>
 
-                    <div onclick="openOrderModal('متابعين إنستغرام حقيقي (ضمان 30 يوم)', 0.60)" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 flex items-center justify-between btn-hover-effect">
-                        <div class="flex items-center gap-3">
-                            <span class="text-2xl p-2 bg-amber-500/10 rounded-2xl">👑</span>
-                            <div>
-                                <h3 class="font-bold text-xs text-purple-100">متابعين إنستغرام حقيقي (ضمان تعويض)</h3>
-                                <div class="flex items-center gap-2 mt-0.5">
-                                    <span class="text-[10px] text-violet-300 font-semibold">$0.60 / 1000</span>
-                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.2 rounded">⏱️ غضون ساعة واحدة</span>
-                                </div>
-                            </div>
+                    <!-- خدمات مجانية -->
+                    <div onclick="openPlatform('free')" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 transition-all btn-hover-effect flex flex-col justify-between">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-2xl p-2 bg-emerald-500/10 rounded-xl">🎁</span>
+                            <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">8 خدمات</span>
                         </div>
-                        <span class="purple-gradient-btn text-white font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-md">طلب</span>
-                    </div>
-
-                    <h2 class="font-bold text-xs text-violet-300/70 tracking-wider pt-2">خدمات تليجرام ✈️</h2>
-
-                    <div onclick="openOrderModal('مشاهدات منشورات تليجرام', 0.02)" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 flex items-center justify-between btn-hover-effect">
-                        <div class="flex items-center gap-3">
-                            <span class="text-2xl p-2 bg-cyan-500/10 rounded-2xl">📊</span>
-                            <div>
-                                <h3 class="font-bold text-xs text-purple-100">مشاهدات منشورات تليجرام</h3>
-                                <div class="flex items-center gap-2 mt-0.5">
-                                    <span class="text-[10px] text-violet-300 font-semibold">$0.02 / 1000</span>
-                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.2 rounded">⏱️ فوري (15 دقيقة)</span>
-                                </div>
-                            </div>
+                        <div>
+                            <h3 class="font-bold text-xs text-purple-100">خدمات مجانية</h3>
+                            <p class="text-[9px] text-violet-300/60 mt-0.5">تجارب وهدايا يومية</p>
                         </div>
-                        <span class="purple-gradient-btn text-white font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-md">طلب</span>
-                    </div>
-
-                    <div onclick="openOrderModal('تفاعلات ورسائل إيجابية 👍🔥', 0.15)" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 flex items-center justify-between btn-hover-effect">
-                        <div class="flex items-center gap-3">
-                            <span class="text-2xl p-2 bg-yellow-500/10 rounded-2xl">🔥</span>
-                            <div>
-                                <h3 class="font-bold text-xs text-purple-100">تفاعلات إيجابية تليجرام</h3>
-                                <div class="flex items-center gap-2 mt-0.5">
-                                    <span class="text-[10px] text-violet-300 font-semibold">$0.15 / 1000</span>
-                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.2 rounded">⏱️ غضون 30 دقيقة</span>
-                                </div>
-                            </div>
-                        </div>
-                        <span class="purple-gradient-btn text-white font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-md">طلب</span>
-                    </div>
-
-                    <div onclick="openOrderModal('أعضاء قنوات تليجرام حقيقيين', 0.75)" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 flex items-center justify-between btn-hover-effect">
-                        <div class="flex items-center gap-3">
-                            <span class="text-2xl p-2 bg-blue-500/10 rounded-2xl">✈️</span>
-                            <div>
-                                <h3 class="font-bold text-xs text-purple-100">أعضاء قنوات تليجرام (حقيقي)</h3>
-                                <div class="flex items-center gap-2 mt-0.5">
-                                    <span class="text-[10px] text-violet-300 font-semibold">$0.75 / 1000</span>
-                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.2 rounded">⏱️ غضون ساعة واحدة</span>
-                                </div>
-                            </div>
-                        </div>
-                        <span class="purple-gradient-btn text-white font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-md">طلب</span>
                     </div>
                 </div>
             `;
+        }
+
+        // 2. عرض المنصات والأقسام القابلة للطوي والفتح المنسدل (مطابق تماماً للصور)
+        function openPlatform(platform) {
+            let html = `
+                <div class="flex items-center gap-2 mb-3">
+                    <button onclick="renderPlatforms()" class="bg-violet-950/60 border border-violet-500/30 px-3 py-1.5 rounded-xl text-xs text-violet-300 font-bold btn-hover-effect">⬅ رجوع للمنصات</button>
+                    <h2 class="font-bold text-xs text-purple-100">فئات وخدمات ${platform === 'telegram' ? 'تليجرام' : platform === 'instagram' ? 'إنستغرام' : platform === 'tiktok' ? 'تيك توك' : 'الخدمات المجانية'}</h2>
+                </div>
+                <div class="space-y-2.5">
+            `;
+
+            if (platform === 'telegram') {
+                html += `
+                    <!-- فئة 1: تليجرام - مشاهدات ستوري -->
+                    <div class="purple-card rounded-2xl overflow-hidden border border-violet-500/20">
+                        <div onclick="toggleAccordion('tg-story')" class="p-3.5 cursor-pointer flex items-center justify-between bg-violet-950/20">
+                            <div class="flex items-center gap-2.5">
+                                <span class="text-lg">✈️</span>
+                                <div>
+                                    <h3 class="font-bold text-xs text-purple-100">تليجرام - مشاهدات ستوري</h3>
+                                    <span class="text-[9px] text-violet-300/60">2 خدمة</span>
+                                </div>
+                            </div>
+                            <span id="icon-tg-story" class="text-xs text-violet-300 transition-transform">🔽</span>
+                        </div>
+                        <div id="acc-tg-story" class="accordion-content p-3 space-y-2 bg-slate-950/40">
+                            <div onclick="openOrderModal('مشاهدات ستوري تليجرام - سريع', 0.4050)" class="p-3 rounded-xl border border-violet-500/20 bg-violet-900/10 cursor-pointer flex justify-between items-center btn-hover-effect">
+                                <div>
+                                    <h4 class="font-bold text-xs text-purple-100">مشاهدات ستوري تليجرام - سريع</h4>
+                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded">⏱️ غضون 3 دقائق</span>
+                                </div>
+                                <div class="text-left">
+                                    <span class="font-bold text-xs text-violet-300">$0.4050</span>
+                                    <span class="block text-[8px] text-violet-300/50">لكل 1000</span>
+                                </div>
+                            </div>
+                            <div onclick="openOrderModal('مشاهدات ستوري تليجرام - الأكثر طلباً', 0.2025)" class="p-3 rounded-xl border border-violet-500/20 bg-violet-900/10 cursor-pointer flex justify-between items-center btn-hover-effect">
+                                <div>
+                                    <h4 class="font-bold text-xs text-purple-100">مشاهدات ستوري تليجرام - عالي السرعة</h4>
+                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded">⏱️ غضون دقيقتين</span>
+                                </div>
+                                <div class="text-left">
+                                    <span class="font-bold text-xs text-violet-300">$0.2025</span>
+                                    <span class="block text-[8px] text-violet-300/50">لكل 1000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- فئة 2: أعضاء تليجرام مميزين - بريميوم -->
+                    <div class="purple-card rounded-2xl overflow-hidden border border-violet-500/20">
+                        <div onclick="toggleAccordion('tg-premium')" class="p-3.5 cursor-pointer flex items-center justify-between bg-violet-950/20">
+                            <div class="flex items-center gap-2.5">
+                                <span class="text-lg">⭐</span>
+                                <div>
+                                    <h3 class="font-bold text-xs text-purple-100">أعضاء تليجرام مميزين - بريميوم</h3>
+                                    <span class="text-[9px] text-violet-300/60">3 خدمة</span>
+                                </div>
+                            </div>
+                            <span id="icon-tg-premium" class="text-xs text-violet-300 transition-transform">🔽</span>
+                        </div>
+                        <div id="acc-tg-premium" class="accordion-content p-3 space-y-2 bg-slate-950/40">
+                            <div onclick="openOrderModal('أعضاء تليجرام بريميوم ضمان 15 يوم', 4.2750)" class="p-3 rounded-xl border border-violet-500/20 bg-violet-900/10 cursor-pointer flex justify-between items-center btn-hover-effect">
+                                <div>
+                                    <h4 class="font-bold text-xs text-purple-100">أعضاء بريميوم ضمان 15 يوم</h4>
+                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded">⏱️ غضون 43 دقيقة</span>
+                                </div>
+                                <div class="text-left">
+                                    <span class="font-bold text-xs text-violet-300">$4.2750</span>
+                                    <span class="block text-[8px] text-violet-300/50">لكل 1000</span>
+                                </div>
+                            </div>
+                            <div onclick="openOrderModal('أعضاء بريميوم ضمان 30-60 يوم', 8.7750)" class="p-3 rounded-xl border border-violet-500/20 bg-violet-900/10 cursor-pointer flex justify-between items-center btn-hover-effect">
+                                <div>
+                                    <h4 class="font-bold text-xs text-purple-100">أعضاء بريميوم ضمان 30-60 يوم</h4>
+                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded">⏱️ غضون 29 دقيقة</span>
+                                </div>
+                                <div class="text-left">
+                                    <span class="font-bold text-xs text-violet-300">$8.7750</span>
+                                    <span class="block text-[8px] text-violet-300/50">لكل 1000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- فئة 3: تفاعلات ري أكشن للمنشور -->
+                    <div class="purple-card rounded-2xl overflow-hidden border border-violet-500/20">
+                        <div onclick="toggleAccordion('tg-reactions')" class="p-3.5 cursor-pointer flex items-center justify-between bg-violet-950/20">
+                            <div class="flex items-center gap-2.5">
+                                <span class="text-lg">🔥</span>
+                                <div>
+                                    <h3 class="font-bold text-xs text-purple-100">تليجرام | تفاعلات (ري أكشن)</h3>
+                                    <span class="text-[9px] text-violet-300/60">13 خدمة</span>
+                                </div>
+                            </div>
+                            <span id="icon-tg-reactions" class="text-xs text-violet-300 transition-transform">🔽</span>
+                        </div>
+                        <div id="acc-tg-reactions" class="accordion-content p-3 space-y-2 bg-slate-950/40">
+                            <div onclick="openOrderModal('تليجرام - تفاعلات إيجابية 👍❤️🔥', 0.0184)" class="p-3 rounded-xl border border-violet-500/20 bg-violet-900/10 cursor-pointer flex justify-between items-center btn-hover-effect">
+                                <div>
+                                    <h4 class="font-bold text-xs text-purple-100">تفاعلات رموز إيجابية 👍❤️</h4>
+                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded">⏱️ غضون 17 دقيقة</span>
+                                </div>
+                                <div class="text-left">
+                                    <span class="font-bold text-xs text-violet-300">$0.0184</span>
+                                    <span class="block text-[8px] text-violet-300/50">لكل 1000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (platform === 'tiktok') {
+                html += `
+                    <!-- فئة تيك توك: تكبيسات لايف -->
+                    <div class="purple-card rounded-2xl overflow-hidden border border-violet-500/20">
+                        <div onclick="toggleAccordion('tt-live')" class="p-3.5 cursor-pointer flex items-center justify-between bg-violet-950/20">
+                            <div class="flex items-center gap-2.5">
+                                <span class="text-lg">🎯</span>
+                                <div>
+                                    <h3 class="font-bold text-xs text-purple-100">تكبيسات بث مباشر تيك توك</h3>
+                                    <span class="text-[9px] text-violet-300/60">3 خدمة</span>
+                                </div>
+                            </div>
+                            <span id="icon-tt-live" class="text-xs text-violet-300 transition-transform">🔽</span>
+                        </div>
+                        <div id="acc-tt-live" class="accordion-content p-3 space-y-2 bg-slate-950/40">
+                            <div onclick="openOrderModal('تكبيس لايف تيك توك فوري', 0.0312)" class="p-3 rounded-xl border border-violet-500/20 bg-violet-900/10 cursor-pointer flex justify-between items-center btn-hover-effect">
+                                <div>
+                                    <h4 class="font-bold text-xs text-purple-100">تكبيس لايف تيك توك - فوري وسريع</h4>
+                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded">⏱️ غضون 7 دقائق</span>
+                                </div>
+                                <div class="text-left">
+                                    <span class="font-bold text-xs text-violet-300">$0.0312</span>
+                                    <span class="block text-[8px] text-violet-300/50">لكل 1000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="p-6 text-center text-xs text-violet-300/50">اختر منصة تليجرام أو تيك توك لعرض الخدمات والتفاصيل الشاملة.</div>
+                `;
+            }
+
+            html += `</div>`;
+            document.getElementById('appContent').innerHTML = html;
+        }
+
+        // دالة الفتح والطوي المنسدل (Accordion Toggle)
+        function toggleAccordion(id) {
+            let content = document.getElementById('acc-' + id);
+            let icon = document.getElementById('icon-' + id);
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('open');
+                icon.style.transform = 'rotate(180deg)';
+            }
         }
 
         function openOrderModal(serviceName, price) {
@@ -313,7 +441,7 @@
         function calculateTotal() {
             let qty = parseFloat(document.getElementById('targetQty').value) || 0;
             let total = (qty / 1000) * currentPricePerThousand;
-            document.getElementById('totalPrice').innerText = '$' + total.toFixed(3);
+            document.getElementById('totalPrice').innerText = '$' + total.toFixed(4);
         }
 
         function confirmOrder() {
@@ -322,7 +450,7 @@
             let totalCost = (qty / 1000) * currentPricePerThousand;
 
             if (!link || link.length < 5) {
-                alert("يرجى إدخال رابط صحيح ومكتمل!");
+                alert("يرجى إدخال رابط صحيح!");
                 return;
             }
 
@@ -359,32 +487,32 @@
             switchTab('orders');
         }
 
-        // طرق الشحن (آسيا سيل وماستر الرافدين بالرقم المباشر)
+        // 3. طرق الشحن (آسيا سيل وماستر الرافدين 7168843873)
         function renderWallet() {
             document.getElementById('appContent').innerHTML = `
-                <h2 class="font-bold text-xs text-violet-300/70 mb-3 tracking-wider">طرق شحن الرصيد المتاحة 💳</h2>
+                <h2 class="font-bold text-xs text-violet-300/70 mb-3 tracking-wider">وسائل شحن الرصيد 💳</h2>
                 
                 <div class="space-y-3.5">
-                    <!-- آسيا سيل كارت شحن -->
+                    <!-- كارت آسيا سيل -->
                     <div class="purple-card p-4 rounded-3xl border-r-4 border-r-pink-500">
                         <div class="flex items-center justify-between mb-2">
                             <span class="font-bold text-xs text-purple-100 flex items-center gap-2">🏷️ كارت آسيا سيل</span>
-                            <span class="text-[9px] bg-pink-500/20 text-pink-400 px-2 py-0.5 rounded-full font-bold">شحن آلي</span>
+                            <span class="text-[9px] bg-pink-500/20 text-pink-400 px-2 py-0.5 rounded-full font-bold">شحن كارت</span>
                         </div>
-                        <p class="text-[11px] text-violet-300/80 mb-2.5">قم بإدخال كود كارت الشحن المكون من أرقام لتعبئة رصيدك:</p>
-                        <input type="text" id="asiaCode" placeholder="أدخل رقم كارت آسيا سيل هنا..." class="w-full bg-slate-950/80 border border-violet-500/30 p-3 rounded-2xl text-xs text-purple-100 mb-3 focus:outline-none focus:border-violet-500">
+                        <p class="text-[11px] text-violet-300/80 mb-2.5">قم بإدخال كود كارت شحن آسيا سيل للتعبئة:</p>
+                        <input type="text" id="asiaCode" placeholder="أدخل رقم الكارت هنا..." class="w-full bg-slate-950/80 border border-violet-500/30 p-3 rounded-2xl text-xs text-purple-100 mb-3 focus:outline-none focus:border-violet-500">
                         <button onclick="submitAsiaCharge()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-2.5 rounded-2xl text-xs btn-hover-effect shadow-lg">
                             تأكيد شحن الكارت
                         </button>
                     </div>
 
-                    <!-- ماستر كارد الرافدين تحويل مباشر -->
+                    <!-- ماستر الرافدين بالرقم المباشر -->
                     <div class="purple-card p-4 rounded-3xl border-r-4 border-r-violet-500">
                         <div class="flex items-center justify-between mb-2">
                             <span class="font-bold text-xs text-purple-100 flex items-center gap-2">💳 ماستر كارد الرافدين</span>
                             <span class="text-[9px] bg-violet-500/20 text-violet-300 px-2 py-0.5 rounded-full font-bold">تحويل مباشر</span>
                         </div>
-                        <p class="text-[11px] text-violet-300/80 mb-2">حول المبلغ المراد شحنه إلى رقم البطاقة التالي:</p>
+                        <p class="text-[11px] text-violet-300/80 mb-2">حول المبلغ إلى رقم البطاقة الموضح بالأسفل:</p>
                         
                         <div class="flex items-center justify-between bg-slate-950/90 p-3 rounded-2xl border border-violet-500/30 mb-3">
                             <span id="rafidainNum" class="font-mono font-bold text-violet-300 text-sm tracking-wider">7168843873</span>
@@ -410,10 +538,10 @@
         function submitRafidainCharge() {
             let tx = document.getElementById('rafidainTx').value;
             if (!tx || tx.length < 3) {
-                alert("يرجى إدخال تفاصيل الوصل أو المحول الصحيحة!");
+                alert("يرجى إدخال تفاصيل الوصل الصحيحة!");
                 return;
             }
-            alert("تم إرسال إشعار تحويل ماستر الرافدين للمراجعة، وسيتم تعبئة رصيدك فوراً!");
+            alert("تم إرسال إشعار تحويل ماستر الرافدين للمراجعة، وسيتم الشحن فوراً!");
             switchTab('home');
         }
 
@@ -455,13 +583,13 @@
                     <span class="text-xl">👑</span>
                     <div>
                         <h4 class="font-bold text-xs text-purple-100">أهلاً بك في رويال سوشال</h4>
-                        <p class="text-[11px] text-violet-300/80 mt-1">تصفح أقسام الرشق واطلب خدماتك بكل سهولة وسرعة.</p>
+                        <p class="text-[11px] text-violet-300/80 mt-1">تصفح أقسام الرشق المنسدلة واطلب خدماتك بسهولة وسرعة.</p>
                     </div>
                 </div>
             `;
         }
 
-        // صفحة المزيد المحدثة بالتليجرام والدعم المباشر
+        // 4. صفحة المزيد المحددة بالقنوات والدعم المباشر
         function renderMore() {
             document.getElementById('appContent').innerHTML = `
                 <h2 class="font-bold text-xs text-violet-300/70 mb-3 tracking-wider">القنوات والدعم الفني ⚙️</h2>
@@ -486,7 +614,7 @@
             `;
         }
 
-        renderHome();
+        renderPlatforms();
         updateBalanceUI();
     </script>
 </body>
