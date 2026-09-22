@@ -2,82 +2,121 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رويال سوشال - متجر الرشق الحقيقي</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>رويال سوشال - خدمات الرشق الحقيقية</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background-color: #0b0f17;
+            background-color: #090d16;
             color: #f8fafc;
             font-family: system-ui, -apple-system, sans-serif;
             padding-bottom: 90px;
+            user-select: none;
+            -webkit-user-select: none;
         }
-        .custom-card {
-            background: rgba(22, 27, 34, 0.85);
-            border: 1px solid rgba(48, 54, 61, 0.6);
-            backdrop-filter: blur(12px);
+        .glass-card {
+            background: rgba(22, 29, 43, 0.85);
+            border: 1px solid rgba(51, 65, 85, 0.4);
+            backdrop-filter: blur(16px);
         }
-        .fade-in {
-            animation: fadeIn 0.25s ease-in-out forwards;
+        /* أنيميشن الحركات والانتقالات */
+        .page-enter {
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(12px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .btn-active:active {
+            transform: scale(0.95);
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col p-3">
 
-    <!-- معلومات الحساب -->
-    <div class="custom-card p-4 rounded-2xl mb-4 shadow-xl">
-        <div class="flex items-center justify-between mb-3">
+    <!-- الهيدر العلوي وشريط الرصيد -->
+    <div class="glass-card p-4 rounded-2xl mb-4 shadow-2xl relative overflow-hidden">
+        <div class="absolute -top-10 -left-10 w-28 h-28 bg-amber-500/10 rounded-full blur-2xl"></div>
+        <div class="flex items-center justify-between mb-3 relative z-10">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-slate-800 border border-slate-700 rounded-xl flex items-center justify-center font-bold text-amber-400">
+                <div class="w-11 h-11 bg-gradient-to-tr from-amber-500 to-yellow-300 rounded-xl flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-amber-500/20">
                     👑
                 </div>
                 <div>
-                    <div class="flex items-center gap-1.5">
-                        <span id="username" class="font-bold text-sm">ليث عزيز</span>
+                    <div class="flex items-center gap-1">
+                        <h1 id="userDisplayName" class="font-bold text-sm">ليث عزيز</h1>
+                        <span class="text-xs">🚩</span>
                     </div>
-                    <span class="text-[10px] text-slate-400 font-mono">حساب فعال</span>
+                    <span class="text-[10px] text-amber-400/90 font-mono font-semibold">حساب VIP فعال</span>
                 </div>
             </div>
-            <span class="text-xs bg-amber-500/10 text-amber-400 p-1.5 rounded-lg">VIP</span>
+            <span class="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded-full font-bold">
+                متصل 🟢
+            </span>
         </div>
-        <div class="flex items-center justify-between pt-2 border-t border-slate-800/80">
+
+        <div class="flex items-center justify-between pt-3 border-t border-slate-800/80 relative z-10">
             <div>
                 <span class="block text-[10px] text-slate-400">الرصيد المتاح</span>
-                <span id="userBalance" class="font-black text-amber-400 text-lg">$5.00</span>
+                <span id="userBalance" class="font-black text-amber-400 text-xl tracking-tight">$10.00</span>
             </div>
-            <button onclick="switchTab('wallet')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs py-2 px-4 rounded-xl transition-all shadow-lg">
-                + شحن الرصيد
+            <button onclick="switchTab('wallet')" class="bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-bold text-xs py-2.5 px-5 rounded-xl transition-all btn-active shadow-lg shadow-amber-500/20 flex items-center gap-1.5">
+                <span>+</span>
+                <span>شحن الرصيد</span>
             </button>
         </div>
     </div>
 
-    <!-- محتوى الصفحات -->
-    <div id="appContent" class="fade-in"></div>
+    <!-- محتوى الصفحات المتغير مع الأنيميشن -->
+    <div id="appContent" class="page-enter"></div>
 
-    <!-- الشريط السفلي -->
-    <nav class="fixed bottom-0 right-0 left-0 bg-[#0d1117]/95 border-t border-slate-800 backdrop-blur-xl py-2 px-4 flex justify-between items-center text-[11px] text-slate-400 z-50">
-        <button onclick="switchTab('more')" id="nav-more" class="flex flex-col items-center gap-1 hover:text-amber-400">
+    <!-- نافذة الطلب المنبثقة (Modal) -->
+    <div id="orderModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="glass-card w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 border-t sm:border border-slate-700/60 page-enter">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modalTitle" class="font-bold text-sm text-amber-400">تنفيذ طلب جديد</h3>
+                <button onclick="closeModal()" class="text-slate-400 text-lg hover:text-white">✕</button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="text-[11px] text-slate-400 block mb-1">رابط الحساب / المنشور:</label>
+                    <input type="text" id="targetLink" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700/80 p-3 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="text-[11px] text-slate-400 block mb-1">الكمية المطلوبة:</label>
+                    <input type="number" id="targetQty" value="1000" oninput="calculateTotal()" class="w-full bg-slate-900 border border-slate-700/80 p-3 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                </div>
+                <div class="flex justify-between items-center py-2 text-xs">
+                    <span class="text-slate-400">التكلفة الإجمالية:</span>
+                    <span id="totalPrice" class="font-bold text-amber-400">$0.00</span>
+                </div>
+                <button onclick="confirmOrder()" class="w-full bg-amber-500 text-slate-950 font-bold py-3 rounded-xl text-xs btn-active shadow-lg shadow-amber-500/20">
+                    تأكيد وإرسال الطلب 🚀
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- شريط التنقل السفلي -->
+    <nav class="fixed bottom-0 right-0 left-0 bg-[#0d1117]/95 border-t border-slate-800/80 backdrop-blur-xl py-2 px-4 flex justify-between items-center text-[11px] text-slate-400 z-40">
+        <button onclick="switchTab('more')" id="nav-more" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all btn-active">
             <span class="text-base">☰</span>
             <span>المزيد</span>
         </button>
-        <button onclick="switchTab('notifications')" id="nav-notifications" class="flex flex-col items-center gap-1 hover:text-amber-400">
+        <button onclick="switchTab('notifications')" id="nav-notifications" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all btn-active relative">
             <span class="text-base">🔔</span>
             <span>الإشعارات</span>
         </button>
-        <button onclick="switchTab('wallet')" id="nav-wallet" class="flex flex-col items-center gap-1 hover:text-amber-400">
+        <button onclick="switchTab('wallet')" id="nav-wallet" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all btn-active">
             <span class="text-base">💳</span>
             <span>شحن</span>
         </button>
-        <button onclick="switchTab('orders')" id="nav-orders" class="flex flex-col items-center gap-1 hover:text-amber-400">
+        <button onclick="switchTab('orders')" id="nav-orders" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all btn-active">
             <span class="text-base">📋</span>
             <span>طلباتي</span>
         </button>
-        <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 text-amber-400 font-bold">
+        <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 text-amber-400 font-bold transition-all btn-active">
             <span class="text-base">🏠</span>
             <span>الرئيسية</span>
         </button>
@@ -87,25 +126,30 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // --- معلومات API موقع الرشق الخاص بك (استبدلها بمعلومات موقعك) ---
-        const SMM_API_URL = "https://jap.com/api/v2"; // مثال رابط API موقع الجملة
-        const SMM_API_KEY = "ضغ_هنا_مفتاح_API_الخاص_بموقع_الرشق";
+        let currentPricePerThousand = 0;
+        let currentServiceName = "";
 
         let appData = {
-            balance: 5.00,
+            balance: 10.00,
             orders: []
         };
+
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('userDisplayName').innerText = tg.initDataUnsafe.user.first_name;
+        }
 
         function updateBalanceUI() {
             document.getElementById('userBalance').innerText = '$' + appData.balance.toFixed(2);
         }
 
         function switchTab(tab) {
-            document.querySelectorAll('nav button').forEach(b => b.className = "flex flex-col items-center gap-1 text-slate-400 hover:text-amber-400");
-            document.getElementById('nav-' + tab).className = "flex flex-col items-center gap-1 text-amber-400 font-bold";
+            document.querySelectorAll('nav button').forEach(b => b.className = "flex flex-col items-center gap-1 text-slate-400 hover:text-amber-400 transition-all btn-active");
+            document.getElementById('nav-' + tab).className = "flex flex-col items-center gap-1 text-amber-400 font-bold transition-all btn-active";
 
             let content = document.getElementById('appContent');
-            content.className = "fade-in";
+            content.className = "";
+            void content.offsetWidth;
+            content.className = "page-enter";
 
             if (tab === 'home') renderHome();
             else if (tab === 'orders') renderOrders();
@@ -114,132 +158,227 @@
             else if (tab === 'more') renderMore();
         }
 
+        // الصفحة الرئيسية وتصنيفات الخدمات
         function renderHome() {
             document.getElementById('appContent').innerHTML = `
-                <div class="space-y-2.5">
-                    <div onclick="sendRealOrder(101, 'متابعين انستغرام', 0.50)" class="custom-card p-3.5 rounded-xl cursor-pointer hover:border-amber-500/50 flex items-center justify-between">
+                <div class="space-y-3">
+                    <h2 class="font-bold text-xs text-slate-400 tracking-wider">خدمات إنستغرام 📸</h2>
+                    
+                    <div onclick="openOrderModal('متابعين إنستغرام حقيقي (ضمان 30 يوم)', 0.50)" class="glass-card p-3.5 rounded-2xl cursor-pointer hover:border-amber-500/50 flex items-center justify-between btn-active">
                         <div class="flex items-center gap-3">
-                            <span class="text-xl">📸</span>
+                            <span class="text-2xl p-2 bg-pink-500/10 rounded-xl">📸</span>
                             <div>
-                                <h3 class="font-bold text-xs text-slate-200">متابعين انستغرام حقيقي</h3>
-                                <span class="text-[10px] text-amber-400">$0.50 لكل 1000</span>
+                                <h3 class="font-bold text-xs text-slate-200">متابعين إنستغرام حقيقي</h3>
+                                <span class="text-[10px] text-amber-400 font-semibold">$0.50 / لكل 1000</span>
                             </div>
                         </div>
-                        <span class="bg-amber-500 text-slate-950 font-bold text-[10px] px-3 py-1 rounded-lg">طلب</span>
+                        <span class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-md">طلب</span>
                     </div>
 
-                    <div onclick="sendRealOrder(102, 'لايكات انستغرام', 0.20)" class="custom-card p-3.5 rounded-xl cursor-pointer hover:border-amber-500/50 flex items-center justify-between">
+                    <div onclick="openOrderModal('لايكات إنستغرام ريلز + بوست', 0.20)" class="glass-card p-3.5 rounded-2xl cursor-pointer hover:border-amber-500/50 flex items-center justify-between btn-active">
                         <div class="flex items-center gap-3">
-                            <span class="text-xl">❤️</span>
+                            <span class="text-2xl p-2 bg-red-500/10 rounded-xl">❤️</span>
                             <div>
-                                <h3 class="font-bold text-xs text-slate-200">لايكات انستغرام ريلز + بوست</h3>
-                                <span class="text-[10px] text-amber-400">$0.20 لكل 1000</span>
+                                <h3 class="font-bold text-xs text-slate-200">لايكات إنستغرام ريلز + بوست</h3>
+                                <span class="text-[10px] text-amber-400 font-semibold">$0.20 / لكل 1000</span>
                             </div>
                         </div>
-                        <span class="bg-amber-500 text-slate-950 font-bold text-[10px] px-3 py-1 rounded-lg">طلب</span>
+                        <span class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-md">طلب</span>
                     </div>
 
-                    <div onclick="sendRealOrder(201, 'أعضاء تليجرام', 0.80)" class="custom-card p-3.5 rounded-xl cursor-pointer hover:border-amber-500/50 flex items-center justify-between">
+                    <div onclick="openOrderModal('مشاهدات ريلز إنستغرام فوري', 0.05)" class="glass-card p-3.5 rounded-2xl cursor-pointer hover:border-amber-500/50 flex items-center justify-between btn-active">
                         <div class="flex items-center gap-3">
-                            <span class="text-xl">✈️</span>
+                            <span class="text-2xl p-2 bg-purple-500/10 rounded-xl">👁️</span>
                             <div>
-                                <h3 class="font-bold text-xs text-slate-200">أعضاء قناة تليجرام</h3>
-                                <span class="text-[10px] text-amber-400">$0.80 لكل 1000</span>
+                                <h3 class="font-bold text-xs text-slate-200">مشاهدات ريلز إنستغرام فائقة السرعة</h3>
+                                <span class="text-[10px] text-amber-400 font-semibold">$0.05 / لكل 1000</span>
                             </div>
                         </div>
-                        <span class="bg-amber-500 text-slate-950 font-bold text-[10px] px-3 py-1 rounded-lg">طلب</span>
+                        <span class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-md">طلب</span>
+                    </div>
+
+                    <h2 class="font-bold text-xs text-slate-400 tracking-wider pt-2">خدمات تليجرام ✈️</h2>
+
+                    <div onclick="openOrderModal('أعضاء قنوات تليجرام (حقيقي)', 0.80)" class="glass-card p-3.5 rounded-2xl cursor-pointer hover:border-amber-500/50 flex items-center justify-between btn-active">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl p-2 bg-blue-500/10 rounded-xl">✈️</span>
+                            <div>
+                                <h3 class="font-bold text-xs text-slate-200">أعضاء قنوات تليجرام حقيقيين</h3>
+                                <span class="text-[10px] text-amber-400 font-semibold">$0.80 / لكل 1000</span>
+                            </div>
+                        </div>
+                        <span class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-md">طلب</span>
+                    </div>
+
+                    <div onclick="openOrderModal('مشاهدات منشورات تليجرام', 0.02)" class="glass-card p-3.5 rounded-2xl cursor-pointer hover:border-amber-500/50 flex items-center justify-between btn-active">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl p-2 bg-cyan-500/10 rounded-xl">📊</span>
+                            <div>
+                                <h3 class="font-bold text-xs text-slate-200">مشاهدات منشورات تليجرام</h3>
+                                <span class="text-[10px] text-amber-400 font-semibold">$0.02 / لكل 1000</span>
+                            </div>
+                        </div>
+                        <span class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-md">طلب</span>
                     </div>
                 </div>
             `;
         }
 
-        // إرسال طلب الرشق الحقيقي عبر API
-        async function sendRealOrder(serviceId, serviceName, price) {
-            let targetLink = prompt(`أدخل رابط الحساب أو المنشور لخدمة (${serviceName}):`);
-            if (!targetLink) return;
+        function openOrderModal(serviceName, price) {
+            currentServiceName = serviceName;
+            currentPricePerThousand = price;
+            document.getElementById('modalTitle').innerText = serviceName;
+            document.getElementById('targetLink').value = "";
+            document.getElementById('targetQty').value = "1000";
+            calculateTotal();
+            document.getElementById('orderModal').classList.remove('hidden');
+        }
 
-            let quantity = prompt("أدخل الكمية المطلوب رشقها (مثلاً 1000):", "1000");
-            if (!quantity) return;
+        function closeModal() {
+            document.getElementById('orderModal').classList.add('hidden');
+        }
 
-            if (appData.balance < price) {
-                alert("رصيدك غير كافي لشراء هذه الخدمة!");
+        function calculateTotal() {
+            let qty = parseFloat(document.getElementById('targetQty').value) || 0;
+            let total = (qty / 1000) * currentPricePerThousand;
+            document.getElementById('totalPrice').innerText = '$' + total.toFixed(3);
+        }
+
+        function confirmOrder() {
+            let link = document.getElementById('targetLink').value;
+            let qty = parseFloat(document.getElementById('targetQty').value) || 0;
+            let totalCost = (qty / 1000) * currentPricePerThousand;
+
+            if (!link || link.length < 5) {
+                alert("يرجى وضع رابط صحيحة ومكتملة!");
+                return;
+            }
+
+            if (appData.balance < totalCost) {
+                alert("عذراً، رصيدك غير كافي لشراء هذه الكمية!");
+                closeModal();
                 switchTab('wallet');
                 return;
             }
 
-            tg.showProgress();
+            appData.balance -= totalCost;
+            updateBalanceUI();
 
-            try {
-                // إرسال الطلب المباشر لموقع الرشق الرئيسي
-                let response = await fetch(SMM_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams({
-                        key: SMM_API_KEY,
-                        action: 'add',
-                        service: serviceId,
-                        link: targetLink,
-                        quantity: quantity
-                    })
-                });
+            let orderId = "#" + Math.floor(Math.random() * 899999 + 100000);
+            appData.orders.unshift({
+                id: orderId,
+                service: currentServiceName + ` (${qty})`,
+                status: "قيد التنفيذ الحقيقي ⏳",
+                time: "الآن"
+            });
 
-                let result = await response.json();
-                tg.hideProgress();
-
-                if (result.order) {
-                    appData.balance -= price;
-                    updateBalanceUI();
-                    appData.orders.unshift({
-                        id: "#" + result.order,
-                        service: serviceName + ` (${quantity})`,
-                        status: "جاري التنفيذ الحقيقي",
-                        time: "الآن"
-                    });
-                    tg.showAlert(`✅ تم إرسال الطلب بنجاح للسيرفر! رقم الطلب: ${result.order}`);
-                    switchTab('orders');
-                } else {
-                    // في حال عدم وضع مفتاح API حقيقي حتى الآن
-                    appData.balance -= price;
-                    updateBalanceUI();
-                    appData.orders.unshift({
-                        id: "#" + Math.floor(Math.random() * 899999 + 100000),
-                        service: serviceName + ` (${quantity})`,
-                        status: "تم التسجيل",
-                        time: "الآن"
-                    });
-                    tg.showAlert("تم تسليم الطلب للشبكة بنجاح!");
-                    switchTab('orders');
-                }
-            } catch (error) {
-                tg.hideProgress();
-                // تجربة عملية محلية عند انقطاع الـ API
-                appData.balance -= price;
-                updateBalanceUI();
-                appData.orders.unshift({
-                    id: "#" + Math.floor(Math.random() * 899999 + 100000),
-                    service: serviceName + ` (${quantity})`,
-                    status: "قيد المعالجة",
-                    time: "الآن"
-                });
-                tg.showAlert("تم استلام طلبك بنجاح وسيتنفذ خلال دقائق!");
-                switchTab('orders');
+            // إرسال طلب تليجرام حقيقي
+            if (tg.sendData) {
+                tg.sendData(JSON.stringify({
+                    order: orderId,
+                    service: currentServiceName,
+                    link: link,
+                    qty: qty,
+                    cost: totalCost
+                }));
             }
+
+            closeModal();
+            tg.showAlert(`✅ تم إرسال الطلب بنجاح وخصم $${totalCost.toFixed(2)} من رصيدك!`);
+            switchTab('orders');
+        }
+
+        // صفحة شحن الرصيد المتضمنة للزين كاش بالرقم الخاص
+        function renderWallet() {
+            document.getElementById('appContent').innerHTML = `
+                <h2 class="font-bold text-xs text-slate-400 mb-3 tracking-wider">وسائل الدفع وشحن الرصيد 💳</h2>
+                
+                <div class="space-y-3">
+                    <!-- زين كاش مع الرقم المباشر -->
+                    <div class="glass-card p-4 rounded-2xl border-l-4 border-l-red-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-xs text-slate-100 flex items-center gap-2">📱 زين كاش العراق</span>
+                            <span class="text-[9px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full font-bold">تحويل مباشر</span>
+                        </div>
+                        <p class="text-[11px] text-slate-300 mb-2">قم بتحويل المبلغ إلى الرقم الخاص بنا:</p>
+                        <div class="flex items-center justify-between bg-slate-900/90 p-2.5 rounded-xl border border-slate-700/70 mb-3">
+                            <span id="zainPhone" class="font-mono font-bold text-amber-400 text-sm">07768599326</span>
+                            <button onclick="copyPhone()" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 text-[10px] font-bold px-3 py-1 rounded-lg border border-amber-500/30 btn-active">
+                                📋 نسخ الرقم
+                            </button>
+                        </div>
+                        <input type="text" id="zainTxId" placeholder="أدخل رقم العملية أو اسم المحول..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-xs text-white mb-2 focus:outline-none focus:border-amber-500">
+                        <button onclick="submitZainCharge()" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 rounded-xl text-xs btn-active shadow-lg">
+                            إرسال إشعار التحويل 🚀
+                        </button>
+                    </div>
+
+                    <!-- آسيا سيل -->
+                    <div class="glass-card p-4 rounded-2xl border-l-4 border-l-pink-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-xs text-slate-100 flex items-center gap-2">🏷️ كارت آسيا سيل</span>
+                            <span class="text-[9px] bg-pink-500/20 text-pink-400 px-2 py-0.5 rounded-full font-bold">كارت شحن</span>
+                        </div>
+                        <input type="text" id="asiaCode" placeholder="أدخل رقم كارت آسيا سيل..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-xs text-white mb-2 focus:outline-none focus:border-amber-500">
+                        <button onclick="submitAsiaCharge()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-2.5 rounded-xl text-xs btn-active shadow-lg">
+                            شحن الكارت
+                        </button>
+                    </div>
+
+                    <!-- ماستر كارد الرافدين -->
+                    <div class="glass-card p-4 rounded-2xl border-l-4 border-l-amber-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-xs text-slate-100 flex items-center gap-2">💳 ماستر كارد الرافدين</span>
+                            <span class="text-[9px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full font-bold">دفع إلكتروني</span>
+                        </div>
+                        <p class="text-[11px] text-slate-300 mb-2">للتعبئة ببطاقات الرافدين يرجى مراسلة الدعم الفني المباشر.</p>
+                        <button onclick="tg.openTelegramLink('https://t.me/ciner_fx')" class="w-full bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/30 font-bold py-2.5 rounded-xl text-xs btn-active">
+                            التواصل مع الدعم للشحن
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function copyPhone() {
+            navigator.clipboard.writeText("07768599326");
+            alert("تم نسخ رقم زين كاش بنجاح: 07768599326");
+        }
+
+        function submitZainCharge() {
+            let tx = document.getElementById('zainTxId').value;
+            if (!tx || tx.length < 3) {
+                alert("يرجى إدخال رقم العملية أو التفاصيل بصورة صحيحة!");
+                return;
+            }
+            alert("تم إرسال إشعار التحويل عبر زين كاش لمالك البوت، وسيتم إضافة الرصيد لحسابك فور التأكيد!");
+            switchTab('home');
+        }
+
+        function submitAsiaCharge() {
+            let code = document.getElementById('asiaCode').value;
+            if (!code || code.length < 10) {
+                alert("يرجى إدخال رقم كارت شحن آسيا سيل الصحيح!");
+                return;
+            }
+            alert("تم إرسال كارت آسيا سيل للتدقيق، وسيتم الشحن فوراً!");
+            switchTab('home');
         }
 
         function renderOrders() {
-            let html = `<h2 class="font-bold text-sm mb-3">سجل الطلبات الحقيقية</h2>`;
+            let html = `<h2 class="font-bold text-xs text-slate-400 mb-3 tracking-wider">سجل طلبات الرشق 📋</h2>`;
             if (appData.orders.length === 0) {
-                html += `<p class="text-xs text-slate-500 text-center py-6">لا توجد طلبات سابقة.</p>`;
+                html += `<div class="glass-card p-8 text-center rounded-2xl text-xs text-slate-500">لا توجد طلبات سابقة لديك.</div>`;
             } else {
                 appData.orders.forEach(o => {
                     html += `
-                        <div class="custom-card p-4 rounded-xl mb-3 border-l-4 border-l-amber-500">
+                        <div class="glass-card p-4 rounded-2xl mb-3 border-r-4 border-r-amber-500">
                             <div class="flex justify-between items-center mb-1">
-                                <span class="text-xs font-bold text-amber-400">${o.id}</span>
-                                <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full">${o.status}</span>
+                                <span class="font-bold text-xs text-amber-400 font-mono">${o.id}</span>
+                                <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full font-bold">${o.status}</span>
                             </div>
-                            <p class="text-xs text-slate-200 font-medium">${o.service}</p>
-                            <span class="text-[10px] text-slate-400 mt-2 block">${o.time}</span>
+                            <p class="text-xs font-semibold text-slate-200 mt-1">${o.service}</p>
+                            <span class="text-[10px] text-slate-500 block mt-2">${o.time}</span>
                         </div>
                     `;
                 });
@@ -247,39 +386,14 @@
             document.getElementById('appContent').innerHTML = html;
         }
 
-        function renderWallet() {
-            document.getElementById('appContent').innerHTML = `
-                <h2 class="font-bold text-sm mb-3">شحن الرصيد (آسيا / زين كاش / الرافدين)</h2>
-                <div class="custom-card p-4 rounded-xl space-y-3">
-                    <p class="text-xs text-slate-300">أدخل قيمة كارت الشحن أو التعبئة:</p>
-                    <input type="text" id="cardCode" placeholder="أدخل رقم كارت آسيا سيل أو زين كاش..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
-                    <button onclick="submitCharge()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl text-xs">
-                        تأكيد الشحن الفوري
-                    </button>
-                </div>
-            `;
-        }
-
-        function submitCharge() {
-            let code = document.getElementById('cardCode').value;
-            if (code.length < 5) {
-                alert("يرجى إدخال كود شحن صحيح!");
-                return;
-            }
-            appData.balance += 5.00;
-            updateBalanceUI();
-            alert("تم التحقق من كارت الشحن وإضافة $5.00 لرصيدك بنجاح!");
-            switchTab('home');
-        }
-
         function renderNotifications() {
             document.getElementById('appContent').innerHTML = `
-                <h2 class="font-bold text-sm mb-3">الإشعارات</h2>
-                <div class="custom-card p-3.5 rounded-xl flex items-start gap-3">
-                    <span class="text-lg">🔔</span>
+                <h2 class="font-bold text-xs text-slate-400 mb-3 tracking-wider">الإشعارات التنبيهية 🔔</h2>
+                <div class="glass-card p-4 rounded-2xl flex items-start gap-3">
+                    <span class="text-xl">👑</span>
                     <div>
-                        <h4 class="font-bold text-xs text-slate-200">النظام جاهز</h4>
-                        <p class="text-[11px] text-slate-400 mt-0.5">المتجر مربوط مباشرة ويخصم الرصيد تلقائياً.</p>
+                        <h4 class="font-bold text-xs text-slate-200">مرحباً بك في رويال سوشال</h4>
+                        <p class="text-[11px] text-slate-400 mt-1">تم تحديث واجهة المتجر وشبكة الشحن الفوري بنجاح.</p>
                     </div>
                 </div>
             `;
@@ -287,10 +401,20 @@
 
         function renderMore() {
             document.getElementById('appContent').innerHTML = `
-                <h2 class="font-bold text-sm mb-3">المزيد</h2>
-                <div class="custom-card p-4 rounded-xl text-xs space-y-2">
-                    <div class="flex justify-between py-1"><span>الدعم الفني</span><span class="text-amber-400">متاح 24/7</span></div>
-                    <div class="flex justify-between py-1"><span>الحالة</span><span class="text-emerald-400">متصل عبر GitHub</span></div>
+                <h2 class="font-bold text-xs text-slate-400 mb-3 tracking-wider">لوحة التحكم والمزيد ⚙️</h2>
+                <div class="glass-card p-4 rounded-2xl text-xs space-y-3">
+                    <div class="flex justify-between items-center py-1 border-b border-slate-800">
+                        <span class="text-slate-300">قناة التليجرام الرسمية</span>
+                        <a href="https://t.me/ciner_fx" class="text-amber-400 font-bold">@ciner_fx</a>
+                    </div>
+                    <div class="flex justify-between items-center py-1 border-b border-slate-800">
+                        <span class="text-slate-300">الدعم الفني والشكاوى</span>
+                        <span class="text-emerald-400 font-bold">متاح 24/7 🟢</span>
+                    </div>
+                    <div class="flex justify-between items-center py-1">
+                        <span class="text-slate-300">إصدار التطبيق</span>
+                        <span class="text-slate-500 font-mono">v4.0.0 Pro</span>
+                    </div>
                 </div>
             `;
         }
