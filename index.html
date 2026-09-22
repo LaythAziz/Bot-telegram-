@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيقي الاحترافي</title>
+    <!-- تضمين مكتبة تليجرام Web App -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- تضمين Tailwind CSS للتصميم السريع والاحترافي -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* استخدام ألوان تليجرام المتوافقة تلقائياً مع الثيم (فاتح/داكن) */
+        body {
+            background-color: var(--tg-theme-bg-color, #0f172a);
+            color: var(--tg-theme-text-color, #f8fafc);
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-6">
+
+    <!-- رأس الصفحة -->
+    <header class="text-center mt-6">
+        <div class="w-20 h-20 bg-blue-500/10 text-blue-400 rounded-2xl mx-auto flex items-center justify-center text-3xl mb-4 shadow-inner">
+            🚀
+        </div>
+        <h1 id="username" class="text-2xl font-bold">أهلاً بك</h1>
+        <p class="text-sm text-slate-400 mt-1">لوحة التحكم الخاصة بك داخل تليجرام</p>
+    </header>
+
+    <!-- محتوى التطبيق (بطاقات تفاعلية) -->
+    <main class="space-y-4 my-auto">
+        <div class="bg-slate-800/50 border border-slate-700/50 p-4 rounded-2xl backdrop-blur-md shadow-sm">
+            <h2 class="font-semibold text-lg mb-1">الإحصائيات السريعة</h2>
+            <p class="text-xs text-slate-400">تابع نشاطك وحسابك بكل سهولة ويسر.</p>
+        </div>
+        
+        <div class="bg-slate-800/50 border border-slate-700/50 p-4 rounded-2xl backdrop-blur-md shadow-sm flex items-center justify-between">
+            <span>حالة الاتصال</span>
+            <span class="px-3 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-medium rounded-full">متصل</span>
+        </div>
+    </main>
+
+    <!-- أزرار التحكم -->
+    <footer class="space-y-3 mb-4">
+        <button onclick="showAlert()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 px-4 rounded-xl transition-all shadow-lg shadow-blue-600/30 active:scale-95">
+            إرسال إشعار تليجرام
+        </button>
+        <button onclick="closeApp()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-3 px-4 rounded-xl transition-all active:scale-95">
+            إغلاق التطبيق
+        </button>
+    </footer>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand(); // توسيع الواجهة لتعمل بملء الشاشة
+
+        // تخصيص النص بناءً على اسم المستخدم في تليجرام إن وجد
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('username').innerText = `أهلاً، ${tg.initDataUnsafe.user.first_name} 👋`;
+        }
+
+        function showAlert() {
+            // استخدام نافذة تنبيه مدمجة ورسمية خاصة بتليجرام
+            tg.showAlert('تم النقر على الزر بنجاح!');
+        }
+
+        function closeApp() {
+            tg.close();
+        }
+    </script>
+</body>
+</html>
