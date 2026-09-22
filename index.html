@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>رويال سوشال - متجر الرشق الملكي</title>
+    <title>رويال سوشال - خدمات السوشيال ميديا</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -15,11 +15,13 @@
             user-select: none;
             -webkit-user-select: none;
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
+        /* كروت البطاقات البنفسجية الملكية */
         .purple-card {
             background: rgba(23, 15, 38, 0.75);
-            border: 1px solid rgba(139, 92, 246, 0.25);
+            border: 1px solid rgba(139, 92, 246, 0.22);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
@@ -31,19 +33,20 @@
         }
 
         .purple-gradient-btn:active {
-            transform: scale(0.96);
+            transform: scale(0.97);
             opacity: 0.9;
         }
 
-        /* أنيميشن الانبثاق والفتح المنسدل */
+        /* سلاسة الحركة والانتقالات - 120Hz High Refresh Rate */
         .tab-anim {
-            animation: fadeInSlide 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            will-change: transform, opacity;
+            animation: fadeInSlide 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         @keyframes fadeInSlide {
             from {
                 opacity: 0;
-                transform: translateY(8px) scale(0.98);
+                transform: translateY(10px) scale(0.985);
             }
             to {
                 opacity: 1;
@@ -54,29 +57,30 @@
         .accordion-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.35s cubic-bezier(0, 1, 0, 1);
+            will-change: max-height;
+            transition: max-height 0.3s cubic-bezier(0, 1, 0, 1);
         }
 
         .accordion-content.open {
-            max-height: 2000px;
-            transition: max-height 0.5s ease-in-out;
+            max-height: 2500px;
+            transition: max-height 0.45s ease-in-out;
         }
 
         .btn-hover-effect {
-            transition: all 0.2s ease;
+            transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.15s ease;
         }
 
         .btn-hover-effect:active {
-            transform: scale(0.95);
+            transform: scale(0.96);
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col p-3">
 
-    <!-- خلفية نيون مضيئة -->
+    <!-- خلفية نيون بنفسجية مضيئة -->
     <div class="fixed top-0 left-1/2 -translate-x-1/2 w-72 h-72 bg-violet-600/15 rounded-full blur-3xl pointer-events-none"></div>
 
-    <!-- بطاقة حساب المستخدم (الرصيد 0.00$) -->
+    <!-- الهيدر العلوي الملكي (الرصيد الافتراضي 0.00$) -->
     <div class="purple-card p-4 rounded-3xl mb-3 relative overflow-hidden">
         <div class="flex items-center justify-between mb-3 relative z-10">
             <div class="flex items-center gap-3">
@@ -108,38 +112,11 @@
         </div>
     </div>
 
-    <!-- محتوى الصفحات الديناميكي -->
+    <!-- محتوى الصفحات المتغير -->
     <div id="appContent" class="tab-anim"></div>
 
-    <!-- النافذة المنبثقة للطلب (Modal) -->
-    <div id="orderModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="purple-card w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 border-t border-violet-500/40 tab-anim">
-            <div class="flex justify-between items-center mb-4">
-                <h3 id="modalTitle" class="font-bold text-sm text-violet-300">تنفيذ طلب جديد</h3>
-                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-violet-950/60 text-violet-300 flex items-center justify-center text-xs hover:bg-violet-900">✕</button>
-            </div>
-            <div class="space-y-3.5">
-                <div>
-                    <label class="text-[11px] text-violet-300/80 block mb-1">رابط الحساب / المنشور:</label>
-                    <input type="text" id="targetLink" placeholder="https://..." class="w-full bg-slate-950/80 border border-violet-500/30 p-3 rounded-2xl text-xs text-purple-100 focus:outline-none focus:border-violet-500">
-                </div>
-                <div>
-                    <label class="text-[11px] text-violet-300/80 block mb-1">الكمية المطلوبة:</label>
-                    <input type="number" id="targetQty" value="1000" oninput="calculateTotal()" class="w-full bg-slate-950/80 border border-violet-500/30 p-3 rounded-2xl text-xs text-purple-100 focus:outline-none focus:border-violet-500">
-                </div>
-                <div class="flex justify-between items-center py-2 px-1 text-xs border-y border-violet-500/15">
-                    <span class="text-violet-300/70">التكلفة الإجمالية:</span>
-                    <span id="totalPrice" class="font-extrabold text-violet-300 text-sm">$0.00</span>
-                </div>
-                <button onclick="confirmOrder()" class="w-full purple-gradient-btn text-white font-bold py-3 rounded-2xl text-xs btn-hover-effect">
-                    تأكيد وإرسال الطلب 🚀
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- شريط التنقل السفلي -->
-    <nav class="fixed bottom-0 right-0 left-0 bg-[#0b0712]/90 border-t border-violet-500/20 backdrop-blur-2xl py-2 px-3 flex justify-between items-center text-[11px] text-violet-300/60 z-40">
+    <nav class="fixed bottom-0 right-0 left-0 bg-[#0b0712]/92 border-t border-violet-500/20 backdrop-blur-2xl py-2 px-3 flex justify-between items-center text-[11px] text-violet-300/60 z-40">
         <button onclick="switchTab('more')" id="nav-more" class="flex flex-col items-center gap-1 transition-all btn-hover-effect">
             <span class="text-lg">☰</span>
             <span>المزيد</span>
@@ -166,9 +143,6 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        let currentPricePerThousand = 0;
-        let currentServiceName = "";
-
         let appData = {
             balance: 0.00,
             orders: []
@@ -179,7 +153,7 @@
         }
 
         function updateBalanceUI() {
-            document.getElementById('userBalance').innerText = '$' + appData.balance.toFixed(2);
+            document.getElementById('userBalance').innerText = '$' + appData.balance.toFixed(4);
         }
 
         function switchTab(tab) {
@@ -198,25 +172,60 @@
             else if (tab === 'more') renderMore();
         }
 
-        // 1. شبكة المنصات الرئيسية (مطابقة لصورة بيرفكت فولو)
+        // قاعدة بيانات الخدمات الشاملة والمجانية
+        const servicesData = {
+            free: [
+                { id: "800", name: "مشاهدات ستوري انستغرام لجميع الاستوريات - بطيء", icon: "📸", category: "أنستغرام - مجانية", price: 0.00, min: 500, max: 500, speed: "242د", timeBadge: "4 س", badge: "الأعلى اكتمالاً" },
+                { id: "801", name: "لايكات إنستغرام ريلز + بوست مجانية", icon: "❤️", category: "أنستغرام - مجانية", price: 0.00, min: 100, max: 500, speed: "15د", timeBadge: "15 د", badge: "مجاني فوري" },
+                { id: "802", name: "مشاهدات فيديو تيك توك مجانية", icon: "🎵", category: "تيك توك - مجانية", price: 0.00, min: 1000, max: 1000, speed: "10د", timeBadge: "10 د", badge: "مجاني" },
+                { id: "803", name: "تفاعلات تليجرام إيجابية مجانية 👍🔥", icon: "✈️", category: "تليجرام - مجانية", price: 0.00, min: 50, max: 200, speed: "30د", timeBadge: "30 د", badge: "تفاعل مجاني" }
+            ],
+            instagram: [
+                { id: "101", name: "متابعين انستغرام حقيقي - ضمان تعويض 30 يوم", icon: "📸", category: "إنستغرام", price: 0.5000, min: 100, max: 50000, speed: "44د", timeBadge: "غضون ساعة", badge: "الأكثر طلباً" },
+                { id: "102", name: "لايكات إنستغرام ريلز + بوست - سرعة فائقة", icon: "❤️", category: "إنستغرام", price: 0.1800, min: 50, max: 100000, speed: "12د", timeBadge: "30 دقيقة", badge: "فوري" },
+                { id: "103", name: "مشاهدات ريلز وانستغرام فوري جداً", icon: "👁️", category: "إنستغرام", price: 0.0250, min: 100, max: 1000000, speed: "5د", timeBadge: "15 دقيقة", badge: "أرخص سعر" }
+            ],
+            telegram: [
+                { id: "637", name: "مشاهدات ستوري تليجرام - سريع", icon: "✈️", category: "تليجرام", price: 0.4050, min: 15, max: 150000, speed: "3د", timeBadge: "3 دقائق", badge: "سريع" },
+                { id: "638", name: "مشاهدات ستوري تليجرام - عالي الجودة", icon: "⚡", category: "تليجرام", price: 0.2025, min: 10, max: 5000, speed: "2د", timeBadge: "2 دقيقة", badge: "الأكثر طلباً" },
+                { id: "751", name: "أعضاء تليجرام بريميوم ضمان 15 يوم", icon: "⭐", category: "تليجرام", price: 4.2750, min: 500, max: 50000, speed: "43د", timeBadge: "43 دقيقة", badge: "تعويض 15 يوم" },
+                { id: "752", name: "أعضاء تليجرام بريميوم ضمان 30-60 يوم", icon: "👑", category: "تليجرام", price: 8.7750, min: 100, max: 50000, speed: "29د", timeBadge: "29 دقيقة", badge: "تعويض 30 يوم" },
+                { id: "761", name: "تليجرام - تفاعلات رموز إيجابية 👍❤️", icon: "🔥", category: "تليجرام", price: 0.1013, min: 10, max: 1000000, speed: "1د", timeBadge: "1 دقيقة", badge: "الأعلى اكتمالاً" }
+            ],
+            tiktok: [
+                { id: "836", name: "تكبيس لايف تيك توك - لايكات فورية وسريعة", icon: "🎯", category: "تيك توك", price: 0.0312, min: 100, max: 2147483647, speed: "7د", timeBadge: "7 دقائق", badge: "الأكثر طلباً" },
+                { id: "874", name: "مشاهدات فيديو تيك توك بدون ضمان", icon: "🎵", category: "تيك توك", price: 0.0208, min: 100, max: 999999999, speed: "9د", timeBadge: "9 دقائق", badge: "سريع" }
+            ]
+        };
+
+        // 1. عرض منصات الخدمات الرئيسية
         function renderPlatforms() {
             document.getElementById('appContent').innerHTML = `
-                <!-- شريط البحث العلوي -->
                 <div class="mb-3">
                     <input type="text" placeholder="ابحث بالاسم أو رقم الخدمة (ID)..." class="w-full bg-slate-950/80 border border-violet-500/20 p-3 rounded-2xl text-xs text-purple-100 placeholder-violet-300/40 focus:outline-none focus:border-violet-500">
                 </div>
 
                 <div class="flex justify-between items-center mb-2.5 px-1">
-                    <h2 class="font-bold text-xs text-violet-300/80">المنصات المتاحة</h2>
+                    <h2 class="font-bold text-xs text-violet-300/80">المنصات والخدمات المتاحة</h2>
                     <span class="text-[10px] text-violet-300/50">4 منصات</span>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2.5">
-                    <!-- إنستغرام -->
-                    <div onclick="openPlatform('instagram')" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 transition-all btn-hover-effect flex flex-col justify-between">
+                    <div onclick="openPlatform('free')" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 btn-hover-effect flex flex-col justify-between">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-2xl p-2 bg-emerald-500/10 rounded-xl">🎁</span>
+                            <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold">4 خدمات</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xs text-purple-100">خدمات مجانية</h3>
+                            <p class="text-[9px] text-violet-300/60 mt-0.5">تجارب وهدايا مجانية $0.00</p>
+                        </div>
+                    </div>
+
+                    <div onclick="openPlatform('instagram')" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 btn-hover-effect flex flex-col justify-between">
                         <div class="flex justify-between items-start mb-2">
                             <span class="text-2xl p-2 bg-pink-500/10 rounded-xl">📸</span>
-                            <span class="text-[9px] bg-pink-500/20 text-pink-300 px-2 py-0.5 rounded-full">22 خدمة</span>
+                            <span class="text-[9px] bg-pink-500/20 text-pink-300 px-2 py-0.5 rounded-full font-bold">22 خدمة</span>
                         </div>
                         <div>
                             <h3 class="font-bold text-xs text-purple-100">إنستغرام</h3>
@@ -224,11 +233,10 @@
                         </div>
                     </div>
 
-                    <!-- تليجرام -->
-                    <div onclick="openPlatform('telegram')" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 transition-all btn-hover-effect flex flex-col justify-between">
+                    <div onclick="openPlatform('telegram')" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 btn-hover-effect flex flex-col justify-between">
                         <div class="flex justify-between items-start mb-2">
                             <span class="text-2xl p-2 bg-blue-500/10 rounded-xl">✈️</span>
-                            <span class="text-[9px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">50 خدمة</span>
+                            <span class="text-[9px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full font-bold">50 خدمة</span>
                         </div>
                         <div>
                             <h3 class="font-bold text-xs text-purple-100">تليجرام</h3>
@@ -236,227 +244,179 @@
                         </div>
                     </div>
 
-                    <!-- تيك توك -->
-                    <div onclick="openPlatform('tiktok')" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 transition-all btn-hover-effect flex flex-col justify-between">
+                    <div onclick="openPlatform('tiktok')" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 btn-hover-effect flex flex-col justify-between">
                         <div class="flex justify-between items-start mb-2">
                             <span class="text-2xl p-2 bg-purple-500/10 rounded-xl">🎵</span>
-                            <span class="text-[9px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full">20 خدمة</span>
+                            <span class="text-[9px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full font-bold">20 خدمة</span>
                         </div>
                         <div>
                             <h3 class="font-bold text-xs text-purple-100">تيك توك</h3>
-                            <p class="text-[9px] text-violet-300/60 mt-0.5">متابعين، تكبيسات، بثوث</p>
-                        </div>
-                    </div>
-
-                    <!-- خدمات مجانية -->
-                    <div onclick="openPlatform('free')" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 transition-all btn-hover-effect flex flex-col justify-between">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-2xl p-2 bg-emerald-500/10 rounded-xl">🎁</span>
-                            <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">8 خدمات</span>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-xs text-purple-100">خدمات مجانية</h3>
-                            <p class="text-[9px] text-violet-300/60 mt-0.5">تجارب وهدايا يومية</p>
+                            <p class="text-[9px] text-violet-300/60 mt-0.5">متابعين، تكبيسات، مشاهدات</p>
                         </div>
                     </div>
                 </div>
             `;
         }
 
-        // 2. عرض المنصات والأقسام القابلة للطوي والفتح المنسدل (مطابق تماماً للصور)
-        function openPlatform(platform) {
+        // 2. عرض الأقسام والخدمات داخل المنصة المختارة
+        function openPlatform(platformKey) {
+            let list = servicesData[platformKey] || [];
             let html = `
                 <div class="flex items-center gap-2 mb-3">
-                    <button onclick="renderPlatforms()" class="bg-violet-950/60 border border-violet-500/30 px-3 py-1.5 rounded-xl text-xs text-violet-300 font-bold btn-hover-effect">⬅ رجوع للمنصات</button>
-                    <h2 class="font-bold text-xs text-purple-100">فئات وخدمات ${platform === 'telegram' ? 'تليجرام' : platform === 'instagram' ? 'إنستغرام' : platform === 'tiktok' ? 'تيك توك' : 'الخدمات المجانية'}</h2>
+                    <button onclick="renderPlatforms()" class="bg-violet-950/60 border border-violet-500/30 px-3 py-1.5 rounded-xl text-xs text-violet-300 font-bold btn-hover-effect">⬅ رجوع</button>
+                    <h2 class="font-bold text-xs text-purple-100">قائمة خدمات المنصة</h2>
                 </div>
                 <div class="space-y-2.5">
             `;
 
-            if (platform === 'telegram') {
+            list.forEach(item => {
                 html += `
-                    <!-- فئة 1: تليجرام - مشاهدات ستوري -->
-                    <div class="purple-card rounded-2xl overflow-hidden border border-violet-500/20">
-                        <div onclick="toggleAccordion('tg-story')" class="p-3.5 cursor-pointer flex items-center justify-between bg-violet-950/20">
-                            <div class="flex items-center gap-2.5">
-                                <span class="text-lg">✈️</span>
-                                <div>
-                                    <h3 class="font-bold text-xs text-purple-100">تليجرام - مشاهدات ستوري</h3>
-                                    <span class="text-[9px] text-violet-300/60">2 خدمة</span>
-                                </div>
-                            </div>
-                            <span id="icon-tg-story" class="text-xs text-violet-300 transition-transform">🔽</span>
-                        </div>
-                        <div id="acc-tg-story" class="accordion-content p-3 space-y-2 bg-slate-950/40">
-                            <div onclick="openOrderModal('مشاهدات ستوري تليجرام - سريع', 0.4050)" class="p-3 rounded-xl border border-violet-500/20 bg-violet-900/10 cursor-pointer flex justify-between items-center btn-hover-effect">
-                                <div>
-                                    <h4 class="font-bold text-xs text-purple-100">مشاهدات ستوري تليجرام - سريع</h4>
-                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded">⏱️ غضون 3 دقائق</span>
-                                </div>
-                                <div class="text-left">
-                                    <span class="font-bold text-xs text-violet-300">$0.4050</span>
-                                    <span class="block text-[8px] text-violet-300/50">لكل 1000</span>
-                                </div>
-                            </div>
-                            <div onclick="openOrderModal('مشاهدات ستوري تليجرام - الأكثر طلباً', 0.2025)" class="p-3 rounded-xl border border-violet-500/20 bg-violet-900/10 cursor-pointer flex justify-between items-center btn-hover-effect">
-                                <div>
-                                    <h4 class="font-bold text-xs text-purple-100">مشاهدات ستوري تليجرام - عالي السرعة</h4>
-                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded">⏱️ غضون دقيقتين</span>
-                                </div>
-                                <div class="text-left">
-                                    <span class="font-bold text-xs text-violet-300">$0.2025</span>
-                                    <span class="block text-[8px] text-violet-300/50">لكل 1000</span>
+                    <div onclick='openServiceDetails(${JSON.stringify(item)})' class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 btn-hover-effect flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl p-2 bg-violet-500/10 rounded-xl">${item.icon}</span>
+                            <div>
+                                <h3 class="font-bold text-xs text-purple-100">${item.name}</h3>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-[10px] text-violet-300 font-bold">$${item.price.toFixed(4)} <span class="font-normal text-violet-300/60">/1000</span></span>
+                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.2 rounded font-bold">⏱️ ${item.timeBadge}</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- فئة 2: أعضاء تليجرام مميزين - بريميوم -->
-                    <div class="purple-card rounded-2xl overflow-hidden border border-violet-500/20">
-                        <div onclick="toggleAccordion('tg-premium')" class="p-3.5 cursor-pointer flex items-center justify-between bg-violet-950/20">
-                            <div class="flex items-center gap-2.5">
-                                <span class="text-lg">⭐</span>
-                                <div>
-                                    <h3 class="font-bold text-xs text-purple-100">أعضاء تليجرام مميزين - بريميوم</h3>
-                                    <span class="text-[9px] text-violet-300/60">3 خدمة</span>
-                                </div>
-                            </div>
-                            <span id="icon-tg-premium" class="text-xs text-violet-300 transition-transform">🔽</span>
-                        </div>
-                        <div id="acc-tg-premium" class="accordion-content p-3 space-y-2 bg-slate-950/40">
-                            <div onclick="openOrderModal('أعضاء تليجرام بريميوم ضمان 15 يوم', 4.2750)" class="p-3 rounded-xl border border-violet-500/20 bg-violet-900/10 cursor-pointer flex justify-between items-center btn-hover-effect">
-                                <div>
-                                    <h4 class="font-bold text-xs text-purple-100">أعضاء بريميوم ضمان 15 يوم</h4>
-                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded">⏱️ غضون 43 دقيقة</span>
-                                </div>
-                                <div class="text-left">
-                                    <span class="font-bold text-xs text-violet-300">$4.2750</span>
-                                    <span class="block text-[8px] text-violet-300/50">لكل 1000</span>
-                                </div>
-                            </div>
-                            <div onclick="openOrderModal('أعضاء بريميوم ضمان 30-60 يوم', 8.7750)" class="p-3 rounded-xl border border-violet-500/20 bg-violet-900/10 cursor-pointer flex justify-between items-center btn-hover-effect">
-                                <div>
-                                    <h4 class="font-bold text-xs text-purple-100">أعضاء بريميوم ضمان 30-60 يوم</h4>
-                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded">⏱️ غضون 29 دقيقة</span>
-                                </div>
-                                <div class="text-left">
-                                    <span class="font-bold text-xs text-violet-300">$8.7750</span>
-                                    <span class="block text-[8px] text-violet-300/50">لكل 1000</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- فئة 3: تفاعلات ري أكشن للمنشور -->
-                    <div class="purple-card rounded-2xl overflow-hidden border border-violet-500/20">
-                        <div onclick="toggleAccordion('tg-reactions')" class="p-3.5 cursor-pointer flex items-center justify-between bg-violet-950/20">
-                            <div class="flex items-center gap-2.5">
-                                <span class="text-lg">🔥</span>
-                                <div>
-                                    <h3 class="font-bold text-xs text-purple-100">تليجرام | تفاعلات (ري أكشن)</h3>
-                                    <span class="text-[9px] text-violet-300/60">13 خدمة</span>
-                                </div>
-                            </div>
-                            <span id="icon-tg-reactions" class="text-xs text-violet-300 transition-transform">🔽</span>
-                        </div>
-                        <div id="acc-tg-reactions" class="accordion-content p-3 space-y-2 bg-slate-950/40">
-                            <div onclick="openOrderModal('تليجرام - تفاعلات إيجابية 👍❤️🔥', 0.0184)" class="p-3 rounded-xl border border-violet-500/20 bg-violet-900/10 cursor-pointer flex justify-between items-center btn-hover-effect">
-                                <div>
-                                    <h4 class="font-bold text-xs text-purple-100">تفاعلات رموز إيجابية 👍❤️</h4>
-                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded">⏱️ غضون 17 دقيقة</span>
-                                </div>
-                                <div class="text-left">
-                                    <span class="font-bold text-xs text-violet-300">$0.0184</span>
-                                    <span class="block text-[8px] text-violet-300/50">لكل 1000</span>
-                                </div>
-                            </div>
-                        </div>
+                        <span class="text-xs text-violet-300/60">📄طلب ↗</span>
                     </div>
                 `;
-            } else if (platform === 'tiktok') {
-                html += `
-                    <!-- فئة تيك توك: تكبيسات لايف -->
-                    <div class="purple-card rounded-2xl overflow-hidden border border-violet-500/20">
-                        <div onclick="toggleAccordion('tt-live')" class="p-3.5 cursor-pointer flex items-center justify-between bg-violet-950/20">
-                            <div class="flex items-center gap-2.5">
-                                <span class="text-lg">🎯</span>
-                                <div>
-                                    <h3 class="font-bold text-xs text-purple-100">تكبيسات بث مباشر تيك توك</h3>
-                                    <span class="text-[9px] text-violet-300/60">3 خدمة</span>
-                                </div>
-                            </div>
-                            <span id="icon-tt-live" class="text-xs text-violet-300 transition-transform">🔽</span>
-                        </div>
-                        <div id="acc-tt-live" class="accordion-content p-3 space-y-2 bg-slate-950/40">
-                            <div onclick="openOrderModal('تكبيس لايف تيك توك فوري', 0.0312)" class="p-3 rounded-xl border border-violet-500/20 bg-violet-900/10 cursor-pointer flex justify-between items-center btn-hover-effect">
-                                <div>
-                                    <h4 class="font-bold text-xs text-purple-100">تكبيس لايف تيك توك - فوري وسريع</h4>
-                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded">⏱️ غضون 7 دقائق</span>
-                                </div>
-                                <div class="text-left">
-                                    <span class="font-bold text-xs text-violet-300">$0.0312</span>
-                                    <span class="block text-[8px] text-violet-300/50">لكل 1000</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else {
-                html += `
-                    <div class="p-6 text-center text-xs text-violet-300/50">اختر منصة تليجرام أو تيك توك لعرض الخدمات والتفاصيل الشاملة.</div>
-                `;
-            }
+            });
 
             html += `</div>`;
             document.getElementById('appContent').innerHTML = html;
         }
 
-        // دالة الفتح والطوي المنسدل (Accordion Toggle)
-        function toggleAccordion(id) {
-            let content = document.getElementById('acc-' + id);
-            let icon = document.getElementById('icon-' + id);
-            if (content.classList.contains('open')) {
-                content.classList.remove('open');
-                icon.style.transform = 'rotate(0deg)';
-            } else {
-                content.classList.add('open');
-                icon.style.transform = 'rotate(180deg)';
-            }
+        // 3. صفحة تفاصيل الخدمة المطابقة تماماً للصورة
+        function openServiceDetails(item) {
+            let content = document.getElementById('appContent');
+            content.className = "";
+            void content.offsetWidth;
+            content.className = "tab-anim";
+
+            content.innerHTML = `
+                <div class="flex items-center gap-2 mb-3">
+                    <button onclick="renderPlatforms()" class="bg-violet-950/60 border border-violet-500/30 px-3 py-1.5 rounded-xl text-xs text-violet-300 font-bold btn-hover-effect">⬅ إغلاق / رجوع</button>
+                </div>
+
+                <!-- بطاقة رأس الخدمة المطابقة للصورة -->
+                <div class="purple-card p-4 rounded-3xl mb-3">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-violet-300/70 font-mono">#${item.id}</span>
+                            <span class="text-[10px] text-violet-300/50">• ${item.category}</span>
+                        </div>
+                        <span class="text-2xl p-2 bg-pink-500/10 rounded-2xl">${item.icon}</span>
+                    </div>
+                    <h2 class="font-bold text-sm text-purple-100 mb-3">${item.name}</h2>
+
+                    <!-- جدول بيانات الأدنى / الأقصى / السعر / التنفيذ -->
+                    <div class="grid grid-cols-4 gap-1 bg-slate-950/80 p-2.5 rounded-2xl text-center border border-violet-500/20 mb-3">
+                        <div>
+                            <span class="block text-[9px] text-violet-300/60">الأدنى</span>
+                            <span class="font-bold text-xs text-purple-100">${item.min}</span>
+                        </div>
+                        <div>
+                            <span class="block text-[9px] text-violet-300/60">الأقصى</span>
+                            <span class="font-bold text-xs text-purple-100">${item.max}</span>
+                        </div>
+                        <div>
+                            <span class="block text-[9px] text-violet-300/60">1000/</span>
+                            <span class="font-bold text-xs text-violet-300">$${item.price.toFixed(4)}</span>
+                        </div>
+                        <div>
+                            <span class="block text-[9px] text-violet-300/60">التنفيذ</span>
+                            <span class="font-bold text-xs text-purple-100">د${item.speed}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-1.5 text-[10px] text-emerald-400 font-bold bg-emerald-500/10 p-2 rounded-xl border border-emerald-500/20">
+                        <span>⏱️ ${item.timeBadge}</span>
+                        <span class="bg-emerald-500/20 px-2 py-0.5 rounded-md ml-auto">${item.badge}</span>
+                    </div>
+                </div>
+
+                <!-- ملاحظة تنبيهية -->
+                <div class="purple-card p-3.5 rounded-2xl mb-3 text-[11px] text-violet-300/80 space-y-1">
+                    <p class="font-bold text-amber-400 flex items-center gap-1">ℹ️ ادخل رابط حسابك أو اليوزر فقط</p>
+                    <p class="text-[10px] text-violet-300/60">لازم يكون حسابك عام وليس خاص لضمان وصول الخدمة.</p>
+                </div>
+
+                <!-- حقول الإدخال: رابط الحساب + الكمية -->
+                <div class="purple-card p-4 rounded-3xl space-y-3.5 mb-3">
+                    <div>
+                        <label class="text-[11px] font-bold text-purple-100 block mb-1.5 flex items-center gap-1">
+                            <span class="text-amber-400">•</span> رابط الحساب أو اسم المستخدم
+                        </label>
+                        <div class="relative">
+                            <input type="text" id="serviceLink" placeholder="https://instagram.com/username" class="w-full bg-slate-950/80 border border-violet-500/30 p-3 rounded-2xl text-xs text-purple-100 focus:outline-none focus:border-violet-500">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-violet-300/40 text-sm">🔗</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-[11px] font-bold text-purple-100 flex items-center gap-1">
+                                <span class="text-amber-400">•</span> الكمية المطلوبة
+                            </label>
+                            <span class="text-[9px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-mono">${item.min} - ${item.max}</span>
+                        </div>
+                        <div class="relative">
+                            <input type="number" id="serviceQty" value="${item.min}" min="${item.min}" max="${item.max}" oninput="calcOrderCost(${item.price})" class="w-full bg-slate-950/80 border border-violet-500/30 p-3 rounded-2xl text-xs text-purple-100 focus:outline-none focus:border-violet-500">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-violet-300/40 font-mono text-xs">#</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ملخص الطلب: التكلفة والرصيد الحالي -->
+                <div class="purple-card p-4 rounded-3xl space-y-3 mb-4">
+                    <h3 class="text-xs font-bold text-amber-400 flex items-center gap-1">💲 ملخص الطلب</h3>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div class="bg-emerald-950/40 border border-emerald-500/30 p-3 rounded-2xl text-center">
+                            <span class="block text-[10px] text-emerald-300/70 mb-0.5">التكلفة</span>
+                            <span id="orderCostDisplay" class="font-black text-emerald-400 text-sm">$0.0000</span>
+                        </div>
+                        <div class="bg-amber-950/30 border border-amber-500/30 p-3 rounded-2xl text-center">
+                            <span class="block text-[10px] text-amber-300/70 mb-0.5">رصيدك</span>
+                            <span class="font-black text-amber-400 text-sm">$${appData.balance.toFixed(4)}</span>
+                        </div>
+                    </div>
+
+                    <button onclick="submitFinalOrder('${item.name}', ${item.price})" class="w-full purple-gradient-btn text-white font-bold py-3.5 rounded-2xl text-xs btn-hover-effect shadow-xl flex items-center justify-center gap-2">
+                        <span>إرسال الطلب</span>
+                        <span>📐</span>
+                    </button>
+                </div>
+            `;
+            calcOrderCost(item.price);
         }
 
-        function openOrderModal(serviceName, price) {
-            currentServiceName = serviceName;
-            currentPricePerThousand = price;
-            document.getElementById('modalTitle').innerText = serviceName;
-            document.getElementById('targetLink').value = "";
-            document.getElementById('targetQty').value = "1000";
-            calculateTotal();
-            document.getElementById('orderModal').classList.remove('hidden');
+        // حساب تكلفة الطلب الفوري
+        function calcOrderCost(pricePerThousand) {
+            let qtyInput = document.getElementById('serviceQty');
+            if (!qtyInput) return;
+            let qty = parseFloat(qtyInput.value) || 0;
+            let totalCost = (qty / 1000) * pricePerThousand;
+            document.getElementById('orderCostDisplay').innerText = '$' + totalCost.toFixed(4);
         }
 
-        function closeModal() {
-            document.getElementById('orderModal').classList.add('hidden');
-        }
+        // إرسال الطلب النهائي للمستخدم
+        function submitFinalOrder(serviceName, pricePerThousand) {
+            let link = document.getElementById('serviceLink').value;
+            let qty = parseFloat(document.getElementById('serviceQty').value) || 0;
+            let totalCost = (qty / 1000) * pricePerThousand;
 
-        function calculateTotal() {
-            let qty = parseFloat(document.getElementById('targetQty').value) || 0;
-            let total = (qty / 1000) * currentPricePerThousand;
-            document.getElementById('totalPrice').innerText = '$' + total.toFixed(4);
-        }
-
-        function confirmOrder() {
-            let link = document.getElementById('targetLink').value;
-            let qty = parseFloat(document.getElementById('targetQty').value) || 0;
-            let totalCost = (qty / 1000) * currentPricePerThousand;
-
-            if (!link || link.length < 5) {
-                alert("يرجى إدخال رابط صحيح!");
+            if (!link || link.length < 3) {
+                alert("يرجى إدخال رابط أو اسم مستخدم صحيح!");
                 return;
             }
 
             if (appData.balance < totalCost) {
-                alert("عذراً، رصيدك غير كافي! يرجى شحن الحساب أولاً.");
-                closeModal();
+                alert("عذراً، رصيدك غير كافي لشراء هذه الكمية! يرجى شحن الرصيد أولاً.");
                 switchTab('wallet');
                 return;
             }
@@ -467,7 +427,7 @@
             let orderId = "#" + Math.floor(Math.random() * 899999 + 100000);
             appData.orders.unshift({
                 id: orderId,
-                service: currentServiceName + ` (${qty})`,
+                service: serviceName + ` (${qty})`,
                 status: "قيد التنفيذ ⏳",
                 time: "الآن"
             });
@@ -475,29 +435,28 @@
             if (tg.sendData) {
                 tg.sendData(JSON.stringify({
                     order: orderId,
-                    service: currentServiceName,
+                    service: serviceName,
                     link: link,
                     qty: qty,
                     cost: totalCost
                 }));
             }
 
-            closeModal();
             tg.showAlert(`✅ تم إرسال الطلب بنجاح! رقم الطلب: ${orderId}`);
             switchTab('orders');
         }
 
-        // 3. طرق الشحن (آسيا سيل وماستر الرافدين 7168843873)
+        // 4. طرق شحن الرصيد (آسيا سيل وماستر الرافدين 7168843873)
         function renderWallet() {
             document.getElementById('appContent').innerHTML = `
-                <h2 class="font-bold text-xs text-violet-300/70 mb-3 tracking-wider">وسائل شحن الرصيد 💳</h2>
+                <h2 class="font-bold text-xs text-violet-300/70 mb-3 tracking-wider">طرق شحن الرصيد المتاحة 💳</h2>
                 
                 <div class="space-y-3.5">
-                    <!-- كارت آسيا سيل -->
+                    <!-- آسيا سيل -->
                     <div class="purple-card p-4 rounded-3xl border-r-4 border-r-pink-500">
                         <div class="flex items-center justify-between mb-2">
                             <span class="font-bold text-xs text-purple-100 flex items-center gap-2">🏷️ كارت آسيا سيل</span>
-                            <span class="text-[9px] bg-pink-500/20 text-pink-400 px-2 py-0.5 rounded-full font-bold">شحن كارت</span>
+                            <span class="text-[9px] bg-pink-500/20 text-pink-400 px-2 py-0.5 rounded-full font-bold">شحن آلي</span>
                         </div>
                         <p class="text-[11px] text-violet-300/80 mb-2.5">قم بإدخال كود كارت شحن آسيا سيل للتعبئة:</p>
                         <input type="text" id="asiaCode" placeholder="أدخل رقم الكارت هنا..." class="w-full bg-slate-950/80 border border-violet-500/30 p-3 rounded-2xl text-xs text-purple-100 mb-3 focus:outline-none focus:border-violet-500">
@@ -506,7 +465,7 @@
                         </button>
                     </div>
 
-                    <!-- ماستر الرافدين بالرقم المباشر -->
+                    <!-- ماستر كارد الرافدين تحويل المباشر -->
                     <div class="purple-card p-4 rounded-3xl border-r-4 border-r-violet-500">
                         <div class="flex items-center justify-between mb-2">
                             <span class="font-bold text-xs text-purple-100 flex items-center gap-2">💳 ماستر كارد الرافدين</span>
@@ -583,13 +542,13 @@
                     <span class="text-xl">👑</span>
                     <div>
                         <h4 class="font-bold text-xs text-purple-100">أهلاً بك في رويال سوشال</h4>
-                        <p class="text-[11px] text-violet-300/80 mt-1">تصفح أقسام الرشق المنسدلة واطلب خدماتك بسهولة وسرعة.</p>
+                        <p class="text-[11px] text-violet-300/80 mt-1">تصفح أقسام الرشق واطلب خدماتك بكل سهولة وسرعة.</p>
                     </div>
                 </div>
             `;
         }
 
-        // 4. صفحة المزيد المحددة بالقنوات والدعم المباشر
+        // 5. صفحة القنوات والدعم الفني
         function renderMore() {
             document.getElementById('appContent').innerHTML = `
                 <h2 class="font-bold text-xs text-violet-300/70 mb-3 tracking-wider">القنوات والدعم الفني ⚙️</h2>
