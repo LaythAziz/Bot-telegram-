@@ -3,121 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>رويال سوشال - خدمات الرشق الحقيقية</title>
+    <title>رويال سوشال - الثيم البنفسجي الملكي</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background-color: #090d16;
-            color: #f8fafc;
-            font-family: system-ui, -apple-system, sans-serif;
-            padding-bottom: 90px;
+            background-color: #0b0712;
+            color: #f3f0ff;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-bottom: 95px;
             user-select: none;
             -webkit-user-select: none;
+            overflow-x: hidden;
         }
-        .glass-card {
-            background: rgba(22, 29, 43, 0.85);
-            border: 1px solid rgba(51, 65, 85, 0.4);
+
+        /* الزجاج البنفسجي الفاخر */
+        .purple-card {
+            background: rgba(23, 15, 38, 0.75);
+            border: 1px solid rgba(139, 92, 246, 0.25);
             backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
-        /* أنيميشن الحركات والانتقالات */
-        .page-enter {
-            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+        .purple-gradient-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
         }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(12px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+
+        .purple-gradient-btn:active {
+            transform: scale(0.96);
+            opacity: 0.9;
         }
-        .btn-active:active {
+
+        /* أنيميشن الانتقال السلس */
+        .tab-anim {
+            animation: fadeInSlide 0.28s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes fadeInSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .btn-hover-effect {
+            transition: all 0.2s ease;
+        }
+
+        .btn-hover-effect:active {
             transform: scale(0.95);
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col p-3">
 
-    <!-- الهيدر العلوي وشريط الرصيد -->
-    <div class="glass-card p-4 rounded-2xl mb-4 shadow-2xl relative overflow-hidden">
-        <div class="absolute -top-10 -left-10 w-28 h-28 bg-amber-500/10 rounded-full blur-2xl"></div>
+    <!-- خلفية مضيئة نيون -->
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-72 h-72 bg-violet-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- الهيدر العلوي الملكي -->
+    <div class="purple-card p-4 rounded-3xl mb-4 relative overflow-hidden">
         <div class="flex items-center justify-between mb-3 relative z-10">
             <div class="flex items-center gap-3">
-                <div class="w-11 h-11 bg-gradient-to-tr from-amber-500 to-yellow-300 rounded-xl flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-amber-500/20">
+                <div class="w-12 h-12 purple-gradient-btn rounded-2xl flex items-center justify-center font-black text-2xl text-white shadow-lg shadow-violet-500/30">
                     👑
                 </div>
                 <div>
-                    <div class="flex items-center gap-1">
-                        <h1 id="userDisplayName" class="font-bold text-sm">ليث عزيز</h1>
+                    <div class="flex items-center gap-1.5">
+                        <h1 id="userDisplayName" class="font-bold text-sm text-purple-100">ليث عزيز</h1>
                         <span class="text-xs">🚩</span>
                     </div>
-                    <span class="text-[10px] text-amber-400/90 font-mono font-semibold">حساب VIP فعال</span>
+                    <span class="text-[10px] text-violet-300 font-mono bg-violet-500/10 px-2 py-0.5 rounded-full border border-violet-500/20">حساب VIP فعال</span>
                 </div>
             </div>
-            <span class="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded-full font-bold">
-                متصل 🟢
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded-full font-bold flex items-center gap-1">
+                <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span> متصل
             </span>
         </div>
 
-        <div class="flex items-center justify-between pt-3 border-t border-slate-800/80 relative z-10">
+        <div class="flex items-center justify-between pt-3 border-t border-purple-500/20 relative z-10">
             <div>
-                <span class="block text-[10px] text-slate-400">الرصيد المتاح</span>
-                <span id="userBalance" class="font-black text-amber-400 text-xl tracking-tight">$10.00</span>
+                <span class="block text-[10px] text-violet-300/70">الرصيد المتاح</span>
+                <span id="userBalance" class="font-black text-violet-300 text-xl tracking-tight">$10.00</span>
             </div>
-            <button onclick="switchTab('wallet')" class="bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-bold text-xs py-2.5 px-5 rounded-xl transition-all btn-active shadow-lg shadow-amber-500/20 flex items-center gap-1.5">
-                <span>+</span>
+            <button onclick="switchTab('wallet')" class="purple-gradient-btn text-white font-bold text-xs py-2.5 px-5 rounded-2xl btn-hover-effect flex items-center gap-1.5">
+                <span class="text-base">+</span>
                 <span>شحن الرصيد</span>
             </button>
         </div>
     </div>
 
-    <!-- محتوى الصفحات المتغير مع الأنيميشن -->
-    <div id="appContent" class="page-enter"></div>
+    <!-- محتوى الصفحات مع الأنيميشن -->
+    <div id="appContent" class="tab-anim"></div>
 
-    <!-- نافذة الطلب المنبثقة (Modal) -->
-    <div id="orderModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="glass-card w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 border-t sm:border border-slate-700/60 page-enter">
+    <!-- النافذة المنبثقة للطلب (Modal) -->
+    <div id="orderModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="purple-card w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 border-t border-violet-500/40 tab-anim">
             <div class="flex justify-between items-center mb-4">
-                <h3 id="modalTitle" class="font-bold text-sm text-amber-400">تنفيذ طلب جديد</h3>
-                <button onclick="closeModal()" class="text-slate-400 text-lg hover:text-white">✕</button>
+                <h3 id="modalTitle" class="font-bold text-sm text-violet-300">تنفيذ طلب جديد</h3>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-violet-950/60 text-violet-300 flex items-center justify-center text-xs hover:bg-violet-900">✕</button>
             </div>
-            <div class="space-y-3">
+            <div class="space-y-3.5">
                 <div>
-                    <label class="text-[11px] text-slate-400 block mb-1">رابط الحساب / المنشور:</label>
-                    <input type="text" id="targetLink" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700/80 p-3 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                    <label class="text-[11px] text-violet-300/80 block mb-1">رابط الحساب / المنشور:</label>
+                    <input type="text" id="targetLink" placeholder="https://..." class="w-full bg-slate-950/80 border border-violet-500/30 p-3 rounded-2xl text-xs text-purple-100 focus:outline-none focus:border-violet-500">
                 </div>
                 <div>
-                    <label class="text-[11px] text-slate-400 block mb-1">الكمية المطلوبة:</label>
-                    <input type="number" id="targetQty" value="1000" oninput="calculateTotal()" class="w-full bg-slate-900 border border-slate-700/80 p-3 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500">
+                    <label class="text-[11px] text-violet-300/80 block mb-1">الكمية المطلوبة:</label>
+                    <input type="number" id="targetQty" value="1000" oninput="calculateTotal()" class="w-full bg-slate-950/80 border border-violet-500/30 p-3 rounded-2xl text-xs text-purple-100 focus:outline-none focus:border-violet-500">
                 </div>
-                <div class="flex justify-between items-center py-2 text-xs">
-                    <span class="text-slate-400">التكلفة الإجمالية:</span>
-                    <span id="totalPrice" class="font-bold text-amber-400">$0.00</span>
+                <div class="flex justify-between items-center py-2 px-1 text-xs border-y border-violet-500/15">
+                    <span class="text-violet-300/70">التكلفة الإجمالية:</span>
+                    <span id="totalPrice" class="font-extrabold text-violet-300 text-sm">$0.00</span>
                 </div>
-                <button onclick="confirmOrder()" class="w-full bg-amber-500 text-slate-950 font-bold py-3 rounded-xl text-xs btn-active shadow-lg shadow-amber-500/20">
+                <button onclick="confirmOrder()" class="w-full purple-gradient-btn text-white font-bold py-3 rounded-2xl text-xs btn-hover-effect">
                     تأكيد وإرسال الطلب 🚀
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- شريط التنقل السفلي -->
-    <nav class="fixed bottom-0 right-0 left-0 bg-[#0d1117]/95 border-t border-slate-800/80 backdrop-blur-xl py-2 px-4 flex justify-between items-center text-[11px] text-slate-400 z-40">
-        <button onclick="switchTab('more')" id="nav-more" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all btn-active">
-            <span class="text-base">☰</span>
+    <!-- شريط التنقل السفلي البنفسجي -->
+    <nav class="fixed bottom-0 right-0 left-0 bg-[#0b0712]/90 border-t border-violet-500/20 backdrop-blur-2xl py-2 px-3 flex justify-between items-center text-[11px] text-violet-300/60 z-40">
+        <button onclick="switchTab('more')" id="nav-more" class="flex flex-col items-center gap-1 transition-all btn-hover-effect">
+            <span class="text-lg">☰</span>
             <span>المزيد</span>
         </button>
-        <button onclick="switchTab('notifications')" id="nav-notifications" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all btn-active relative">
-            <span class="text-base">🔔</span>
+        <button onclick="switchTab('notifications')" id="nav-notifications" class="flex flex-col items-center gap-1 transition-all btn-hover-effect">
+            <span class="text-lg">🔔</span>
             <span>الإشعارات</span>
         </button>
-        <button onclick="switchTab('wallet')" id="nav-wallet" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all btn-active">
-            <span class="text-base">💳</span>
+        <button onclick="switchTab('wallet')" id="nav-wallet" class="flex flex-col items-center gap-1 transition-all btn-hover-effect">
+            <span class="text-lg">💳</span>
             <span>شحن</span>
         </button>
-        <button onclick="switchTab('orders')" id="nav-orders" class="flex flex-col items-center gap-1 hover:text-amber-400 transition-all btn-active">
-            <span class="text-base">📋</span>
+        <button onclick="switchTab('orders')" id="nav-orders" class="flex flex-col items-center gap-1 transition-all btn-hover-effect">
+            <span class="text-lg">📋</span>
             <span>طلباتي</span>
         </button>
-        <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 text-amber-400 font-bold transition-all btn-active">
-            <span class="text-base">🏠</span>
+        <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 text-violet-400 font-bold transition-all btn-hover-effect">
+            <span class="text-lg">🏠</span>
             <span>الرئيسية</span>
         </button>
     </nav>
@@ -143,13 +173,13 @@
         }
 
         function switchTab(tab) {
-            document.querySelectorAll('nav button').forEach(b => b.className = "flex flex-col items-center gap-1 text-slate-400 hover:text-amber-400 transition-all btn-active");
-            document.getElementById('nav-' + tab).className = "flex flex-col items-center gap-1 text-amber-400 font-bold transition-all btn-active";
+            document.querySelectorAll('nav button').forEach(b => b.className = "flex flex-col items-center gap-1 text-violet-300/60 transition-all btn-hover-effect");
+            document.getElementById('nav-' + tab).className = "flex flex-col items-center gap-1 text-violet-400 font-bold transition-all btn-hover-effect";
 
             let content = document.getElementById('appContent');
             content.className = "";
             void content.offsetWidth;
-            content.className = "page-enter";
+            content.className = "tab-anim";
 
             if (tab === 'home') renderHome();
             else if (tab === 'orders') renderOrders();
@@ -158,67 +188,66 @@
             else if (tab === 'more') renderMore();
         }
 
-        // الصفحة الرئيسية وتصنيفات الخدمات
         function renderHome() {
             document.getElementById('appContent').innerHTML = `
                 <div class="space-y-3">
-                    <h2 class="font-bold text-xs text-slate-400 tracking-wider">خدمات إنستغرام 📸</h2>
+                    <h2 class="font-bold text-xs text-violet-300/70 tracking-wider">خدمات إنستغرام 📸</h2>
                     
-                    <div onclick="openOrderModal('متابعين إنستغرام حقيقي (ضمان 30 يوم)', 0.50)" class="glass-card p-3.5 rounded-2xl cursor-pointer hover:border-amber-500/50 flex items-center justify-between btn-active">
+                    <div onclick="openOrderModal('متابعين إنستغرام حقيقي (ضمان 30 يوم)', 0.50)" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 flex items-center justify-between btn-hover-effect">
                         <div class="flex items-center gap-3">
-                            <span class="text-2xl p-2 bg-pink-500/10 rounded-xl">📸</span>
+                            <span class="text-2xl p-2.5 bg-pink-500/10 rounded-2xl">📸</span>
                             <div>
-                                <h3 class="font-bold text-xs text-slate-200">متابعين إنستغرام حقيقي</h3>
-                                <span class="text-[10px] text-amber-400 font-semibold">$0.50 / لكل 1000</span>
+                                <h3 class="font-bold text-xs text-purple-100">متابعين إنستغرام حقيقي</h3>
+                                <span class="text-[10px] text-violet-300 font-semibold">$0.50 / لكل 1000</span>
                             </div>
                         </div>
-                        <span class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-md">طلب</span>
+                        <span class="purple-gradient-btn text-white font-bold text-[11px] px-4 py-2 rounded-xl shadow-md">طلب</span>
                     </div>
 
-                    <div onclick="openOrderModal('لايكات إنستغرام ريلز + بوست', 0.20)" class="glass-card p-3.5 rounded-2xl cursor-pointer hover:border-amber-500/50 flex items-center justify-between btn-active">
+                    <div onclick="openOrderModal('لايكات إنستغرام ريلز + بوست', 0.20)" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 flex items-center justify-between btn-hover-effect">
                         <div class="flex items-center gap-3">
-                            <span class="text-2xl p-2 bg-red-500/10 rounded-xl">❤️</span>
+                            <span class="text-2xl p-2.5 bg-red-500/10 rounded-2xl">❤️</span>
                             <div>
-                                <h3 class="font-bold text-xs text-slate-200">لايكات إنستغرام ريلز + بوست</h3>
-                                <span class="text-[10px] text-amber-400 font-semibold">$0.20 / لكل 1000</span>
+                                <h3 class="font-bold text-xs text-purple-100">لايكات إنستغرام ريلز + بوست</h3>
+                                <span class="text-[10px] text-violet-300 font-semibold">$0.20 / لكل 1000</span>
                             </div>
                         </div>
-                        <span class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-md">طلب</span>
+                        <span class="purple-gradient-btn text-white font-bold text-[11px] px-4 py-2 rounded-xl shadow-md">طلب</span>
                     </div>
 
-                    <div onclick="openOrderModal('مشاهدات ريلز إنستغرام فوري', 0.05)" class="glass-card p-3.5 rounded-2xl cursor-pointer hover:border-amber-500/50 flex items-center justify-between btn-active">
+                    <div onclick="openOrderModal('مشاهدات ريلز إنستغرام فوري', 0.05)" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 flex items-center justify-between btn-hover-effect">
                         <div class="flex items-center gap-3">
-                            <span class="text-2xl p-2 bg-purple-500/10 rounded-xl">👁️</span>
+                            <span class="text-2xl p-2.5 bg-purple-500/10 rounded-2xl">👁️</span>
                             <div>
-                                <h3 class="font-bold text-xs text-slate-200">مشاهدات ريلز إنستغرام فائقة السرعة</h3>
-                                <span class="text-[10px] text-amber-400 font-semibold">$0.05 / لكل 1000</span>
+                                <h3 class="font-bold text-xs text-purple-100">مشاهدات ريلز إنستغرام فوري</h3>
+                                <span class="text-[10px] text-violet-300 font-semibold">$0.05 / لكل 1000</span>
                             </div>
                         </div>
-                        <span class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-md">طلب</span>
+                        <span class="purple-gradient-btn text-white font-bold text-[11px] px-4 py-2 rounded-xl shadow-md">طلب</span>
                     </div>
 
-                    <h2 class="font-bold text-xs text-slate-400 tracking-wider pt-2">خدمات تليجرام ✈️</h2>
+                    <h2 class="font-bold text-xs text-violet-300/70 tracking-wider pt-2">خدمات تليجرام ✈️</h2>
 
-                    <div onclick="openOrderModal('أعضاء قنوات تليجرام (حقيقي)', 0.80)" class="glass-card p-3.5 rounded-2xl cursor-pointer hover:border-amber-500/50 flex items-center justify-between btn-active">
+                    <div onclick="openOrderModal('أعضاء قنوات تليجرام (حقيقي)', 0.80)" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 flex items-center justify-between btn-hover-effect">
                         <div class="flex items-center gap-3">
-                            <span class="text-2xl p-2 bg-blue-500/10 rounded-xl">✈️</span>
+                            <span class="text-2xl p-2.5 bg-blue-500/10 rounded-2xl">✈️</span>
                             <div>
-                                <h3 class="font-bold text-xs text-slate-200">أعضاء قنوات تليجرام حقيقيين</h3>
-                                <span class="text-[10px] text-amber-400 font-semibold">$0.80 / لكل 1000</span>
+                                <h3 class="font-bold text-xs text-purple-100">أعضاء قنوات تليجرام حقيقيين</h3>
+                                <span class="text-[10px] text-violet-300 font-semibold">$0.80 / لكل 1000</span>
                             </div>
                         </div>
-                        <span class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-md">طلب</span>
+                        <span class="purple-gradient-btn text-white font-bold text-[11px] px-4 py-2 rounded-xl shadow-md">طلب</span>
                     </div>
 
-                    <div onclick="openOrderModal('مشاهدات منشورات تليجرام', 0.02)" class="glass-card p-3.5 rounded-2xl cursor-pointer hover:border-amber-500/50 flex items-center justify-between btn-active">
+                    <div onclick="openOrderModal('مشاهدات منشورات تليجرام', 0.02)" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 flex items-center justify-between btn-hover-effect">
                         <div class="flex items-center gap-3">
-                            <span class="text-2xl p-2 bg-cyan-500/10 rounded-xl">📊</span>
+                            <span class="text-2xl p-2.5 bg-cyan-500/10 rounded-2xl">📊</span>
                             <div>
-                                <h3 class="font-bold text-xs text-slate-200">مشاهدات منشورات تليجرام</h3>
-                                <span class="text-[10px] text-amber-400 font-semibold">$0.02 / لكل 1000</span>
+                                <h3 class="font-bold text-xs text-purple-100">مشاهدات منشورات تليجرام</h3>
+                                <span class="text-[10px] text-violet-300 font-semibold">$0.02 / لكل 1000</span>
                             </div>
                         </div>
-                        <span class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-md">طلب</span>
+                        <span class="purple-gradient-btn text-white font-bold text-[11px] px-4 py-2 rounded-xl shadow-md">طلب</span>
                     </div>
                 </div>
             `;
@@ -250,12 +279,12 @@
             let totalCost = (qty / 1000) * currentPricePerThousand;
 
             if (!link || link.length < 5) {
-                alert("يرجى وضع رابط صحيحة ومكتملة!");
+                alert("يرجى إدخال رابط صحيح!");
                 return;
             }
 
             if (appData.balance < totalCost) {
-                alert("عذراً، رصيدك غير كافي لشراء هذه الكمية!");
+                alert("عذراً، رصيدك غير كافي لهذا الطلب!");
                 closeModal();
                 switchTab('wallet');
                 return;
@@ -272,7 +301,6 @@
                 time: "الآن"
             });
 
-            // إرسال طلب تليجرام حقيقي
             if (tg.sendData) {
                 tg.sendData(JSON.stringify({
                     order: orderId,
@@ -288,51 +316,50 @@
             switchTab('orders');
         }
 
-        // صفحة شحن الرصيد المتضمنة للزين كاش بالرقم الخاص
         function renderWallet() {
             document.getElementById('appContent').innerHTML = `
-                <h2 class="font-bold text-xs text-slate-400 mb-3 tracking-wider">وسائل الدفع وشحن الرصيد 💳</h2>
+                <h2 class="font-bold text-xs text-violet-300/70 mb-3 tracking-wider">وسائل الدفع وشحن الرصيد 💳</h2>
                 
                 <div class="space-y-3">
-                    <!-- زين كاش مع الرقم المباشر -->
-                    <div class="glass-card p-4 rounded-2xl border-l-4 border-l-red-500">
+                    <!-- زين كاش بالرقم المباشر -->
+                    <div class="purple-card p-4 rounded-2xl border-l-4 border-l-red-500">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="font-bold text-xs text-slate-100 flex items-center gap-2">📱 زين كاش العراق</span>
+                            <span class="font-bold text-xs text-purple-100 flex items-center gap-2">📱 زين كاش العراق</span>
                             <span class="text-[9px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full font-bold">تحويل مباشر</span>
                         </div>
-                        <p class="text-[11px] text-slate-300 mb-2">قم بتحويل المبلغ إلى الرقم الخاص بنا:</p>
-                        <div class="flex items-center justify-between bg-slate-900/90 p-2.5 rounded-xl border border-slate-700/70 mb-3">
-                            <span id="zainPhone" class="font-mono font-bold text-amber-400 text-sm">07768599326</span>
-                            <button onclick="copyPhone()" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 text-[10px] font-bold px-3 py-1 rounded-lg border border-amber-500/30 btn-active">
+                        <p class="text-[11px] text-violet-300/80 mb-2">قم بتحويل المبلغ إلى الرقم الخاص بنا:</p>
+                        <div class="flex items-center justify-between bg-slate-950/80 p-3 rounded-2xl border border-violet-500/20 mb-3">
+                            <span id="zainPhone" class="font-mono font-bold text-violet-300 text-sm">07768599326</span>
+                            <button onclick="copyPhone()" class="bg-violet-500/20 hover:bg-violet-500/30 text-violet-300 text-[10px] font-bold px-3.5 py-1.5 rounded-xl border border-violet-500/30 btn-hover-effect">
                                 📋 نسخ الرقم
                             </button>
                         </div>
-                        <input type="text" id="zainTxId" placeholder="أدخل رقم العملية أو اسم المحول..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-xs text-white mb-2 focus:outline-none focus:border-amber-500">
-                        <button onclick="submitZainCharge()" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 rounded-xl text-xs btn-active shadow-lg">
+                        <input type="text" id="zainTxId" placeholder="أدخل رقم العملية أو اسم المحول..." class="w-full bg-slate-950/80 border border-violet-500/30 p-3 rounded-2xl text-xs text-purple-100 mb-2.5 focus:outline-none focus:border-violet-500">
+                        <button onclick="submitZainCharge()" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 rounded-2xl text-xs btn-hover-effect shadow-lg">
                             إرسال إشعار التحويل 🚀
                         </button>
                     </div>
 
                     <!-- آسيا سيل -->
-                    <div class="glass-card p-4 rounded-2xl border-l-4 border-l-pink-500">
+                    <div class="purple-card p-4 rounded-2xl border-l-4 border-l-pink-500">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="font-bold text-xs text-slate-100 flex items-center gap-2">🏷️ كارت آسيا سيل</span>
+                            <span class="font-bold text-xs text-purple-100 flex items-center gap-2">🏷️ كارت آسيا سيل</span>
                             <span class="text-[9px] bg-pink-500/20 text-pink-400 px-2 py-0.5 rounded-full font-bold">كارت شحن</span>
                         </div>
-                        <input type="text" id="asiaCode" placeholder="أدخل رقم كارت آسيا سيل..." class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-xs text-white mb-2 focus:outline-none focus:border-amber-500">
-                        <button onclick="submitAsiaCharge()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-2.5 rounded-xl text-xs btn-active shadow-lg">
+                        <input type="text" id="asiaCode" placeholder="أدخل رقم كارت آسيا سيل..." class="w-full bg-slate-950/80 border border-violet-500/30 p-3 rounded-2xl text-xs text-purple-100 mb-2.5 focus:outline-none focus:border-violet-500">
+                        <button onclick="submitAsiaCharge()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-2.5 rounded-2xl text-xs btn-hover-effect shadow-lg">
                             شحن الكارت
                         </button>
                     </div>
 
                     <!-- ماستر كارد الرافدين -->
-                    <div class="glass-card p-4 rounded-2xl border-l-4 border-l-amber-500">
+                    <div class="purple-card p-4 rounded-2xl border-l-4 border-l-violet-500">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="font-bold text-xs text-slate-100 flex items-center gap-2">💳 ماستر كارد الرافدين</span>
-                            <span class="text-[9px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full font-bold">دفع إلكتروني</span>
+                            <span class="font-bold text-xs text-purple-100 flex items-center gap-2">💳 ماستر كارد الرافدين</span>
+                            <span class="text-[9px] bg-violet-500/20 text-violet-300 px-2 py-0.5 rounded-full font-bold">دفع إلكتروني</span>
                         </div>
-                        <p class="text-[11px] text-slate-300 mb-2">للتعبئة ببطاقات الرافدين يرجى مراسلة الدعم الفني المباشر.</p>
-                        <button onclick="tg.openTelegramLink('https://t.me/ciner_fx')" class="w-full bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/30 font-bold py-2.5 rounded-xl text-xs btn-active">
+                        <p class="text-[11px] text-violet-300/80 mb-2.5">للتعبئة ببطاقات الرافدين يرجى مراسلة الدعم الفني المباشر.</p>
+                        <button onclick="tg.openTelegramLink('https://t.me/ciner_fx')" class="w-full bg-violet-950/80 text-violet-300 border border-violet-500/30 font-bold py-2.5 rounded-2xl text-xs btn-hover-effect">
                             التواصل مع الدعم للشحن
                         </button>
                     </div>
@@ -348,7 +375,7 @@
         function submitZainCharge() {
             let tx = document.getElementById('zainTxId').value;
             if (!tx || tx.length < 3) {
-                alert("يرجى إدخال رقم العملية أو التفاصيل بصورة صحيحة!");
+                alert("يرجى إدخال تفاصيل التحويل بصورة صحيحة!");
                 return;
             }
             alert("تم إرسال إشعار التحويل عبر زين كاش لمالك البوت، وسيتم إضافة الرصيد لحسابك فور التأكيد!");
@@ -358,7 +385,7 @@
         function submitAsiaCharge() {
             let code = document.getElementById('asiaCode').value;
             if (!code || code.length < 10) {
-                alert("يرجى إدخال رقم كارت شحن آسيا سيل الصحيح!");
+                alert("يرجى إدخال رقم كارت شحن صحيح!");
                 return;
             }
             alert("تم إرسال كارت آسيا سيل للتدقيق، وسيتم الشحن فوراً!");
@@ -366,19 +393,19 @@
         }
 
         function renderOrders() {
-            let html = `<h2 class="font-bold text-xs text-slate-400 mb-3 tracking-wider">سجل طلبات الرشق 📋</h2>`;
+            let html = `<h2 class="font-bold text-xs text-violet-300/70 mb-3 tracking-wider">سجل طلبات الرشق 📋</h2>`;
             if (appData.orders.length === 0) {
-                html += `<div class="glass-card p-8 text-center rounded-2xl text-xs text-slate-500">لا توجد طلبات سابقة لديك.</div>`;
+                html += `<div class="purple-card p-8 text-center rounded-3xl text-xs text-violet-300/50">لا توجد طلبات سابقة لديك.</div>`;
             } else {
                 appData.orders.forEach(o => {
                     html += `
-                        <div class="glass-card p-4 rounded-2xl mb-3 border-r-4 border-r-amber-500">
+                        <div class="purple-card p-4 rounded-2xl mb-3 border-r-4 border-r-violet-500">
                             <div class="flex justify-between items-center mb-1">
-                                <span class="font-bold text-xs text-amber-400 font-mono">${o.id}</span>
-                                <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full font-bold">${o.status}</span>
+                                <span class="font-bold text-xs text-violet-300 font-mono">${o.id}</span>
+                                <span class="text-[10px] bg-violet-500/20 text-violet-300 px-2 py-0.5 rounded-full font-bold">${o.status}</span>
                             </div>
-                            <p class="text-xs font-semibold text-slate-200 mt-1">${o.service}</p>
-                            <span class="text-[10px] text-slate-500 block mt-2">${o.time}</span>
+                            <p class="text-xs font-semibold text-purple-100 mt-1">${o.service}</p>
+                            <span class="text-[10px] text-violet-300/50 block mt-2">${o.time}</span>
                         </div>
                     `;
                 });
@@ -388,12 +415,12 @@
 
         function renderNotifications() {
             document.getElementById('appContent').innerHTML = `
-                <h2 class="font-bold text-xs text-slate-400 mb-3 tracking-wider">الإشعارات التنبيهية 🔔</h2>
-                <div class="glass-card p-4 rounded-2xl flex items-start gap-3">
+                <h2 class="font-bold text-xs text-violet-300/70 mb-3 tracking-wider">الإشعارات 🔔</h2>
+                <div class="purple-card p-4 rounded-2xl flex items-start gap-3">
                     <span class="text-xl">👑</span>
                     <div>
-                        <h4 class="font-bold text-xs text-slate-200">مرحباً بك في رويال سوشال</h4>
-                        <p class="text-[11px] text-slate-400 mt-1">تم تحديث واجهة المتجر وشبكة الشحن الفوري بنجاح.</p>
+                        <h4 class="font-bold text-xs text-purple-100">الثيم البنفسجي الملكي</h4>
+                        <p class="text-[11px] text-violet-300/80 mt-1">تم تفعيل التحديث البنفسجي الفاخر مع حركات الانتقال السلسة وشبكة الشحن المباشرة.</p>
                     </div>
                 </div>
             `;
@@ -401,19 +428,19 @@
 
         function renderMore() {
             document.getElementById('appContent').innerHTML = `
-                <h2 class="font-bold text-xs text-slate-400 mb-3 tracking-wider">لوحة التحكم والمزيد ⚙️</h2>
-                <div class="glass-card p-4 rounded-2xl text-xs space-y-3">
-                    <div class="flex justify-between items-center py-1 border-b border-slate-800">
-                        <span class="text-slate-300">قناة التليجرام الرسمية</span>
-                        <a href="https://t.me/ciner_fx" class="text-amber-400 font-bold">@ciner_fx</a>
+                <h2 class="font-bold text-xs text-violet-300/70 mb-3 tracking-wider">المزيد ⚙️</h2>
+                <div class="purple-card p-4 rounded-2xl text-xs space-y-3">
+                    <div class="flex justify-between items-center py-1 border-b border-violet-500/15">
+                        <span class="text-purple-100">قناة التليجرام</span>
+                        <a href="https://t.me/ciner_fx" class="text-violet-300 font-bold">@ciner_fx</a>
                     </div>
-                    <div class="flex justify-between items-center py-1 border-b border-slate-800">
-                        <span class="text-slate-300">الدعم الفني والشكاوى</span>
+                    <div class="flex justify-between items-center py-1 border-b border-violet-500/15">
+                        <span class="text-purple-100">الدعم الفني</span>
                         <span class="text-emerald-400 font-bold">متاح 24/7 🟢</span>
                     </div>
                     <div class="flex justify-between items-center py-1">
-                        <span class="text-slate-300">إصدار التطبيق</span>
-                        <span class="text-slate-500 font-mono">v4.0.0 Pro</span>
+                        <span class="text-purple-100">إصدار النظام</span>
+                        <span class="text-violet-300/50 font-mono">v5.0.0 Purple Pro</span>
                     </div>
                 </div>
             `;
