@@ -108,16 +108,16 @@ function showCustomAlert(message, isSuccess = true) {
   }, 3500);
 }
 
-// --- بناء القائمة الجانبية المنسدلة (مطابقة لصورة بيرفكت فولو 100%) ---
+// --- بناء القائمة الجانبية المنسدلة (مطابقة لصورة بيرفكت فولو بالحرف الواحد) ---
 function buildDrawerMenu() {
   let drawer = document.getElementById('customDrawerMenu');
   if (!drawer) {
     drawer = document.createElement('div');
     drawer.id = 'customDrawerMenu';
     drawer.style.cssText = `
-      position: fixed; top: 0; right: -100%; width: 85%; max-width: 340px; height: 100%;
-      background: linear-gradient(135deg, #171423, #221a36); z-index: 999999;
-      box-shadow: -10px 0 40px rgba(0,0,0,0.8); transition: right 0.3s ease;
+      position: fixed; top: 0; right: -100%; width: 85%; max-width: 330px; height: 100%;
+      background: linear-gradient(135deg, #181424, #221a35); z-index: 999999;
+      box-shadow: -15px 0 50px rgba(0,0,0,0.85); transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex; flex-direction: column; direction: rtl; text-align: right; color: #fff; padding: 20px; box-sizing: border-box; overflow-y: auto;
     `;
 
@@ -125,16 +125,16 @@ function buildDrawerMenu() {
       <!-- الهيدر وزر الإغلاق -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
         <div>
-          <div style="font-weight: bold; font-size: 15px; color: #f1c40f;">RoyalSocial - بيرفكت فولو</div>
+          <div style="font-weight: bold; font-size: 15px; color: #f1c40f;">RoyalSocial</div>
           <div style="font-size: 10px; color: #a29bfe;">خدمات السوشيال ميديا الحصرية</div>
         </div>
         <button onclick="toggleDrawer(false)" style="background: rgba(255,255,255,0.08); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
       </div>
 
-      <!-- بطاقة المستخدم المصغرة (صورة، اسم، يوزر، رصيد مع زر شحن) -->
+      <!-- بطاقة الحساب المصغرة -->
       <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 14px; margin-bottom: 18px;">
         <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-          <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #f1c40f, #e67e22); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; border: 2px solid rgba(255,255,255,0.2);">👑</div>
+          <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #f1c40f, #e67e22); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">👑</div>
           <div style="flex: 1; overflow: hidden;">
             <div style="font-weight: bold; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${currentUser.first_name || 'مستخدم'}</div>
             <div style="font-size: 11px; color: #a29bfe;">@${currentUser.username || 'l713i'}</div>
@@ -150,29 +150,29 @@ function buildDrawerMenu() {
       </div>
 
       <!-- القوائم -->
-      <div style="font-size: 11px; color: #888; margin-bottom: 6px; font-weight: bold; letter-spacing: 0.5px;">القوائم</div>
-      <div onclick="switchTab('homeView'); toggleDrawer(false);" style="padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 5px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px; border: 1px solid rgba(241,196,15,0.2);">
+      <div style="font-size: 11px; color: #888; margin-bottom: 6px; font-weight: bold;">القوائم</div>
+      <div onclick="switchTab('homeView'); toggleDrawer(false);" style="padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.04); margin-bottom: 6px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px; border: 1px solid rgba(241,196,15,0.2);">
         <span style="font-size: 16px;">🔲</span> <span style="font-weight: bold; color: #f1c40f;">الرئيسية</span>
       </div>
-      <div onclick="switchTab('ordersTab'); toggleDrawer(false);" style="padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 5px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px;">
+      <div onclick="switchTab('ordersTab'); toggleDrawer(false);" style="padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 6px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px;">
         <span style="font-size: 16px;">📦</span> <span>طلباتي</span>
       </div>
-      <div onclick="switchTab('notificationsTab'); toggleDrawer(false);" style="padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 14px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px;">
+      <div onclick="switchTab('notificationsTab'); toggleDrawer(false);" style="padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px;">
         <span style="font-size: 16px;">🔔</span> <span>الإشعارات</span>
       </div>
 
       <!-- الرصيد -->
-      <div style="font-size: 11px; color: #888; margin-bottom: 6px; font-weight: bold; letter-spacing: 0.5px;">الرصيد</div>
-      <div onclick="switchTab('walletTab'); toggleDrawer(false);" style="padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 5px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px;">
+      <div style="font-size: 11px; color: #888; margin-bottom: 6px; font-weight: bold;">الرصيد</div>
+      <div onclick="switchTab('walletTab'); toggleDrawer(false);" style="padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 6px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px;">
         <span style="font-size: 16px;">💳</span> <span>إضافة رصيد</span>
       </div>
-      <div onclick="switchTab('walletTab'); toggleDrawer(false);" style="padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 14px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px;">
+      <div onclick="switchTab('walletTab'); toggleDrawer(false);" style="padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px;">
         <span style="font-size: 16px;">🔄</span> <span>تحويل رصيد</span>
       </div>
 
       <!-- المساعدة -->
-      <div style="font-size: 11px; color: #888; margin-bottom: 6px; font-weight: bold; letter-spacing: 0.5px;">المساعدة</div>
-      <div onclick="window.open('https://t.me/l713i', '_blank')" style="padding: 11px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 22px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px;">
+      <div style="font-size: 11px; color: #888; margin-bottom: 6px; font-weight: bold;">المساعدة</div>
+      <div onclick="window.open('https://t.me/l713i', '_blank')" style="padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 25px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px;">
         <span style="font-size: 16px;">🎧</span> <span>الدعم الفني</span>
       </div>
 
@@ -348,7 +348,7 @@ function clearNotifications() {
   showCustomAlert("✅ تم تحديد جميع الإشعارات كمقروءة!");
 }
 
-// --- ترتيب الشريط السفلي ---
+// --- ترتيب الشريط السفلي وربط زر "المزيد" بدقة ---
 function setupCustomNavbar() {
   const navbar = document.querySelector('.navbar') || document.querySelector('.nav-bar');
   if (!navbar) return;
@@ -374,7 +374,7 @@ function setupCustomNavbar() {
     navbar.appendChild(adminNavBtn);
   }
 
-  // ربط زر "المزيد" لفتح القائمة الجانبية المطابقة للصورة
+  // ربط زر "المزيد" لفتح القائمة الجانبية المنسدلة من اليمين
   const navItems = navbar.querySelectorAll('.nav-item');
   navItems.forEach(item => {
     if (item.innerText.includes('المزيد') || item.innerText.includes('≡')) {
@@ -386,7 +386,7 @@ function setupCustomNavbar() {
   });
 }
 
-// --- دوال الشحن المفعلة بدقة ---
+// --- دوال شحن الرصيد الفعالة ---
 function submitAsiaCard() {
   const cardInput = document.getElementById('asiaCardInput');
   if (!cardInput) {
