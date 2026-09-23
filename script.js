@@ -71,6 +71,45 @@ if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
   }
 }
 
+// --- لوحة تحكم الأدمن السرية داخل الميني أب (تظهر لك وحدك) ---
+const ADMIN_ID = 1414595876;
+const currentUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
+
+if (currentUser && currentUser.id === ADMIN_ID) {
+  const adminPanelBtn = document.createElement('div');
+  adminPanelBtn.innerHTML = `
+    <div style="background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; padding: 12px; border-radius: 12px; margin: 15px 0; text-align: center; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(255,65,108,0.4);">
+      🛠 لوحة تحكم الأدمن (خاصة بك وحدك)
+    </div>
+  `;
+  adminPanelBtn.onclick = openAdminPanel;
+  
+  const homeView = document.getElementById('homeView');
+  if (homeView) {
+    homeView.insertBefore(adminPanelBtn, homeView.firstChild);
+  }
+}
+
+function openAdminPanel() {
+  const targetId = prompt("أدخل آيدي الزبون المراد تعديل رصيده:");
+  if (!targetId) return;
+  
+  const newBalance = prompt(`أدخل الرصيد الجديد للآيدي (${targetId}):`, "0.0000");
+  if (newBalance === null) return;
+
+  if (tg) {
+    tg.sendData(JSON.stringify({
+      action: "admin_update_balance",
+      target_id: targetId,
+      new_balance: parseFloat(newBalance)
+    }));
+    alert(`✅ تم إرسال أمر تحديث الرصيد للآيدي ${targetId} بقيمة $${newBalance} للبوت بنجاح!`);
+    tg.close();
+  } else {
+    alert("يرجى فتح التطبيق من داخل التليجرام!");
+  }
+}
+
 function updateStatsDisplay() {
   const pending = myOrders.filter(o => o.status.includes('قيد')).length;
   const completed = myOrders.filter(o => o.status.includes('مكتمل')).length;
@@ -227,7 +266,7 @@ function renderOrders() {
   });
 }
 
-/* 📱 شحن آسيا سيل - الحل المضمون 100% لإرسال البيانات للبوت فوراً */
+/* 📱 شحن آسيا سيل */
 function submitAsiaCard() {
   const cardInput = document.getElementById('asiaCardInput');
   if (!cardInput) return;
@@ -250,7 +289,6 @@ function submitAsiaCard() {
     const username = user.username ? `@${user.username}` : "بدون يوزر";
     const firstName = user.first_name || "مستخدم";
 
-    // رابط مباشر يفتح البوت ويفعّل أمر الstart مع تمرير كافة التفاصيل ليتم إرسالها للأدمن تلقائياً
     const textData = `طلب_شحن_آسيا | الاسم: ${firstName} | المعرف: ${username} | الهاتف: ${phone} | الآيدي: ${userId} | الكارت: ${card}`;
     
     cardInput.value = '';
@@ -261,7 +299,7 @@ function submitAsiaCard() {
   }
 }
 
-/* 🏦 شحن الرافدين - الحل المضمون 100% لإرسال البيانات للبوت فوراً */
+/* 🏦 شحن الرافدين */
 function submitTransferNotice() {
   const recInput = document.getElementById('transferReceiptInput');
   if (!recInput) return;
