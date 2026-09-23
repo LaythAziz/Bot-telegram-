@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RoyalSocial - لوحة التحكم والخدمات</title>
+  <title>RoyalSocial - الخدمات الحصرية</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -14,20 +14,18 @@
     <!-- الواجهة الرئيسية -->
     <div id="homeView" class="tab-content">
       
-      <!-- لوحة المطور الحصرية تظهر هنا مباشرة في الواجهة الرئيسية إذا كنت أنت الأدمن -->
+      <!-- لوحة المطور الحصرية (تظهر لك وحدك حصرياً) -->
       <div id="adminMainDashboard" style="display: none; margin-bottom: 20px;">
         <div style="background: linear-gradient(135deg, #1b162c, #31214a); border: 2px solid var(--gold); border-radius: 20px; padding: 18px; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
           <h3 style="color: var(--gold); text-align: center; margin-top:0; font-size: 15px;">👑 لوحة المطور والتحكم الحصرية</h3>
           <p style="font-size: 10px; text-align: center; color: var(--text-sub); margin-bottom: 12px;">مرحباً بك يا ليث، هذه لوحتك السرية للتحكم الشامل.</p>
           
-          <!-- البحث عن مشترك -->
           <div style="margin-bottom: 12px; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px;">
             <div style="font-size: 11px; color: var(--gold); margin-bottom: 6px; font-weight: bold;">🔍 البحث عن مشترك (بالاسم أو الآيدي):</div>
             <input type="text" id="searchUserInput" placeholder="أدخل اسم المشترك أو الآيدي..." class="modal-input" oninput="searchSubscriberByName()" style="margin-bottom: 5px; padding: 8px; font-size: 11px;">
             <div id="searchUserResult" style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px; font-size: 10px; color: #a29bfe; display: none;"></div>
           </div>
 
-          <!-- إدارة رصيد المشتركين -->
           <div style="margin-bottom: 12px; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px;">
             <div style="font-size: 11px; color: var(--gold); margin-bottom: 6px; font-weight: bold;">💰 تعديل رصيد مشترك:</div>
             <input type="number" id="adminTargetId" placeholder="آيدي المشترك (Telegram ID)..." class="modal-input" style="margin-bottom: 5px; padding: 8px; font-size: 11px;">
@@ -123,7 +121,7 @@
     </div>
   </div>
 
-  <!-- الشريط السفلي الثابت (تم منع تكرار القائمة الجانبية وإصلاحها بالكامل) -->
+  <!-- الشريط السفلي الثابت -->
   <div class="navbar">
     <div class="nav-item" onclick="toggleExactDrawer(true)"><span>≡</span><span>المزيد</span></div>
     <div class="nav-item" onclick="switchTab('notificationsTab')"><span>🔔</span><span>الإشعارات</span></div>
