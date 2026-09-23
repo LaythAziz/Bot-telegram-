@@ -49,6 +49,14 @@ const currentUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initD
 
 const ADMIN_ID = 1414595876;
 
+// التحقق من الأدمن وإظهار لوحته فوراً في الصفحة الرئيسية
+function checkAdminAccess() {
+  if (Number(currentUser.id) === ADMIN_ID) {
+    const adminDash = document.getElementById('adminMainDashboard');
+    if (adminDash) adminDash.style.display = 'block';
+  }
+}
+
 function logSystemEvent(action, desc) {
   const timestamp = new Date().toLocaleString('ar-IQ');
   systemLogs.unshift({ timestamp, action, desc });
@@ -79,10 +87,10 @@ function showCustomAlert(message, isSuccess = true) {
   setTimeout(() => alertBox.remove(), 3000);
 }
 
-// القائمة الجانبية (Drawer) مع ظهور زر لوحة المطور حصرياً لك
+// القائمة الجانبية (Drawer) النظيفة بدون تكرار
 function createExactDrawer() {
-  let existingDrawer = document.getElementById('exactDrawerOverlay');
-  if (existingDrawer) existingDrawer.remove();
+  let existingOverlay = document.getElementById('exactDrawerOverlay');
+  if (existingOverlay) existingOverlay.remove();
 
   const overlay = document.createElement('div');
   overlay.id = 'exactDrawerOverlay';
@@ -100,16 +108,6 @@ function createExactDrawer() {
     box-shadow: -15px 0 50px rgba(0,0,0,0.9); transition: right 0.3s ease;
     display: flex; flex-direction: column; direction: rtl; text-align: right; color: #fff; padding: 20px; box-sizing: border-box; overflow-y: auto;
   `;
-
-  let developerButtonHTML = "";
-  if (Number(currentUser.id) === ADMIN_ID) {
-    developerButtonHTML = `
-      <div style="font-size: 10px; color: var(--gold); margin-bottom: 4px; font-weight: bold;">لوحة تحكم المطور الخاصة بك</div>
-      <div onclick="switchTab('adminTab'); toggleExactDrawer(false);" style="padding: 10px 12px; border-radius: 8px; background: rgba(241,196,15,0.15); border: 1px solid var(--gold); margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 12px;">
-        <span style="font-size: 14px;">👑</span> <span style="font-weight: bold; color: var(--gold);">لوحة المطور والأحداث الحية</span>
-      </div>
-    `;
-  }
 
   drawer.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px;">
@@ -136,8 +134,6 @@ function createExactDrawer() {
         <button onclick="switchTab('walletTab'); toggleExactDrawer(false);" style="background: var(--gold); border: none; color: #120f1d; padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer;">+ شحن</button>
       </div>
     </div>
-
-    ${developerButtonHTML}
 
     <div style="font-size: 10px; color: #888; margin-bottom: 4px; font-weight: bold;">القوائم</div>
     <div onclick="switchTab('homeView'); toggleExactDrawer(false);" style="padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); margin-bottom: 4px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 12px;"><span>🔲</span> الرئيسية</div>
@@ -313,4 +309,5 @@ function submitAsiaCard() {
   showCustomAlert("✅ تم إرسال طلب الشحن للإدارة بنجاح!");
 }
 
+checkAdminAccess();
 updateUIStats();
