@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RoyalSocial - بيرفكت فولو</title>
+  <title>RoyalSocial - لوحة التحكم والخدمات</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -13,6 +13,33 @@
     
     <!-- الواجهة الرئيسية -->
     <div id="homeView" class="tab-content">
+      
+      <!-- لوحة المطور الحصرية تظهر هنا مباشرة في الواجهة الرئيسية إذا كنت أنت الأدمن -->
+      <div id="adminMainDashboard" style="display: none; margin-bottom: 20px;">
+        <div style="background: linear-gradient(135deg, #1b162c, #31214a); border: 2px solid var(--gold); border-radius: 20px; padding: 18px; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
+          <h3 style="color: var(--gold); text-align: center; margin-top:0; font-size: 15px;">👑 لوحة المطور والتحكم الحصرية</h3>
+          <p style="font-size: 10px; text-align: center; color: var(--text-sub); margin-bottom: 12px;">مرحباً بك يا ليث، هذه لوحتك السرية للتحكم الشامل.</p>
+          
+          <!-- البحث عن مشترك -->
+          <div style="margin-bottom: 12px; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px;">
+            <div style="font-size: 11px; color: var(--gold); margin-bottom: 6px; font-weight: bold;">🔍 البحث عن مشترك (بالاسم أو الآيدي):</div>
+            <input type="text" id="searchUserInput" placeholder="أدخل اسم المشترك أو الآيدي..." class="modal-input" oninput="searchSubscriberByName()" style="margin-bottom: 5px; padding: 8px; font-size: 11px;">
+            <div id="searchUserResult" style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px; font-size: 10px; color: #a29bfe; display: none;"></div>
+          </div>
+
+          <!-- إدارة رصيد المشتركين -->
+          <div style="margin-bottom: 12px; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px;">
+            <div style="font-size: 11px; color: var(--gold); margin-bottom: 6px; font-weight: bold;">💰 تعديل رصيد مشترك:</div>
+            <input type="number" id="adminTargetId" placeholder="آيدي المشترك (Telegram ID)..." class="modal-input" style="margin-bottom: 5px; padding: 8px; font-size: 11px;">
+            <input type="number" id="adminAmount" placeholder="المبلغ ($) [موجب للإضافة، سالب للخصم]..." step="0.01" class="modal-input" style="margin-bottom: 8px; padding: 8px; font-size: 11px;">
+            <button onclick="executeAdminBalanceModify()" style="width: 100%; background: #2ecc71; color: #fff; border: none; padding: 9px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 11px;">تنفيذ تعديل الرصيد فوراً</button>
+          </div>
+
+          <button onclick="fetchAdminSystemLogs()" style="width: 100%; background: #2980b9; color: #fff; border: none; padding: 9px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 11px;">📊 عرض سجل الأحداث والنشاطات</button>
+          <div id="adminDirectOutput" style="display: none; background: rgba(0,0,0,0.8); border: 1px solid var(--gold); border-radius: 8px; padding: 10px; max-height: 180px; overflow-y: auto; font-size: 10px; color: #fff; text-align: right; margin-top: 8px;"></div>
+        </div>
+      </div>
+
       <div class="header-card">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <div>
@@ -77,33 +104,6 @@
       <div id="notificationsContainer"></div>
     </div>
 
-    <!-- 👑 لوحة المطور والتحكم الحصرية (تظهر لك وحدك) -->
-    <div id="adminTab" class="tab-content" style="display: none;">
-      <div style="background: linear-gradient(135deg, #1b162c, #31214a); border: 2px solid var(--gold); border-radius: 20px; padding: 20px; color: #fff;">
-        <h3 style="color: var(--gold); text-align: center; margin-top:0;">👑 لوحة المطور والتحكم الحصرية</h3>
-        <p style="font-size: 11px; text-align: center; color: var(--text-sub);">هذه اللوحة خاصة بك وحدك (مطور وأدمن النظام).</p>
-        
-        <!-- البحث الفوري عن المشترك ورؤية رصيده -->
-        <div style="margin-bottom: 15px; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 12px;">
-          <div style="font-size: 12px; color: var(--gold); margin-bottom: 8px; font-weight: bold;">🔍 البحث عن مشترك (بالاسم أو الآيدي):</div>
-          <input type="text" id="searchUserInput" placeholder="أدخل اسم المشترك أو الآيدي..." class="modal-input" oninput="searchSubscriberByName()">
-          <div id="searchUserResult" style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; font-size: 11px; color: #a29bfe; margin-top: 8px; display: none;"></div>
-        </div>
-
-        <!-- إضافة وخصم الرصيد -->
-        <div style="margin-bottom: 15px; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 12px;">
-          <div style="font-size: 12px; color: var(--gold); margin-bottom: 8px; font-weight: bold;">💰 إدارة رصيد المشتركين:</div>
-          <input type="number" id="adminTargetId" placeholder="آيدي المشترك (Telegram ID)..." class="modal-input">
-          <input type="number" id="adminAmount" placeholder="المبلغ ($) [موجب للإضافة، سالب للخصم]..." step="0.01" class="modal-input">
-          <button onclick="executeAdminBalanceModify()" style="width: 100%; background: #2ecc71; color: #fff; border: none; padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer;">تنفيذ تعديل الرصيد فوراً</button>
-        </div>
-
-        <!-- سجل الأحداث -->
-        <button onclick="fetchAdminSystemLogs()" style="width: 100%; background: #2980b9; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 12px;">📊 عرض سجل الأحداث والنشاطات الحية</button>
-        <div id="adminDirectOutput" style="display: none; background: rgba(0,0,0,0.8); border: 1px solid var(--gold); border-radius: 10px; padding: 12px; max-height: 250px; overflow-y: auto; font-size: 11px; color: #fff; text-align: right;"></div>
-      </div>
-    </div>
-
   </div>
 
   <!-- نافذة الرشق المنبثقة -->
@@ -123,7 +123,7 @@
     </div>
   </div>
 
-  <!-- الشريط السفلي الثابت -->
+  <!-- الشريط السفلي الثابت (تم منع تكرار القائمة الجانبية وإصلاحها بالكامل) -->
   <div class="navbar">
     <div class="nav-item" onclick="toggleExactDrawer(true)"><span>≡</span><span>المزيد</span></div>
     <div class="nav-item" onclick="switchTab('notificationsTab')"><span>🔔</span><span>الإشعارات</span></div>
