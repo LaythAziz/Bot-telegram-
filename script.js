@@ -67,7 +67,8 @@ let myOrders = JSON.parse(localStorage.getItem('myOrders') || '[]');
 const currentUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : {
   id: "8816331690",
   first_name: "Layth Aziz",
-  username: "l713i"
+  username: "l713i",
+  phone: "غير مسجل"
 };
 
 if (currentUser) {
@@ -97,22 +98,20 @@ function showCustomAlert(message, isSuccess = true) {
   }, 3500);
 }
 
-// --- لوحة الأدمن المتكاملة لعرض المشتركين والسجلات داخل الميني أب ---
+// --- لوحة الأدمن الخاصة بك (تظهر لك وحدك في الصفحة الرئيسية) ---
 const ADMIN_ID = 1414595876;
 if (currentUser && Number(currentUser.id) === ADMIN_ID) {
   const adminPanelContainer = document.createElement('div');
   adminPanelContainer.innerHTML = `
     <div style="background: linear-gradient(135deg, #1f1c2c, #393154); border: 2px solid #ff416c; border-radius: 16px; padding: 15px; margin: 15px 0; color: #fff; box-shadow: 0 8px 25px rgba(255,65,108,0.3);">
-      <div style="font-weight: bold; font-size: 15px; margin-bottom: 12px; color: #ff758c;">🛠 لوحة تحكم الأدمن (عرض مباشر)</div>
+      <div style="font-weight: bold; font-size: 15px; margin-bottom: 12px; color: #ff758c;">🛠 لوحة تحكم الأدمن الشاملة</div>
       
-      <!-- تعديل الرصيد -->
       <div style="margin-bottom: 10px;">
         <input type="number" id="adminTargetId" placeholder="آيدي الزبون..." style="width: 100%; padding: 8px; border-radius: 6px; border: none; background: rgba(255,255,255,0.1); color: #fff; margin-bottom: 6px; font-size: 12px;">
         <input type="number" id="adminAmount" placeholder="المبلغ ($) (مثال: 5 أو -5 للخصم)" step="0.01" style="width: 100%; padding: 8px; border-radius: 6px; border: none; background: rgba(255,255,255,0.1); color: #fff; margin-bottom: 8px; font-size: 12px;">
         <button onclick="executeAdminBalanceAction()" style="width: 100%; background: #00b09b; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px;">➕ تعديل الرصيد فوراً</button>
       </div>
 
-      <!-- استعلام السجلات والمشتركين -->
       <div style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
         <div style="display: flex; gap: 6px; margin-bottom: 8px;">
           <input type="number" id="logTargetId" placeholder="آيدي الزبون لعرض سجله..." style="flex: 1; padding: 8px; border-radius: 6px; border: none; background: rgba(255,255,255,0.1); color: #fff; font-size: 12px;">
@@ -121,8 +120,7 @@ if (currentUser && Number(currentUser.id) === ADMIN_ID) {
         <button onclick="fetchUsersListInApp()" style="width: 100%; background: #3498db; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px;">👥 عرض قائمة المشتركين كاملة</button>
       </div>
 
-      <!-- نافذة عرض النتائج مباشرة داخل التطبيق -->
-      <div id="adminDirectOutput" style="display: none; margin-top: 12px; background: rgba(0,0,0,0.6); border: 1px solid #ff416c; border-radius: 10px; padding: 12px; max-height: 250px; overflow-y: auto; font-size: 11px; color: #fff; text-align: right; direction: rtl;"></div>
+      <div id="adminDirectOutput" style="display: none; margin-top: 12px; background: rgba(0,0,0,0.7); border: 1px solid #ff416c; border-radius: 10px; padding: 12px; max-height: 250px; overflow-y: auto; font-size: 11px; color: #fff; text-align: right; direction: rtl;"></div>
     </div>
   `;
   const homeView = document.getElementById('homeView');
@@ -148,7 +146,6 @@ function executeAdminBalanceAction() {
     });
 }
 
-// عرض قائمة المشتركين مباشرة داخل صندوق التطبيق
 function fetchUsersListInApp() {
   const outputBox = document.getElementById('adminDirectOutput');
   outputBox.style.display = 'block';
@@ -164,15 +161,14 @@ function fetchUsersListInApp() {
         });
         outputBox.innerHTML = html;
       } else {
-        outputBox.innerHTML = "❌ لا توجد بيانات مشتركين متاحة حالياً أو تأكد من سيرفر البوت.";
+        outputBox.innerHTML = "❌ لا توجد بيانات مشتركين متاحة حالياً.";
       }
     })
-    .catch(err => {
-      outputBox.innerHTML = "⚠️ تعذر الاتصال بالسيرفر المباشر. تأكد من تشغيل API في البوت.";
+    .catch(() => {
+      outputBox.innerHTML = "⚠️ تعذر الاتصال بالسيرفر المباشر.";
     });
 }
 
-// عرض سجل حركات زبون محدد مباشرة داخل التطبيق
 function fetchUserLogsInApp() {
   const targetId = document.getElementById('logTargetId').value.trim();
   const outputBox = document.getElementById('adminDirectOutput');
@@ -193,15 +189,15 @@ function fetchUserLogsInApp() {
         });
         outputBox.innerHTML = html;
       } else {
-        outputBox.innerHTML = `❌ لا توجد حركات مسجلة للآيدي ${targetId} أو الآيدي غير موجود.`;
+        outputBox.innerHTML = `❌ لا توجد حركات مسجلة للآيدي ${targetId}.`;
       }
     })
-    .catch(err => {
+    .catch(() => {
       outputBox.innerHTML = "⚠️ تعذر الاتصال بالسيرفر المباشر.";
     });
 }
 
-// --- بناء صفحة الملف الشخصي (Profile) المحدثة بالكامل لكل المستخدمين ---
+// --- بناء وتفعيل صفحة الملف الشخصي (البروفايل) لجميع المستخدمين ---
 function buildProfileTab() {
   let profileTab = document.getElementById('profileTab');
   if (!profileTab) {
@@ -217,7 +213,6 @@ function buildProfileTab() {
           <p style="color: #aaa; font-size: 12px; margin: 4px 0 0;">حساب موثق وفعّال في النظام</p>
         </div>
         
-        <!-- الرصيد -->
         <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
           <div>
             <div style="font-size: 11px; color: #aaa;">الرصيد المتاح:</div>
@@ -226,25 +221,22 @@ function buildProfileTab() {
           <button onclick="switchTab('walletTab')" style="background: #9b59b6; border: none; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;">شحن الرصيد</button>
         </div>
 
-        <!-- الاسم العام في تليجرام -->
         <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
           <div>
-            <div style="font-size: 11px; color: #aaa;">الاسم العام (First Name):</div>
+            <div style="font-size: 11px; color: #aaa;">الاسم العام في تليجرام:</div>
             <div style="font-size: 13px; color: #fff; font-weight: bold;">${currentUser.first_name || 'مستخدم'}</div>
           </div>
           <button onclick="copyText('${currentUser.first_name || 'مستخدم'}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
         </div>
 
-        <!-- يوزر التليجرام -->
         <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
           <div>
-            <div style="font-size: 11px; color: #aaa;">يوزر التليجرام:</div>
+            <div style="font-size: 11px; color: #aaa;">اسم مستخدم تليجرام (Username):</div>
             <div style="font-size: 13px; color: #fff; font-weight: bold;">@${currentUser.username || 'بدون_يوزر'}</div>
           </div>
           <button onclick="copyText('@${currentUser.username || 'بدون_يوزر'}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
         </div>
 
-        <!-- آيدي الحساب -->
         <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
           <div>
             <div style="font-size: 11px; color: #aaa;">آيدي الحساب (ID):</div>
@@ -253,11 +245,10 @@ function buildProfileTab() {
           <button onclick="copyText('${currentUser.id}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
         </div>
 
-        <!-- رقم الهاتف -->
         <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
           <div>
             <div style="font-size: 11px; color: #aaa;">رقم الهاتف المسجل:</div>
-            <div style="font-size: 13px; color: #fff; font-weight: bold;">${currentUser.phone || 'غير مسجل (خاص)'}</div>
+            <div style="font-size: 13px; color: #fff; font-weight: bold;">${currentUser.phone || 'غير مسجل (خصوصية)'}</div>
           </div>
           <button onclick="copyText('${currentUser.phone || 'غير مسجل'}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
         </div>
@@ -265,6 +256,17 @@ function buildProfileTab() {
     `;
     const appContainer = document.querySelector('.app-container') || document.body;
     appContainer.appendChild(profileTab);
+  }
+
+  // ربط زر "المزيد" أو أي زر مخصص في القائمة السفلية ليفتح البروفايل فوراً عند النقر عليه
+  const navItems = document.querySelectorAll('.nav-item');
+  if (navItems.length > 0) {
+    // افترضنا أن العنصر الأخير (المزيد) يفتح البروفايل
+    const moreBtn = navItems[navItems.length - 1];
+    moreBtn.onclick = (e) => {
+      e.preventDefault();
+      switchTab('profileTab');
+    };
   }
 }
 
@@ -358,62 +360,6 @@ function calculatePrice() {
   const qty = parseInt(qtyInput.value) || 0;
   const total = (qty / 1000) * parseFloat(currentService.price);
   priceDisplay.innerText = `$${total.toFixed(4)}`;
-}
-
-function submitOrder() {
-  const targetInput = document.getElementById('targetInput');
-  const qtyInput = document.getElementById('quantityInput');
-  if (!targetInput || !qtyInput) return;
-  const target = targetInput.value.trim();
-  const qty = parseInt(qtyInput.value) || 0;
-  const total = (qty / 1000) * parseFloat(currentService.price);
-
-  if (!target) {
-    showCustomAlert('يرجى إدخال الرابط أو اسم المستخدم بشكل صحيح!', false);
-    return;
-  }
-  if (userBalance < total) {
-    showCustomAlert('❌ رصيدك غير كافٍ لتنفيذ هذا الطلب!', false);
-    return;
-  }
-
-  userBalance -= total;
-  const userBalanceEl = document.getElementById('userBalance');
-  if (userBalanceEl) userBalanceEl.innerText = `$${userBalance.toFixed(4)}`;
-  
-  const newOrderId = Math.floor(Math.random() * 899999 + 119000000).toString();
-  myOrders.unshift({ id: newOrderId, title: currentService.title, qty: qty, price: total, status: "قيد التنفيذ ⚡" });
-  localStorage.setItem('myOrders', JSON.stringify(myOrders));
-  updateStatsDisplay();
-  
-  if (tg) {
-    tg.sendData(JSON.stringify({ action: "log_service_usage", service_title: currentService.title, qty: qty, cost: total }));
-  }
-  showCustomAlert(`✅ تم إنشاء الطلب بنجاح! #${newOrderId}`);
-  closeOrderModal();
-}
-
-function renderOrders() {
-  const container = document.getElementById('ordersContainer');
-  if (!container) return;
-  container.innerHTML = '';
-  if (myOrders.length === 0) {
-    container.innerHTML = `<div style="text-align:center; color:var(--text-sub); padding:30px; font-size:13px;">لا توجد لديك طلبات سابقة حتى الآن 📦</div>`;
-    return;
-  }
-  myOrders.forEach(ord => {
-    const threadDiv = document.createElement('div');
-    threadDiv.className = 'order-card';
-    threadDiv.innerHTML = `
-      <div class="order-top">
-        <span class="order-id">#${ord.id}</span>
-        <span class="order-status ${ord.status.includes('مكتمل') ? 'status-completed' : 'status-pending'}">${ord.status}</span>
-      </div>
-      <div style="font-size:13px; font-weight:700;">${ord.title}</div>
-      <div style="font-size:11px; color:var(--text-sub);">الكمية: ${ord.qty} | السعر: $${parseFloat(ord.price).toFixed(4)}</div>
-    `;
-    container.appendChild(threadDiv);
-  });
 }
 
 updateStatsDisplay();
