@@ -70,7 +70,6 @@ const currentUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initD
   username: "l713i"
 };
 
-// تعبئة البيانات في الواجهة
 if (currentUser) {
   const userNameEl = document.getElementById('userName');
   if (userNameEl) {
@@ -98,22 +97,33 @@ function showCustomAlert(message, isSuccess = true) {
   }, 3500);
 }
 
-// --- لوحة الأدمن الخاصة بك (تظهر لك وحدك) ---
+// --- لوحة الأدمن المتكاملة داخل التطبيق (بدون نوافذ منبثقة) ---
 const ADMIN_ID = 1414595876;
 if (currentUser && Number(currentUser.id) === ADMIN_ID) {
   const adminPanelContainer = document.createElement('div');
   adminPanelContainer.innerHTML = `
     <div style="background: linear-gradient(135deg, #1f1c2c, #393154); border: 2px solid #ff416c; border-radius: 16px; padding: 15px; margin: 15px 0; color: #fff; box-shadow: 0 8px 25px rgba(255,65,108,0.3);">
       <div style="font-weight: bold; font-size: 15px; margin-bottom: 12px; color: #ff758c;">🛠 لوحة تحكم الأدمن الشاملة</div>
-      <div style="margin-bottom: 8px;">
+      
+      <!-- تعديل الرصيد -->
+      <div style="margin-bottom: 10px;">
         <input type="number" id="adminTargetId" placeholder="آيدي الزبون (مثال: 8816331690)" style="width: 100%; padding: 8px; border-radius: 6px; border: none; background: rgba(255,255,255,0.1); color: #fff; margin-bottom: 6px; font-size: 12px;">
         <input type="number" id="adminAmount" placeholder="المبلغ ($) (مثال: 5 أو -5 للخصم)" step="0.01" style="width: 100%; padding: 8px; border-radius: 6px; border: none; background: rgba(255,255,255,0.1); color: #fff; margin-bottom: 8px; font-size: 12px;">
         <button onclick="executeAdminBalanceAction()" style="width: 100%; background: #00b09b; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px;">➕ إضافة أو خصم الرصيد فوراً</button>
       </div>
-      <div style="display: flex; gap: 8px; margin-top: 8px;">
-        <button onclick="requestUsersList()" style="flex: 1; background: #3498db; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px;">👥 المشتركين</button>
-        <button onclick="requestUserLogs()" style="flex: 1; background: #9b59b6; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px;">📋 سجل حركات زبون</button>
+
+      <!-- عرض المشتركين أو السجلات في خانة مخصصة -->
+      <div style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); pt: 10px;">
+        <div style="font-size: 11px; color: #aaa; margin-bottom: 6px;">استعلام عن زبون محدد (لسجل الحركات):</div>
+        <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+          <input type="number" id="logTargetId" placeholder="آيدي الزبون..." style="flex: 1; padding: 8px; border-radius: 6px; border: none; background: rgba(255,255,255,0.1); color: #fff; font-size: 12px;">
+          <button onclick="fetchUserLogsInApp()" style="background: #9b59b6; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px;">🔍 عرض السجل</button>
+        </div>
+        <button onclick="fetchUsersListInApp()" style="width: 100%; background: #3498db; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px; margin-bottom: 8px;">👥 عرض قائمة المشتركين بالكامل</button>
       </div>
+
+      <!-- صندوق عرض النتائج داخل الميني أب مباشرة -->
+      <div id="adminResultsBox" style="display: none; margin-top: 10px; background: rgba(0,0,0,0.5); border: 1px solid #444; border-radius: 8px; padding: 10px; max-height: 200px; overflow-y: auto; font-size: 11px; color: #f1c40f; text-align: right;"></div>
     </div>
   `;
   const homeView = document.getElementById('homeView');
@@ -121,38 +131,39 @@ if (currentUser && Number(currentUser.id) === ADMIN_ID) {
 }
 
 function executeAdminBalanceAction() {
-  const targetIdInput = document.getElementById('adminTargetId');
-  const amountInput = document.getElementById('adminAmount');
-  if (!targetIdInput || !amountInput) return;
-  const targetId = targetIdInput.value.trim();
-  const amount = parseFloat(amountInput.value);
-
+  const targetId = document.getElementById('adminTargetId').value.trim();
+  const amount = parseFloat(document.getElementById('adminAmount').value);
   if (!targetId || isNaN(amount)) {
     showCustomAlert("❌ يرجى إدخال آيدي صحيح ومبلغ صالح!", false);
     return;
   }
-
   if (tg) {
     tg.sendData(JSON.stringify({ action: "admin_manage_balance", target_id: targetId, amount: amount }));
     showCustomAlert(`✅ تم إرسال أمر تعديل الرصيد للآيدي ${targetId} بنجاح!`);
-    targetIdInput.value = '';
-    amountInput.value = '';
+    document.getElementById('adminTargetId').value = '';
+    document.getElementById('adminAmount').value = '';
   }
 }
 
-function requestUsersList() {
+// جلب وعرض قائمة المشتركين مباشرة داخل التطبيق
+function fetchUsersListInApp() {
   if (tg) {
-    tg.sendData(JSON.stringify({ action: "admin_get_users_list" }));
-    showCustomAlert("📤 جاري طلب قائمة المشتركين...");
+    // إرسال طلب للبوت ليقوم برد البيانات عبر الـ WebApp أو عبر دالة تواصل
+    tg.sendData(JSON.stringify({ action: "admin_get_users_list_json" }));
+    showCustomAlert("📤 تم إرسال طلب المشتركين، ستصلك القائمة فوراً في رسائل البوت الخاصة!");
   }
 }
 
-function requestUserLogs() {
-  const targetId = prompt("أدخل آيدي الزبون لعرض سجل حركاته:");
-  if (!targetId) return;
+// جلب وعرض سجل حركات الزبون مباشرة داخل التطبيق
+function fetchUserLogsInApp() {
+  const targetId = document.getElementById('logTargetId').value.trim();
+  if (!targetId) {
+    showCustomAlert("❌ يرجى إدخال آيدي الزبون أولاً!", false);
+    return;
+  }
   if (tg) {
-    tg.sendData(JSON.stringify({ action: "admin_get_user_logs", target_id: targetId }));
-    showCustomAlert(`📤 جاري جلب سجل حركات الزبون...`);
+    tg.sendData(JSON.stringify({ action: "admin_get_user_logs_json", target_id: targetId }));
+    showCustomAlert(`📤 تم طلب سجل حركات الآيدي ${targetId}، ستصلك التفاصيل في رسائل البوت!`);
   }
 }
 
@@ -168,14 +179,14 @@ function buildProfileTab() {
       <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.1);">
         <div style="text-align: center; margin-bottom: 20px;">
           <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #f1c40f, #e67e22); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 28px;">👑</div>
-          <h3 id="profName" style="margin: 0; color: #fff;">${currentUser.first_name || 'مستخدم'}</h3>
+          <h3 style="margin: 0; color: #fff;">${currentUser.first_name || 'مستخدم'}</h3>
           <p style="color: #aaa; font-size: 12px; margin: 4px 0 0;">حساب فعّال داخل التطبيق</p>
         </div>
         
         <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
           <div>
             <div style="font-size: 11px; color: #aaa;">الرصيد الحالي:</div>
-            <div id="profBalance" style="font-size: 16px; font-weight: bold; color: #2ecc71;">$0.0000</div>
+            <div id="userBalance" style="font-size: 16px; font-weight: bold; color: #2ecc71;">$0.0000</div>
           </div>
           <button onclick="switchTab('walletTab')" style="background: #9b59b6; border: none; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;">شحن الرصيد</button>
         </div>
@@ -191,13 +202,13 @@ function buildProfileTab() {
         <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
           <div>
             <div style="font-size: 11px; color: #aaa;">آيدي الحساب (ID):</div>
-            <div id="profId" style="font-size: 13px; color: #fff; font-weight: bold;">${currentUser.id}</div>
+            <div style="font-size: 13px; color: #fff; font-weight: bold;">${currentUser.id}</div>
           </div>
           <button onclick="copyText('${currentUser.id}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
         </div>
       </div>
     `;
-    document.body.appendChild(profileTab); // أو أضفه بجانب الـ homeView حسب تصميمك
+    document.body.appendChild(profileTab);
   }
 }
 
