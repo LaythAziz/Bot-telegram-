@@ -2,255 +2,256 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>RoyalSocial - Mini App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RoyalSocial - بيرفكت فولو</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --bg-main: #120f1d;
+      --bg-card: #1c172d;
+      --bg-card-hover: #261f3d;
+      --accent: #9b59b6;
+      --accent-gradient: linear-gradient(135deg, #8e44ad, #9b59b6);
+      --gold: #f1c40f;
+      --text-main: #ffffff;
+      --text-sub: #a29bfe;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+    }
+    .app-container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 15px;
+      padding-bottom: 90px;
+    }
+    /* الهيدر العلوي والإحصائيات */
+    .header-card {
+      background: linear-gradient(135deg, #1b162c, #2a2240);
+      border-radius: 20px;
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      margin-bottom: 15px;
+    }
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+      background: rgba(0,0,0,0.3);
+      padding: 10px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .stat-box { font-size: 11px; color: var(--text-sub); }
+    .stat-num { font-size: 14px; font-weight: bold; color: #fff; margin-top: 2px; }
+
+    /* شبكة المنصات */
+    .service-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 15px;
+    }
+    .platform-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .platform-card:hover { background: var(--bg-card-hover); border-color: rgba(155,89,182,0.3); }
+
+    /* كروت الخدمات والطلبات */
+    .service-card, .order-card {
+      background: var(--bg-card);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .service-title { font-size: 13px; font-weight: bold; color: #fff; }
+    .service-price { font-size: 12px; color: #2ecc71; font-weight: bold; }
+    .btn-order-action {
+      background: var(--accent-gradient);
+      color: #fff; border: none; padding: 6px 12px;
+      border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer;
+    }
+
+    /* النافذة المنبثقة للطلب (Modal) */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8); z-index: 99999; display: none;
+      align-items: center; justify-content: center; backdrop-filter: blur(5px);
+    }
+    .modal-content {
+      background: #1e1832; border: 1px solid rgba(155,89,182,0.4);
+      border-radius: 20px; width: 90%; max-width: 380px; padding: 20px; box-sizing: border-box;
+    }
+    .modal-input {
+      width: 100%; padding: 12px; border-radius: 10px; border: none;
+      background: rgba(0,0,0,0.4); color: #fff; margin-bottom: 12px; box-sizing: border-box; text-align: right;
+    }
+
+    /* الشريط السفلي الثابت بالترتيب الدقيق */
+    .navbar {
+      position: fixed; bottom: 0; left: 0; width: 100%;
+      background: #171324; border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex; justify-content: space-around; padding: 10px 0; z-index: 999;
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center;
+      color: #888; font-size: 11px; cursor: pointer; text-decoration: none;
+    }
+    .nav-item.active { color: var(--gold); }
+    .nav-item span:first-child { font-size: 20px; margin-bottom: 2px; }
+  </style>
 </head>
 <body>
 
-  <!-- Top Profile Card -->
-  <div class="profile-card">
-    <div class="profile-header">
-      <div class="user-info">
-        <div class="avatar">👑</div>
-        <div class="user-det">
-          <span class="user-name" id="userName">Layth Aziz</span>
-          <span class="user-badge">حساب فعال</span>
-        </div>
-      </div>
-      <div class="status-badge">
-        <div class="status-dot"></div>
-        <span>متصل</span>
-      </div>
-    </div>
-    <div class="balance-box">
-      <div>
-        <div style="font-size: 11px; color: var(--text-sub);">الرصيد المتاح</div>
-        <div class="balance-val" id="userBalance">$0.0000</div>
-      </div>
-      <button class="btn-charge" onclick="switchTab('chargeTab')">+ شحن الرصيد</button>
-    </div>
-  </div>
-
-  <!-- SECTION 1: HOME TAB -->
-  <div id="homeTab" class="tab-content fade-in">
-    <div class="stats-bar">
-      <div class="stat-item"><span>📦 مكتمل:</span> <span class="stat-num" id="completedCount">0</span></div>
-      <div class="stat-item"><span>⚡ قيد التنفيذ:</span> <span class="stat-num" id="pendingCount">0</span></div>
-      <div class="stat-item"><span>🚀 خدمة:</span> <span class="stat-num">118</span></div>
-    </div>
-
-    <div id="homeView">
-      <div class="section-title">
-        <span>المنصات</span>
-        <span style="font-size:11px;">10 منصة</span>
-      </div>
-
-      <div class="platforms-grid">
-        <div class="platform-card" onclick="openPlatform('free')">
-          <div class="card-top">
-            <div class="platform-icon-box"><img src="https://cdn-icons-png.flaticon.com/512/4213/4213958.png" class="platform-icon"></div>
-            <div class="platform-name">خدمات مجانية</div>
+  <div class="app-container">
+    
+    <!-- الواجهة الرئيسية (HomeView) -->
+    <div id="homeView" class="tab-content">
+      <div class="header-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 11px; color: var(--text-sub);">الرصيد المتاح</div>
+            <div id="userBalance" style="font-size: 20px; font-weight: bold; color: #2ecc71; margin-top: 2px;">$0.0000</div>
           </div>
-          <span class="platform-badge">3 فئة | 8 خدمة</span>
+          <button onclick="switchTab('walletTab')" style="background: var(--accent-gradient); border: none; color: #fff; padding: 8px 16px; border-radius: 12px; font-weight: bold; font-size: 12px; cursor: pointer;">+ شحن الرصيد</button>
         </div>
+        <div class="stats-row">
+          <div class="stat-box">مكتمل<div id="completedCount" class="stat-num">0</div></div>
+          <div class="stat-box">قيد التنفيذ<div id="pendingCount" class="stat-num">0</div></div>
+          <div class="stat-box">الخدمات<div class="stat-num">118</div></div>
+        </div>
+      </div>
 
+      <div style="font-weight: bold; font-size: 14px; margin-top: 20px; color: #fff;">المنصات المتاحة</div>
+      
+      <div class="service-grid">
         <div class="platform-card" onclick="openPlatform('instagram')">
-          <div class="card-top">
-            <div class="platform-icon-box"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" class="platform-icon"></div>
-            <div class="platform-name">إنستغرام</div>
-          </div>
-          <span class="platform-badge">9 فئة | 22 خدمة</span>
+          <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">إنستغرام 📸</div>
+          <div style="font-size: 11px; color: var(--text-sub);">9 فئة | 22 خدمة</div>
         </div>
-
-        <div class="platform-card" onclick="openPlatform('tiktok')">
-          <div class="card-top">
-            <div class="platform-icon-box"><img src="https://cdn-icons-png.flaticon.com/512/3046/3046124.png" class="platform-icon"></div>
-            <div class="platform-name">تيك توك</div>
-          </div>
-          <span class="platform-badge">9 فئة | 20 خدمة</span>
+        <div class="platform-card" onclick="openPlatform('free')">
+          <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">خدمات مجانية 🎁</div>
+          <div style="font-size: 11px; color: var(--text-sub);">3 فئة | 8 خدمة</div>
         </div>
-
         <div class="platform-card" onclick="openPlatform('telegram')">
-          <div class="card-top">
-            <div class="platform-icon-box"><img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" class="platform-icon"></div>
-            <div class="platform-name">تليجرام</div>
-          </div>
-          <span class="platform-badge">6 فئة | 50 خدمة</span>
+          <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">تليجرام ✈️</div>
+          <div style="font-size: 11px; color: var(--text-sub);">6 فئة | 50 خدمة</div>
         </div>
-
+        <div class="platform-card" onclick="openPlatform('tiktok')">
+          <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">تيك توك 🎬</div>
+          <div style="font-size: 11px; color: var(--text-sub);">9 فئة | 20 خدمة</div>
+        </div>
         <div class="platform-card" onclick="openPlatform('facebook')">
-          <div class="card-top">
-            <div class="platform-icon-box"><img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" class="platform-icon"></div>
-            <div class="platform-name">فيسبوك</div>
-          </div>
-          <span class="platform-badge">4 فئة | 14 خدمة</span>
+          <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">فيسبوك 📘</div>
+          <div style="font-size: 11px; color: var(--text-sub);">4 فئة | 14 خدمة</div>
         </div>
-
         <div class="platform-card" onclick="openPlatform('funding')">
-          <div class="card-top">
-            <div class="platform-icon-box"><img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png" class="platform-icon"></div>
-            <div class="platform-name">تمويل حقيقي</div>
-          </div>
-          <span class="platform-badge">2 فئة | 2 خدمة</span>
+          <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">تمويل حقيقي 💵</div>
+          <div style="font-size: 11px; color: var(--text-sub);">2 فئة | 2 خدمة</div>
         </div>
-
         <div class="platform-card" onclick="openPlatform('youtube')">
-          <div class="card-top">
-            <div class="platform-icon-box"><img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" class="platform-icon"></div>
-            <div class="platform-name">يوتيوب</div>
-          </div>
-          <span class="platform-badge">3 فئة | 2 خدمة</span>
+          <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">يوتيوب 📺</div>
+          <div style="font-size: 11px; color: var(--text-sub);">3 فئة | 2 خدمة</div>
         </div>
-
         <div class="platform-card" onclick="openPlatform('twitter')">
-          <div class="card-top">
-            <div class="platform-icon-box"><img src="https://upload.wikimedia.org/wikipedia/commons/5/53/X_logo_2023_original.svg" class="platform-icon"></div>
-            <div class="platform-name">تويتر (X)</div>
-          </div>
-          <span class="platform-badge">2 فئة | 5 خدمة</span>
-        </div>
-
-        <div class="platform-card" onclick="openPlatform('snapchat')">
-          <div class="card-top">
-            <div class="platform-icon-box"><img src="https://cdn-icons-png.flaticon.com/512/3670/3670014.png" class="platform-icon"></div>
-            <div class="platform-name">سناب شات</div>
-          </div>
-          <span class="platform-badge">2 فئة | 4 خدمة</span>
-        </div>
-
-        <div class="platform-card" onclick="openPlatform('twitch')">
-          <div class="card-top">
-            <div class="platform-icon-box"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968908.png" class="platform-icon"></div>
-            <div class="platform-name">تويتش</div>
-          </div>
-          <span class="platform-badge">1 فئة | 3 خدمة</span>
+          <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">تويتر (X) 🐦</div>
+          <div style="font-size: 11px; color: var(--text-sub);">2 فئة | 5 خدمة</div>
         </div>
       </div>
     </div>
 
-    <div id="servicesView" style="display: none;">
-      <div class="services-header">
-        <span class="section-title" id="platformTitle" style="margin:0;">قائمة الخدمات</span>
-        <button class="btn-back" onclick="goHomeServices()">رجوع ↩</button>
-      </div>
+    <!-- قسم الخدمات -->
+    <div id="servicesView" class="tab-content" style="display: none;">
+      <button onclick="goHomeServices()" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; margin-bottom: 15px;">← رجوع للمنصات</button>
       <div id="servicesList"></div>
     </div>
-  </div>
 
-  <!-- SECTION 2: ORDERS TAB -->
-  <div id="ordersTab" class="tab-content fade-in" style="display: none;">
-    <div class="section-title">📋 قائمة طلباتي</div>
-    <div class="orders-list" id="ordersContainer"></div>
-  </div>
-
-  <!-- SECTION 3: CHARGE TAB -->
-  <div id="chargeTab" class="tab-content fade-in" style="display: none;">
-    <div class="section-title">💳 طرق شحن الرصيد المتاحة</div>
-    
-    <div class="charge-card">
-      <span class="charge-tag">شحن آلي</span>
-      <div style="font-size:14px; font-weight:700;">💳 كارت آسيا سيل</div>
-      <div style="font-size:11px; color:var(--text-sub);">قم بإدخال كود كارت شحن آسيا سيل للتعبئة:</div>
-      <input type="text" class="charge-input" placeholder="أدخل رقم الكارت هنا..." id="asiaCardInput">
-      <button class="btn-charge-submit" onclick="submitAsiaCard()">تأكيد شحن الكارت</button>
-    </div>
-
-    <div class="charge-card" style="border-color: #3b1e54;">
-      <span class="charge-tag" style="background: rgba(124, 58, 237, 0.15); color: #c4b5fd;">تحويل مباشر</span>
-      <div style="font-size:14px; font-weight:700;">💳 ماستر كارد الرافدين</div>
-      <div style="font-size:11px; color:var(--text-sub);">حول المبلغ إلى رقم البطاقة الموضح بالأسفل:</div>
-      <div style="background:rgba(0,0,0,0.3); border:1px solid var(--card-border); border-radius:12px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-size:16px; font-weight:800; letter-spacing:1px;" id="cardNumberText">7168843873</span>
-        <button style="background:var(--accent-purple); color:white; border:none; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;" onclick="navigator.clipboard.writeText('7168843873'); alert('تم النسخ بنجاح! 📋');">نسخ الرقم 📋</button>
+    <!-- تبويب شحن الرصيد (Wallet) -->
+    <div id="walletTab" class="tab-content" style="display: none;">
+      <h3 style="color: #fff; margin-bottom: 15px;">💳 طرق شحن الرصيد المتاحة</h3>
+      
+      <!-- كارت آسيا سيل -->
+      <div style="background: var(--bg-card); border-radius: 16px; padding: 16px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05);">
+        <div style="font-weight: bold; font-size: 14px; margin-bottom: 8px; color: #f1c40f;">💳 كارت آسيا سيل</div>
+        <input type="text" id="asiaCardInput" placeholder="أدخل رقم كارت شحن آسيا..." class="modal-input">
+        <button onclick="submitAsiaCard()" style="width: 100%; background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff; border: none; padding: 11px; border-radius: 10px; font-weight: bold; cursor: pointer;">تأكيد شحن الكارت</button>
       </div>
-      <input type="text" class="charge-input" placeholder="أدخل رقم الوصل أو اسم المحول..." id="transferReceiptInput">
-      <button class="btn-charge-submit" style="background: linear-gradient(135deg, var(--accent-purple), #6366f1);" onclick="submitTransferNotice()">إرسال إشعار التحويل 🚀</button>
+
+      <!-- ماستر كارد الرافدين -->
+      <div style="background: var(--bg-card); border-radius: 16px; padding: 16px; border: 1px solid rgba(255,255,255,0.05);">
+        <div style="font-weight: bold; font-size: 14px; margin-bottom: 8px; color: #3498db;">💳 ماستر كارد الرافدين</div>
+        <div style="font-size: 12px; color: #aaa; margin-bottom: 10px;">حول المبلغ إلى الرقم: <code style="color:#f1c40f; font-weight:bold;">7168843873</code></div>
+        <input type="text" id="transferReceiptInput" placeholder="أدخل رقم الوصل أو اسم المحول..." class="modal-input">
+        <button onclick="submitTransferNotice()" style="width: 100%; background: var(--accent-gradient); color: #fff; border: none; padding: 11px; border-radius: 10px; font-weight: bold; cursor: pointer;">إرسال إشعار التحويل 🚀</button>
+      </div>
     </div>
+
+    <!-- تبويب طلباتي (Orders) -->
+    <div id="ordersTab" class="tab-content" style="display: none;">
+      <h3 style="color: #fff; margin-bottom: 15px;">📦 طلباتي السابقة</h3>
+      <div id="ordersContainer"></div>
+    </div>
+
   </div>
 
-  <!-- SECTION 4: NOTIFICATIONS TAB -->
-  <div id="notifTab" class="tab-content fade-in" style="display: none;">
-    <div class="section-title">🔔 الإشعارات</div>
-    <div class="notif-card">
-      <div style="font-size:14px; font-weight:700;">أهلاً بك في رويال سوشال 👑</div>
-      <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">تصفح الخدمات المصورة واطلب ما تحتاج بسهولة.</div>
-    </div>
-  </div>
-
-  <!-- SECTION 5: MORE TAB -->
-  <div id="moreTab" class="tab-content fade-in" style="display: none;">
-    <div class="section-title">⚙️ القنوات والدعم الفني</div>
-    <div class="support-list">
-      <a href="https://t.me/ittttvii" target="_blank" class="support-item">
-        <span style="font-size:13px; font-weight:700; color:#c4b5fd;">↗ @ittttvii</span>
-        <span style="font-size:12px; color:var(--text-sub);">قناة التليجرام الأولى</span>
-      </a>
-      <a href="https://t.me/ciner_fx" target="_blank" class="support-item">
-        <span style="font-size:13px; font-weight:700; color:#c4b5fd;">↗ @ciner_fx</span>
-        <span style="font-size:12px; color:var(--text-sub);">قناة التليجرام الثانية</span>
-      </a>
-      <a href="https://t.me/l713i" target="_blank" class="support-item">
-        <span style="font-size:13px; font-weight:700; color:#c4b5fd;">↗ @l713i</span>
-        <span style="font-size:12px; color:var(--text-sub);">الدعم الفني (تليجرام)</span>
-      </a>
-      <a href="https://www.instagram.com/v365_?stkn=MWttaGhwZTBiYjNtbQ==" target="_blank" class="support-item">
-        <span style="font-size:13px; font-weight:700; color:#f472b6;">↗ v365_</span>
-        <span style="font-size:12px; color:var(--text-sub);">الدعم الفني (إنستغرام)</span>
-      </a>
-    </div>
-  </div>
-
-  <!-- ORDER MODAL -->
-  <div class="modal-overlay" id="orderModal">
+  <!-- النافذة المنبثقة للطلب (Order Modal) -->
+  <div id="orderModal" class="modal-overlay">
     <div class="modal-content">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <span style="font-size:15px; font-weight:800;" id="modalServiceTitle">تفاصيل الطلب</span>
-        <span style="font-size:20px; color:var(--text-sub); cursor:pointer;" onclick="closeOrderModal()">✕</span>
+      <div id="modalServiceTitle" style="font-weight: bold; font-size: 14px; margin-bottom: 12px; color: #fff;"></div>
+      <input type="text" id="targetInput" placeholder="رابط الحساب أو المنشور..." class="modal-input">
+      <input type="number" id="quantityInput" placeholder="الكمية..." class="modal-input" oninput="calculatePrice()">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 13px;">
+        <span style="color: var(--text-sub);">الإجمالي:</span>
+        <span id="totalPriceDisplay" style="color: #2ecc71; font-weight: bold;">$0.0000</span>
       </div>
-
-      <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:14px;">
-        <label style="font-size:12px; color:var(--text-sub);">الرابط أو اسم المستخدم:</label>
-        <input type="text" class="charge-input" id="targetInput" placeholder="username@ أو https://t.me/example">
+      <div style="display: flex; gap: 10px;">
+        <button onclick="submitOrder()" style="flex: 1; background: #2ecc71; color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer;">تأكيد الطلب</button>
+        <button onclick="closeOrderModal()" style="flex: 1; background: rgba(255,255,255,0.1); color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer;">إلغاء</button>
       </div>
-
-      <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:14px;">
-        <label style="font-size:12px; color:var(--text-sub);">الكمية المطلوبة:</label>
-        <input type="number" class="charge-input" id="quantityInput" value="1000" min="100" oninput="calculatePrice()">
-      </div>
-
-      <div style="background:rgba(124, 58, 237, 0.1); border:1px dashed var(--accent-purple); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <span style="font-size:12px; color:var(--text-sub);">السعر الإجمالي:</span>
-        <span style="font-size:18px; font-weight:800; color:#a7f3d0;" id="totalPriceDisplay">$0.0000</span>
-      </div>
-
-      <button class="btn-charge-submit" style="width:100%; background: linear-gradient(135deg, var(--accent-purple), #6366f1);" onclick="submitOrder()">تأكيد وإرسال الطلب 🔥</button>
     </div>
   </div>
 
-  <!-- Bottom Navigation Bar -->
-  <div class="bottom-nav">
-    <div class="nav-item active" id="nav-homeTab" onclick="switchTab('homeTab')">
-      <span style="font-size:18px;">🏠</span>
-      <span>الرئيسية</span>
+  <!-- الشريط السفلي الثابت بالترتيب الحرفي الدقيق -->
+  <div class="navbar">
+    <div class="nav-item" onclick="toggleExactDrawer(true)">
+      <span>≡</span>
+      <span>المزيد</span>
     </div>
-    <div class="nav-item" id="nav-ordersTab" onclick="switchTab('ordersTab')">
-      <span style="font-size:18px;">📋</span>
-      <span>طلباتي</span>
-    </div>
-    <div class="nav-item" id="nav-chargeTab" onclick="switchTab('chargeTab')">
-      <span style="font-size:18px;">💳</span>
-      <span>شحن</span>
-    </div>
-    <div class="nav-item" id="nav-notifTab" onclick="switchTab('notifTab')">
-      <span style="font-size:18px;">🔔</span>
+    <div class="nav-item" id="nav-notificationsTab" onclick="switchTab('notificationsTab')">
+      <span>🔔</span>
       <span>الإشعارات</span>
     </div>
-    <div class="nav-item" id="nav-moreTab" onclick="switchTab('moreTab')">
-      <span style="font-size:18px;">☰</span>
-      <span>المزيد</span>
+    <div class="nav-item" id="nav-walletTab" onclick="switchTab('walletTab')">
+      <span>💳</span>
+      <span>شحن</span>
+    </div>
+    <div class="nav-item" id="nav-ordersTab" onclick="switchTab('ordersTab')">
+      <span>📦</span>
+      <span>طلباتي</span>
+    </div>
+    <div class="nav-item active" id="nav-homeView" onclick="switchTab('homeView')">
+      <span>🏠</span>
+      <span>الرئيسية</span>
     </div>
   </div>
 
