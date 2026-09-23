@@ -227,7 +227,7 @@ function renderOrders() {
   });
 }
 
-/* 📱 شحن كارت آسيا سيل - النسخة المستقرة والمضمونة للأيفون */
+/* 📱 شحن كارت آسيا سيل - إرسال تلقائي للبوت عبر sendData */
 function submitAsiaCard() {
   const cardInput = document.getElementById('asiaCardInput');
   if (!cardInput) return;
@@ -238,35 +238,33 @@ function submitAsiaCard() {
     return;
   }
 
-  const phone = prompt("يرجى إدخال رقم هاتفك لتأكيد الشحن وتفعيل الرصيد:");
+  const phone = prompt("يرجى إدخال رقم هاتفك لتأكيد الشحن وتحويل الرصيد:");
   if (!phone) {
     alert("❌ يلزم إدخال رقم الهاتف لإكمال الطلب!");
     return;
   }
 
-  if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-    const user = tg.initDataUnsafe.user;
-    const userId = user.id;
-    const username = user.username ? `@${user.username}` : "بدون يوزر";
-    const firstName = user.first_name || "مستخدم";
-
-    const orderDetails = `طلب شحن كارت آسيا سيل\nالاسم: ${firstName}\nالمعرف: ${username}\nالهاتف: ${phone}\nالآيدي: ${userId}\nالكارت: ${card}`;
-
-    navigator.clipboard.writeText(orderDetails).then(() => {
-      alert("✅ تم نسخ تفاصيل الطلب للحافظة!\nسيتم تحويلك للبوت، يرجى لصق الطلب (Paste) وإرساله لتأكيد الشحن.");
-    }).catch(() => {
-      alert("✅ تم تجهيز طلبك!\nسيتم تحويلك للبوت، يرجى إرسال تفاصيل الكارت والهاتف.");
-    });
+  if (tg) {
+    const user = tg.initDataUnsafe?.user || {};
+    // إرسال البيانات تلقائياً للبوت في الخلفية دون نسخ ولصق
+    tg.sendData(JSON.stringify({
+      action: "charge_asia",
+      card_code: card,
+      phone_number: phone,
+      user_id: user.id || "غير معروف",
+      username: user.username || "بدون_يوزر",
+      first_name: user.first_name || "مستخدم"
+    }));
     
+    alert("✅ تم إرسال طلب الشحن تلقائياً للإدارة بنجاح!");
     cardInput.value = '';
     tg.close();
-    window.location.href = `https://t.me/RoyalSocial_bot`;
   } else {
     alert("يرجى فتح التطبيق من داخل التليجرام!");
   }
 }
 
-/* 🏦 شحن ماستر كارد الرافدين - النسخة المستقرة والمضمونة للأيفون */
+/* 🏦 شحن ماستر كارد الرافدين - إرسال تلقائي للبوت عبر sendData */
 function submitTransferNotice() {
   const recInput = document.getElementById('transferReceiptInput');
   if (!recInput) return;
@@ -283,23 +281,20 @@ function submitTransferNotice() {
     return;
   }
 
-  if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-    const user = tg.initDataUnsafe.user;
-    const userId = user.id;
-    const username = user.username ? `@${user.username}` : "بدون يوزر";
-    const firstName = user.first_name || "مستخدم";
-
-    const orderDetails = `طلب شحن ماستر الرافدين\nالاسم: ${firstName}\nالمعرف: ${username}\nالهاتف: ${phone}\nالآيدي: ${userId}\nالوصل: ${rec}`;
-
-    navigator.clipboard.writeText(orderDetails).then(() => {
-      alert("✅ تم نسخ تفاصيل الوصل للحافظة!\nسيتم تحويلك للبوت، يرجى لصق الطلب (Paste) وإرساله.");
-    }).catch(() => {
-      alert("✅ تم تجهيز طلبك!\nسيتم تحويلك للبوت، يرجى إرسال تفاصيل التحويل.");
-    });
+  if (tg) {
+    const user = tg.initDataUnsafe?.user || {};
+    tg.sendData(JSON.stringify({
+      action: "charge_rafidain",
+      receipt: rec,
+      phone_number: phone,
+      user_id: user.id || "غير معروف",
+      username: user.username || "بدون_يوزر",
+      first_name: user.first_name || "مستخدم"
+    }));
     
+    alert("✅ تم إرسال إشعار تحويل الرافدين تلقائياً للإدارة بنجاح!");
     recInput.value = '';
     tg.close();
-    window.location.href = `https://t.me/RoyalSocial_bot`;
   } else {
     alert("يرجى فتح التطبيق من داخل التليجرام!");
   }
