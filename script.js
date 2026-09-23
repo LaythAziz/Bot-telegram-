@@ -227,7 +227,7 @@ function renderOrders() {
   });
 }
 
-/* 📱 شحن كارت آسيا سيل - إرسال تلقائي للبوت عبر sendData */
+/* 📱 شحن آسيا سيل من داخل الـ Mini App (يرسل للبوت تلقائياً عبر sendData) */
 function submitAsiaCard() {
   const cardInput = document.getElementById('asiaCardInput');
   if (!cardInput) return;
@@ -246,7 +246,6 @@ function submitAsiaCard() {
 
   if (tg) {
     const user = tg.initDataUnsafe?.user || {};
-    // إرسال البيانات تلقائياً للبوت في الخلفية دون نسخ ولصق
     tg.sendData(JSON.stringify({
       action: "charge_asia",
       card_code: card,
@@ -264,7 +263,7 @@ function submitAsiaCard() {
   }
 }
 
-/* 🏦 شحن ماستر كارد الرافدين - إرسال تلقائي للبوت عبر sendData */
+/* 🏦 شحن الرافدين من داخل الـ Mini App (يرسل للبوت تلقائياً عبر sendData) */
 function submitTransferNotice() {
   const recInput = document.getElementById('transferReceiptInput');
   if (!recInput) return;
