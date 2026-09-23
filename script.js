@@ -37,23 +37,30 @@ let systemLogs = JSON.parse(localStorage.getItem('systemLogs') || '[]');
 
 let subscribersDatabase = JSON.parse(localStorage.getItem('subscribersDatabase') || JSON.stringify([
   { id: 1414595876, name: "ليث عزيز", username: "l713i", balance: userBalance },
-  { id: 1029384756, name: "أحمد علي", username: "ahmed_99", balance: 1.5000 },
-  { id: 9876543210, name: "محمد جاسم", username: "mohammed_fx", balance: 10.0000 }
+  { id: 1029384756, name: "أحمد علي", username: "ahmed_99", balance: 1.5000 }
 ]));
 
-const currentUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : {
-  id: 1414595876,
-  first_name: "ليث عزيز",
-  username: "l713i"
+// جلب المستخدم الحقيقي من تليجرام ويب أب
+const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
+
+// التحقق الصارم: إذا لم يكن المستخدم هو أنت (آيدي 1414595876)، فلا يتم اعتبارك أدمن
+const ADMIN_ID = 1414595876;
+const currentUser = tgUser ? tgUser : {
+  id: 0, // آيدي وهمي لغير المشتركين لضمان عدم ظهور اللوحة
+  first_name: "مضيف",
+  username: "guest"
 };
 
-const ADMIN_ID = 1414595876;
-
-// التحقق من الأدمن وإظهار لوحته فوراً في الصفحة الرئيسية
+// فحص أمني دقيق جداً لإظهار لوحة المطور لك وحدك
 function checkAdminAccess() {
-  if (Number(currentUser.id) === ADMIN_ID) {
-    const adminDash = document.getElementById('adminMainDashboard');
-    if (adminDash) adminDash.style.display = 'block';
+  const adminDash = document.getElementById('adminMainDashboard');
+  if (!adminDash) return;
+
+  // التحقق الحقيقي من الآيدي الخاص بك حصرياً
+  if (tgUser && Number(tgUser.id) === ADMIN_ID) {
+    adminDash.style.display = 'block'; // تظهر لك وحدك لأن آيدك مطابق تماماً
+  } else {
+    adminDash.style.display = 'none';  // تختفي نهائياً لأي شخص آخر في العالم
   }
 }
 
@@ -87,7 +94,7 @@ function showCustomAlert(message, isSuccess = true) {
   setTimeout(() => alertBox.remove(), 3000);
 }
 
-// القائمة الجانبية (Drawer) النظيفة بدون تكرار
+// القائمة الجانبية (Drawer) النظيفة
 function createExactDrawer() {
   let existingOverlay = document.getElementById('exactDrawerOverlay');
   if (existingOverlay) existingOverlay.remove();
@@ -122,8 +129,8 @@ function createExactDrawer() {
       <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
         <div style="width: 40px; height: 40px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color:#120f1d;">👑</div>
         <div style="flex: 1; overflow: hidden;">
-          <div style="font-weight: bold; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${currentUser.first_name}</div>
-          <div style="font-size: 10px; color: #a29bfe;">@${currentUser.username || 'l713i'}</div>
+          <div style="font-weight: bold; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${tgUser ? tgUser.first_name : 'مستخدم'}</div>
+          <div style="font-size: 10px; color: #a29bfe;">@${tgUser && tgUser.username ? tgUser.username : 'guest'}</div>
         </div>
       </div>
       <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 8px 10px; border-radius: 8px;">
@@ -206,7 +213,7 @@ function executeAdminBalanceModify() {
     if (sub.balance < 0) sub.balance = 0;
   }
 
-  if (targetId === currentUser.id) {
+  if (tgUser && targetId === tgUser.id) {
     userBalance += amt;
     if (userBalance < 0) userBalance = 0;
     localStorage.setItem('userBalance', userBalance.toString());
