@@ -108,7 +108,7 @@ function showCustomAlert(message, isSuccess = true) {
   }, 3500);
 }
 
-// --- 1. بناء القائمة الجانبية (Drawer Menu) عند الضغط على "المزيد" ---
+// --- 1. القائمة الجانبية (Drawer Menu) بثيم البنفسجي عند الضغط على زر "المزيد" ---
 function buildDrawerMenu() {
   let drawer = document.getElementById('customDrawerMenu');
   if (!drawer) {
@@ -215,7 +215,7 @@ function buildProfileTab() {
   }
 }
 
-// --- 3. بناء لوحة التحكم الخاصة بك وحدك كأدمن داخل الميني أب ---
+// --- 3. لوحة تحكم الأدمن الخاصة بك وحدك داخل الميني أب ---
 function buildAdminTab() {
   if (currentUser && Number(currentUser.id) === ADMIN_ID) {
     let adminTab = document.getElementById('adminTab');
@@ -246,7 +246,7 @@ function buildAdminTab() {
   }
 }
 
-// --- 4. بناء قسم الإشعارات الحقيقية ---
+// --- 4. قسم الإشعارات الحقيقية ---
 function buildNotificationsTab() {
   let notifTab = document.getElementById('notificationsTab');
   if (!notifTab) {
@@ -315,7 +315,7 @@ function clearNotifications() {
   showCustomAlert("✅ تم تحديد جميع الإشعارات كمقروءة!");
 }
 
-// --- 5. ترتيب الشريط السفلي بالترتيب الدقيق المطلوب وبدون تداخل ---
+// --- 5. ترتيب الشريط السفلي وتثبيت البروفايل والأدمن ---
 function setupCustomNavbar() {
   const navbar = document.querySelector('.navbar') || document.querySelector('.nav-bar');
   if (!navbar) return;
@@ -323,7 +323,7 @@ function setupCustomNavbar() {
   const oldAdded = navbar.querySelectorAll('.custom-nav-item');
   oldAdded.forEach(el => el.remove());
 
-  // 1. زر البروفايل [بجانب الإشعارات]
+  // زر البروفايل [بجانب الإشعارات]
   let profileNavBtn = document.createElement('div');
   profileNavBtn.id = 'nav-profileTab';
   profileNavBtn.className = 'nav-item custom-nav-item';
@@ -331,7 +331,7 @@ function setupCustomNavbar() {
   profileNavBtn.onclick = () => switchTab('profileTab');
   navbar.appendChild(profileNavBtn);
 
-  // 2. زر لوحة تحكم الأدمن (يظهر لك أنت وحدك فقط)
+  // زر لوحة تحكم الأدمن (يظهر لك أنت وحدك فقط)
   if (currentUser && Number(currentUser.id) === ADMIN_ID) {
     let adminNavBtn = document.createElement('div');
     adminNavBtn.id = 'nav-adminTab';
@@ -341,7 +341,7 @@ function setupCustomNavbar() {
     navbar.appendChild(adminNavBtn);
   }
 
-  // 3. ربط زر "المزيد" بالقائمة المنسدلة الجانبية
+  // ربط زر "المزيد" بالقائمة المنسدلة الجانبية
   const navItems = navbar.querySelectorAll('.nav-item');
   navItems.forEach(item => {
     if (item.innerText.includes('المزيد') || item.innerText.includes('≡')) {
@@ -351,6 +351,55 @@ function setupCustomNavbar() {
       };
     }
   });
+}
+
+// --- 6. دوال شحن الرصيد (آسيا سيل والرافدين التي توقفت) ---
+function submitAsiaCard() {
+  const cardInput = document.getElementById('asiaCardInput');
+  if (!cardInput) {
+    showCustomAlert("❌ حقل كارت آسيا سيل غير موجود!", false);
+    return;
+  }
+  const card = cardInput.value.trim();
+  if (!card || card.length < 5) {
+    showCustomAlert("⚠️ يرجى إدخال رقم كارت آسيا سيل بشكل صحيح!", false);
+    return;
+  }
+
+  const textData = `طلب_شحن_آسيا | الاسم: ${currentUser.first_name} | المعرف: @${currentUser.username || 'بدون'} | الآيدي: ${currentUser.id} | الكارت: ${card}`;
+  cardInput.value = '';
+  addNotification("طلب شحن معلق", `تم إرسال كارت آسيا سيل للإدارة بنجاح.`);
+  
+  if (tg) {
+    tg.close();
+    window.location.href = `https://t.me/RoyalSocial_bot?start=${encodeURIComponent(textData)}`;
+  } else {
+    showCustomAlert("✅ تم إرسال طلب الشحن بنجاح!");
+  }
+}
+
+function submitTransferNotice() {
+  const recInput = document.getElementById('transferReceiptInput');
+  if (!recInput) {
+    showCustomAlert("❌ حقل وصل التحويل غير موجود!", false);
+    return;
+  }
+  const rec = recInput.value.trim();
+  if (!rec || rec.length < 3) {
+    showCustomAlert("⚠️ يرجى إدخال رقم الوصل أو اسم المحول بشكل صحيح!", false);
+    return;
+  }
+
+  const textData = `طلب_شحن_الرافدين | الاسم: ${currentUser.first_name} | المعرف: @${currentUser.username || 'بدون'} | الآيدي: ${currentUser.id} | الوصل: ${rec}`;
+  recInput.value = '';
+  addNotification("طلب شحن معلق", `تم إرسال إشعار تحويل الرافدين للإدارة بنجاح.`);
+
+  if (tg) {
+    tg.close();
+    window.location.href = `https://t.me/RoyalSocial_bot?start=${encodeURIComponent(textData)}`;
+  } else {
+    showCustomAlert("✅ تم إرسال إشعار التحويل بنجاح!");
+  }
 }
 
 function executeAdminBalanceAction() {
