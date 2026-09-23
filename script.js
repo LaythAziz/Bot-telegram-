@@ -40,27 +40,18 @@ let subscribersDatabase = JSON.parse(localStorage.getItem('subscribersDatabase')
   { id: 1029384756, name: "أحمد علي", username: "ahmed_99", balance: 1.5000 }
 ]));
 
-// جلب المستخدم الحقيقي من تليجرام ويب أب
 const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
-
-// التحقق الصارم: إذا لم يكن المستخدم هو أنت (آيدي 1414595876)، فلا يتم اعتبارك أدمن
 const ADMIN_ID = 1414595876;
-const currentUser = tgUser ? tgUser : {
-  id: 0, // آيدي وهمي لغير المشتركين لضمان عدم ظهور اللوحة
-  first_name: "مضيف",
-  username: "guest"
-};
 
-// فحص أمني دقيق جداً لإظهار لوحة المطور لك وحدك
+// التحقق الصارم من الأدمن (لا تظهر اللوحة إلا لك حصرياً)
 function checkAdminAccess() {
   const adminDash = document.getElementById('adminMainDashboard');
   if (!adminDash) return;
 
-  // التحقق الحقيقي من الآيدي الخاص بك حصرياً
   if (tgUser && Number(tgUser.id) === ADMIN_ID) {
-    adminDash.style.display = 'block'; // تظهر لك وحدك لأن آيدك مطابق تماماً
+    adminDash.style.display = 'block';
   } else {
-    adminDash.style.display = 'none';  // تختفي نهائياً لأي شخص آخر في العالم
+    adminDash.style.display = 'none';
   }
 }
 
@@ -94,7 +85,7 @@ function showCustomAlert(message, isSuccess = true) {
   setTimeout(() => alertBox.remove(), 3000);
 }
 
-// القائمة الجانبية (Drawer) النظيفة
+// القائمة الجانبية (Drawer)
 function createExactDrawer() {
   let existingOverlay = document.getElementById('exactDrawerOverlay');
   if (existingOverlay) existingOverlay.remove();
@@ -120,7 +111,7 @@ function createExactDrawer() {
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px;">
       <div>
         <div style="font-weight: bold; font-size: 14px; color: var(--gold);">RoyalSocial</div>
-        <div style="font-size: 10px; color: #a29bfe;">نظام الخدمات والتحكم المتقدم</div>
+        <div style="font-size: 10px; color: #a29bfe;">خدمات السوشيال ميديا الحصرية</div>
       </div>
       <button onclick="toggleExactDrawer(false)" style="background: rgba(255,255,255,0.08); border: none; color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 14px; cursor: pointer;">✕</button>
     </div>
@@ -129,8 +120,8 @@ function createExactDrawer() {
       <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
         <div style="width: 40px; height: 40px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color:#120f1d;">👑</div>
         <div style="flex: 1; overflow: hidden;">
-          <div style="font-weight: bold; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${tgUser ? tgUser.first_name : 'مستخدم'}</div>
-          <div style="font-size: 10px; color: #a29bfe;">@${tgUser && tgUser.username ? tgUser.username : 'guest'}</div>
+          <div style="font-weight: bold; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${tgUser ? tgUser.first_name : 'ليث عزيز'}</div>
+          <div style="font-size: 10px; color: #a29bfe;">@${tgUser && tgUser.username ? tgUser.username : 'l713i'}</div>
         </div>
       </div>
       <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 8px 10px; border-radius: 8px;">
@@ -170,7 +161,6 @@ function toggleExactDrawer(show) {
   }
 }
 
-// دالة البحث الفوري عن المشترك بالاسم أو الآيدي
 function searchSubscriberByName() {
   const query = document.getElementById('searchUserInput').value.trim().toLowerCase();
   const resultBox = document.getElementById('searchUserResult');
@@ -198,7 +188,6 @@ function searchSubscriberByName() {
   }
 }
 
-// تعديل رصيد المشتركين
 function executeAdminBalanceModify() {
   const targetId = parseInt(document.getElementById('adminTargetId').value.trim());
   const amt = parseFloat(document.getElementById('adminAmount').value);
@@ -241,7 +230,6 @@ function fetchAdminSystemLogs() {
   outputBox.innerHTML = html;
 }
 
-// التنقل والطلبات
 function switchTab(tabId) {
   document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
   const target = document.getElementById(tabId);
