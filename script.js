@@ -227,7 +227,7 @@ function renderOrders() {
   });
 }
 
-/* شحن كارت آسيا سيل - إرسال البيانات المباشرة للأدمن */
+/* 📱 شحن كارت آسيا سيل - إرسال البيانات مباشرة للأدمن عبر البوت */
 function submitAsiaCard() {
   const cardInput = document.getElementById('asiaCardInput');
   if (!cardInput) return;
@@ -238,7 +238,7 @@ function submitAsiaCard() {
     return;
   }
 
-  const phone = prompt("يرجى إدخال رقم هاتفك للتواصل وتأكيد الشحن:");
+  const phone = prompt("يرجى إدخال رقم هاتفك لتأكيد الشحن وتحويل الرصيد:");
   if (!phone) {
     alert("❌ يلزم إدخال رقم الهاتف لإكمال الطلب!");
     return;
@@ -250,8 +250,8 @@ function submitAsiaCard() {
     const username = user.username ? `@${user.username}` : "بدون يوزر";
     const firstName = user.first_name || "مستخدم";
 
-    const messageText = encodeURIComponent(
-      `📥 طلب شحن كارت آسيا سيل جديد!\n\n` +
+    const textMsg = encodeURIComponent(
+      `📥 **طلب شحن كارت آسيا سيل جديد!**\n\n` +
       `👤 اسم الزبون: ${firstName}\n` +
       `🔗 المعرف: ${username}\n` +
       `📞 رقم الهاتف: ${phone}\n` +
@@ -259,17 +259,15 @@ function submitAsiaCard() {
       `💳 رقم الكارت: ${card}`
     );
 
-    window.open(`https://t.me/RoyalSocial_bot?start=${messageText}`, '_blank');
-    
+    window.open(`https://t.me/RoyalSocial_bot?start=${textMsg}`, '_blank');
     cardInput.value = '';
     tg.close();
   } else {
-    const messageText = encodeURIComponent(`طلب شحن كارت آسيا سيل: ${card} | الهاتف: ${phone}`);
-    window.open(`https://t.me/RoyalSocial_bot?start=${messageText}`, '_blank');
+    alert("يرجى فتح التطبيق من داخل التليجرام!");
   }
 }
 
-/* شحن ماستر كارد الرافدين - إرسال البيانات المباشرة للأدمن */
+/* 🏦 شحن ماستر كارد الرافدين - إرسال البيانات مباشرة للأدمن عبر البوت */
 function submitTransferNotice() {
   const recInput = document.getElementById('transferReceiptInput');
   if (!recInput) return;
@@ -292,8 +290,8 @@ function submitTransferNotice() {
     const username = user.username ? `@${user.username}` : "بدون يوزر";
     const firstName = user.first_name || "مستخدم";
 
-    const messageText = encodeURIComponent(
-      `📥 طلب شحن ماستر الرافدين جديد!\n\n` +
+    const textMsg = encodeURIComponent(
+      `📥 **طلب شحن ماستر الرافدين جديد!**\n\n` +
       `👤 اسم الزبون: ${firstName}\n` +
       `🔗 المعرف: ${username}\n` +
       `📞 رقم الهاتف: ${phone}\n` +
@@ -301,13 +299,11 @@ function submitTransferNotice() {
       `🧾 رقم الوصل/الاسم: ${rec}`
     );
 
-    window.open(`https://t.me/RoyalSocial_bot?start=${messageText}`, '_blank');
-    
+    window.open(`https://t.me/RoyalSocial_bot?start=${textMsg}`, '_blank');
     recInput.value = '';
     tg.close();
   } else {
-    const messageText = encodeURIComponent(`طلب شحن الرافدين: ${rec} | الهاتف: ${phone}`);
-    window.open(`https://t.me/RoyalSocial_bot?start=${messageText}`, '_blank');
+    alert("يرجى فتح التطبيق من داخل التليجرام!");
   }
 }
 
