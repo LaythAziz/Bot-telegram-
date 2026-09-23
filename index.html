@@ -149,7 +149,7 @@
       box-shadow: 0 4px 12px var(--accent-purple-glow);
     }
 
-    /* Stats Bar (فقط في الرئيسية) */
+    /* Stats Bar */
     .stats-bar {
       display: flex;
       justify-content: space-around;
@@ -349,7 +349,7 @@
       color: #fde047;
     }
 
-    /* CHARGE TAB IMPROVED (تصميم محسّن وشامل) */
+    /* CHARGE TAB */
     .charge-card {
       background: linear-gradient(145deg, #160d29, #10081f);
       border: 1px solid #3d1b54;
@@ -490,7 +490,7 @@
 </head>
 <body>
 
-  <!-- Top Profile Card (يعرض دائماً) -->
+  <!-- Top Profile Card -->
   <div class="profile-card">
     <div class="profile-header">
       <div class="user-info">
@@ -514,10 +514,10 @@
     </div>
   </div>
 
-  <!-- SECTION 1: HOME TAB (الرئيسية فقط تحتوي على شريط الإحصائيات) -->
+  <!-- SECTION 1: HOME TAB -->
   <div id="homeTab" class="tab-content fade-in">
     
-    <!-- Stats Bar (محصور بالرئيسية فقط) -->
+    <!-- Stats Bar -->
     <div class="stats-bar">
       <div class="stat-item"><span>📦 مكتمل:</span> <span class="stat-num" id="completedCount">0</span></div>
       <div class="stat-item"><span>⚡ قيد التنفيذ:</span> <span class="stat-num" id="pendingCount">0</span></div>
@@ -635,19 +635,16 @@
     </div>
   </div>
 
-  <!-- SECTION 2: ORDERS TAB (بدون شريط الإحصائيات) -->
+  <!-- SECTION 2: ORDERS TAB -->
   <div id="ordersTab" class="tab-content fade-in" style="display: none;">
     <div class="section-title">📋 قائمة طلباتي</div>
-    <div class="orders-list" id="ordersContainer">
-      <!-- يتم توليد الطلبات الحقيقية هنا تلقائياً -->
-    </div>
+    <div class="orders-list" id="ordersContainer"></div>
   </div>
 
-  <!-- SECTION 3: CHARGE TAB (بدون شريط الإحصائيات) -->
+  <!-- SECTION 3: CHARGE TAB -->
   <div id="chargeTab" class="tab-content fade-in" style="display: none;">
     <div class="section-title">💳 طرق شحن الرصيد المتاحة</div>
     
-    <!-- Asia Cell Card -->
     <div class="charge-card">
       <span class="charge-tag">شحن آلي</span>
       <div style="font-size:14px; font-weight:700;">💳 كارت آسيا سيل</div>
@@ -656,7 +653,6 @@
       <button class="btn-charge-submit" onclick="submitAsiaCard()">تأكيد شحن الكارت</button>
     </div>
 
-    <!-- Rafidain Master Card -->
     <div class="charge-card" style="border-color: #3b1e54;">
       <span class="charge-tag" style="background: rgba(124, 58, 237, 0.15); color: #c4b5fd;">تحويل مباشر</span>
       <div style="font-size:14px; font-weight:700;">💳 ماستر كارد الرافدين</div>
@@ -670,7 +666,7 @@
     </div>
   </div>
 
-  <!-- SECTION 4: NOTIFICATIONS TAB (بدون شريط الإحصائيات) -->
+  <!-- SECTION 4: NOTIFICATIONS TAB -->
   <div id="notifTab" class="tab-content fade-in" style="display: none;">
     <div class="section-title">🔔 الإشعارات</div>
     <div class="notif-card">
@@ -679,7 +675,7 @@
     </div>
   </div>
 
-  <!-- SECTION 5: MORE TAB (بدون شريط الإحصائيات) -->
+  <!-- SECTION 5: MORE TAB -->
   <div id="moreTab" class="tab-content fade-in" style="display: none;">
     <div class="section-title">⚙️ القنوات والدعم الفني</div>
     <div class="support-list">
@@ -695,14 +691,15 @@
         <span style="font-size:13px; font-weight:700; color:#c4b5fd;">↗ @l713i</span>
         <span style="font-size:12px; color:var(--text-sub);">الدعم الفني (تليجرام)</span>
       </a>
-      <a href="https://instagram.com/_v365" target="_blank" class="support-item">
-        <span style="font-size:13px; font-weight:700; color:#f472b6;">↗ _v365</span>
+      <!-- التحديث المباشر لحساب الإنستغرام الشخصي -->
+      <a href="https://www.instagram.com/v365_?stkn=MWttaGhwZTBiYjNtbQ==" target="_blank" class="support-item">
+        <span style="font-size:13px; font-weight:700; color:#f472b6;">↗ v365_</span>
         <span style="font-size:12px; color:var(--text-sub);">الدعم الفني (إنستغرام)</span>
       </a>
     </div>
   </div>
 
-  <!-- ORDER MODAL (SLIDE FROM TOP) -->
+  <!-- ORDER MODAL -->
   <div class="modal-overlay" id="orderModal">
     <div class="modal-content">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
@@ -720,7 +717,7 @@
         <input type="number" class="charge-input" id="quantityInput" value="1000" min="100" oninput="calculatePrice()">
       </div>
 
-      <div style="background:rgba(124, 58, 237, 0.1); border:1px dashed var(--accent-purple); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <div style="background:rgba(124, 58, 237, 0.1); border:1px dashed var(--accent-purple); padding:12px; border-radius:12px; display:flex; justify-space-between; align-items:center; margin-bottom:16px;">
         <span style="font-size:12px; color:var(--text-sub);">السعر الإجمالي:</span>
         <span style="font-size:18px; font-weight:800; color:#a7f3d0;" id="totalPriceDisplay">$0.0000</span>
       </div>
@@ -824,7 +821,6 @@
       document.getElementById('userName').innerText = tg.initDataUnsafe.user.first_name || "Layth Aziz";
     }
 
-    // التحديث الفوري للعدادات في الرئيسية
     function updateStatsDisplay() {
       const pending = myOrders.filter(o => o.status.includes('قيد')).length;
       const completed = myOrders.filter(o => o.status.includes('مكتمل')).length;
@@ -975,7 +971,6 @@
       document.getElementById('transferReceiptInput').value = '';
     }
 
-    // تهيئة العدادات عند التحميل
     updateStatsDisplay();
   </script>
 </body>
