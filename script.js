@@ -64,14 +64,20 @@ let currentService = null;
 let userBalance = 0.0000;
 let myOrders = JSON.parse(localStorage.getItem('myOrders') || '[]');
 
-if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+const currentUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : {
+  id: "8816331690",
+  first_name: "Layth Aziz",
+  username: "l713i"
+};
+
+// تعبئة البيانات في الواجهة
+if (currentUser) {
   const userNameEl = document.getElementById('userName');
   if (userNameEl) {
-    userNameEl.innerText = tg.initDataUnsafe.user.first_name || "Layth Aziz";
+    userNameEl.innerText = currentUser.first_name || "مستخدم";
   }
 }
 
-// --- نظام إشعارات أنيق داخل التطبيق (بدون نوافذ منبثقة مزعجة) ---
 function showCustomAlert(message, isSuccess = true) {
   const existingAlert = document.getElementById('customAlertBox');
   if (existingAlert) existingAlert.remove();
@@ -83,7 +89,6 @@ function showCustomAlert(message, isSuccess = true) {
     background: ${isSuccess ? 'linear-gradient(135deg, #00b09b, #96c93d)' : 'linear-gradient(135deg, #ff416c, #ff4b2b)'};
     color: #fff; padding: 14px 20px; border-radius: 14px; font-size: 13px; font-weight: bold;
     z-index: 99999; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 90%; max-width: 350px;
-    animation: fadeInOut 3s ease forwards;
   `;
   alertBox.innerText = message;
   document.body.appendChild(alertBox);
@@ -93,46 +98,31 @@ function showCustomAlert(message, isSuccess = true) {
   }, 3500);
 }
 
-// --- لوحة تحكم الأدمن الشاملة داخل الـ Mini App (تظهر لك وحدك) ---
+// --- لوحة الأدمن الخاصة بك (تظهر لك وحدك) ---
 const ADMIN_ID = 1414595876;
-const currentUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
-
-if (currentUser && currentUser.id === ADMIN_ID) {
+if (currentUser && Number(currentUser.id) === ADMIN_ID) {
   const adminPanelContainer = document.createElement('div');
   adminPanelContainer.innerHTML = `
     <div style="background: linear-gradient(135deg, #1f1c2c, #393154); border: 2px solid #ff416c; border-radius: 16px; padding: 15px; margin: 15px 0; color: #fff; box-shadow: 0 8px 25px rgba(255,65,108,0.3);">
-      <div style="font-weight: bold; font-size: 15px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: #ff758c;">
-        🛠 لوحة تحكم الأدمن الشاملة
-      </div>
-      
-      <!-- إضافة أو خصم الرصيد -->
-      <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; margin-bottom: 10px;">
-        <div style="font-size: 12px; font-weight: bold; margin-bottom: 6px;">💵 إدارة رصيد الزبون (إضافة / خصم)</div>
+      <div style="font-weight: bold; font-size: 15px; margin-bottom: 12px; color: #ff758c;">🛠 لوحة تحكم الأدمن الشاملة</div>
+      <div style="margin-bottom: 8px;">
         <input type="number" id="adminTargetId" placeholder="آيدي الزبون (مثال: 8816331690)" style="width: 100%; padding: 8px; border-radius: 6px; border: none; background: rgba(255,255,255,0.1); color: #fff; margin-bottom: 6px; font-size: 12px;">
-        <input type="number" id="adminAmount" placeholder="المبلغ بالدولار ($) (مثال: 5 أو -5 للخصم)" step="0.01" style="width: 100%; padding: 8px; border-radius: 6px; border: none; background: rgba(255,255,255,0.1); color: #fff; margin-bottom: 8px; font-size: 12px;">
-        <button onclick="executeAdminBalanceAction('add')" style="width: 100%; background: #00b09b; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; margin-bottom: 6px;">➕ إضافة أو خصم الرصيد فوراً</button>
+        <input type="number" id="adminAmount" placeholder="المبلغ ($) (مثال: 5 أو -5 للخصم)" step="0.01" style="width: 100%; padding: 8px; border-radius: 6px; border: none; background: rgba(255,255,255,0.1); color: #fff; margin-bottom: 8px; font-size: 12px;">
+        <button onclick="executeAdminBalanceAction()" style="width: 100%; background: #00b09b; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px;">➕ إضافة أو خصم الرصيد فوراً</button>
       </div>
-
-      <!-- أزرار عرض المشتركين والسجلات -->
-      <div style="display: flex; gap: 8px;">
-        <button onclick="requestUsersList()" style="flex: 1; background: #3498db; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px;">👥 المشتركين (عدد وأسماء)</button>
+      <div style="display: flex; gap: 8px; margin-top: 8px;">
+        <button onclick="requestUsersList()" style="flex: 1; background: #3498db; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px;">👥 المشتركين</button>
         <button onclick="requestUserLogs()" style="flex: 1; background: #9b59b6; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px;">📋 سجل حركات زبون</button>
       </div>
-
-      <div id="adminOutputResult" style="margin-top: 10px; font-size: 11px; color: #f1c40f; background: rgba(0,0,0,0.4); padding: 8px; border-radius: 6px; max-height: 150px; overflow-y: auto; display: none;"></div>
     </div>
   `;
-  
   const homeView = document.getElementById('homeView');
-  if (homeView) {
-    homeView.insertBefore(adminPanelContainer, homeView.firstChild);
-  }
+  if (homeView) homeView.insertBefore(adminPanelContainer, homeView.firstChild);
 }
 
-function executeAdminBalanceAction(type) {
+function executeAdminBalanceAction() {
   const targetIdInput = document.getElementById('adminTargetId');
   const amountInput = document.getElementById('adminAmount');
-  
   if (!targetIdInput || !amountInput) return;
   const targetId = targetIdInput.value.trim();
   const amount = parseFloat(amountInput.value);
@@ -143,39 +133,87 @@ function executeAdminBalanceAction(type) {
   }
 
   if (tg) {
-    tg.sendData(JSON.stringify({
-      action: "admin_manage_balance",
-      target_id: targetId,
-      amount: amount
-    }));
+    tg.sendData(JSON.stringify({ action: "admin_manage_balance", target_id: targetId, amount: amount }));
     showCustomAlert(`✅ تم إرسال أمر تعديل الرصيد للآيدي ${targetId} بنجاح!`);
     targetIdInput.value = '';
     amountInput.value = '';
-  } else {
-    showCustomAlert("يرجى فتح التطبيق من داخل التليجرام!", false);
   }
 }
 
 function requestUsersList() {
   if (tg) {
     tg.sendData(JSON.stringify({ action: "admin_get_users_list" }));
-    showCustomAlert("📤 جاري طلب قائمة المشتركين والإحصائيات من البوت...");
+    showCustomAlert("📤 جاري طلب قائمة المشتركين...");
   }
 }
 
 function requestUserLogs() {
-  const targetId = prompt("أدخل آيدي الزبون لعرض سجل حركاته التفصيلي:");
+  const targetId = prompt("أدخل آيدي الزبون لعرض سجل حركاته:");
   if (!targetId) return;
   if (tg) {
     tg.sendData(JSON.stringify({ action: "admin_get_user_logs", target_id: targetId }));
-    showCustomAlert(`📤 جاري جلب سجل حركات الزبون ${targetId}...`);
+    showCustomAlert(`📤 جاري جلب سجل حركات الزبون...`);
   }
 }
+
+// --- إنشاء صفحة الملف الشخصي (Profile) للزبون ---
+function buildProfileTab() {
+  let profileTab = document.getElementById('profileTab');
+  if (!profileTab) {
+    profileTab = document.createElement('div');
+    profileTab.id = 'profileTab';
+    profileTab.className = 'tab-content';
+    profileTab.style.display = 'none';
+    profileTab.innerHTML = `
+      <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.1);">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #f1c40f, #e67e22); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 28px;">👑</div>
+          <h3 id="profName" style="margin: 0; color: #fff;">${currentUser.first_name || 'مستخدم'}</h3>
+          <p style="color: #aaa; font-size: 12px; margin: 4px 0 0;">حساب فعّال داخل التطبيق</p>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 11px; color: #aaa;">الرصيد الحالي:</div>
+            <div id="profBalance" style="font-size: 16px; font-weight: bold; color: #2ecc71;">$0.0000</div>
+          </div>
+          <button onclick="switchTab('walletTab')" style="background: #9b59b6; border: none; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;">شحن الرصيد</button>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 11px; color: #aaa;">يوزر التليجرام:</div>
+            <div style="font-size: 13px; color: #fff; font-weight: bold;">@${currentUser.username || 'بدون_يوزر'}</div>
+          </div>
+          <button onclick="copyText('@${currentUser.username || 'بدون_يوزر'}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 11px; color: #aaa;">آيدي الحساب (ID):</div>
+            <div id="profId" style="font-size: 13px; color: #fff; font-weight: bold;">${currentUser.id}</div>
+          </div>
+          <button onclick="copyText('${currentUser.id}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(profileTab); // أو أضفه بجانب الـ homeView حسب تصميمك
+  }
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    showCustomAlert("✅ تم النسخ إلى الحافظة بنجاح!");
+  }).catch(() => {
+    showCustomAlert("❌ فشل النسخ!", false);
+  });
+}
+
+buildProfileTab();
 
 function updateStatsDisplay() {
   const pending = myOrders.filter(o => o.status.includes('قيد')).length;
   const completed = myOrders.filter(o => o.status.includes('مكتمل')).length;
-  
   const pendingEl = document.getElementById('pendingCount');
   const completedEl = document.getElementById('completedCount');
   if (pendingEl) pendingEl.innerText = pending;
@@ -191,10 +229,6 @@ function switchTab(tabId) {
 
   const navBtn = document.getElementById('nav-' + tabId);
   if (navBtn) navBtn.classList.add('active');
-  
-  if (tabId === 'ordersTab') {
-    renderOrders();
-  }
   closeOrderModal();
 }
 
@@ -202,11 +236,9 @@ function openPlatform(platformKey) {
   const listContainer = document.getElementById('servicesList');
   const homeView = document.getElementById('homeView');
   const servicesView = document.getElementById('servicesView');
-
   if (!listContainer || !homeView || !servicesView) return;
 
   listContainer.innerHTML = '';
-  
   const list = servicesData[platformKey] || [];
   list.forEach(srv => {
     const item = document.createElement('div');
@@ -224,7 +256,6 @@ function openPlatform(platformKey) {
     `;
     listContainer.appendChild(item);
   });
-
   homeView.style.display = 'none';
   servicesView.style.display = 'block';
 }
@@ -241,7 +272,6 @@ function openOrderModal(service) {
   const titleEl = document.getElementById('modalServiceTitle');
   const qtyEl = document.getElementById('quantityInput');
   const modalEl = document.getElementById('orderModal');
-
   if (titleEl) titleEl.innerText = service.title;
   if (qtyEl) qtyEl.value = 1000;
   calculatePrice();
@@ -258,7 +288,6 @@ function calculatePrice() {
   const qtyInput = document.getElementById('quantityInput');
   const priceDisplay = document.getElementById('totalPriceDisplay');
   if (!qtyInput || !priceDisplay) return;
-
   const qty = parseInt(qtyInput.value) || 0;
   const total = (qty / 1000) * parseFloat(currentService.price);
   priceDisplay.innerText = `$${total.toFixed(4)}`;
@@ -268,7 +297,6 @@ function submitOrder() {
   const targetInput = document.getElementById('targetInput');
   const qtyInput = document.getElementById('quantityInput');
   if (!targetInput || !qtyInput) return;
-
   const target = targetInput.value.trim();
   const qty = parseInt(qtyInput.value) || 0;
   const total = (qty / 1000) * parseFloat(currentService.price);
@@ -277,7 +305,6 @@ function submitOrder() {
     showCustomAlert('يرجى إدخال الرابط أو اسم المستخدم بشكل صحيح!', false);
     return;
   }
-
   if (userBalance < total) {
     showCustomAlert('❌ رصيدك غير كافٍ لتنفيذ هذا الطلب!', false);
     return;
@@ -288,29 +315,14 @@ function submitOrder() {
   if (userBalanceEl) userBalanceEl.innerText = `$${userBalance.toFixed(4)}`;
   
   const newOrderId = Math.floor(Math.random() * 899999 + 119000000).toString();
-  myOrders.unshift({
-    id: newOrderId,
-    title: currentService.title,
-    qty: qty,
-    price: total,
-    status: "قيد التنفيذ ⚡"
-  });
-  
+  myOrders.unshift({ id: newOrderId, title: currentService.title, qty: qty, price: total, status: "قيد التنفيذ ⚡" });
   localStorage.setItem('myOrders', JSON.stringify(myOrders));
   updateStatsDisplay();
   
-  // إرسال تسجيل نشاط رشق الخدمة للبوت ليتم حفظه في السجل
   if (tg) {
-    tg.sendData(JSON.stringify({
-      action: "log_service_usage",
-      service_title: currentService.title,
-      qty: qty,
-      cost: total,
-      target: target
-    }));
+    tg.sendData(JSON.stringify({ action: "log_service_usage", service_title: currentService.title, qty: qty, cost: total, target: target }));
   }
-  
-  showCustomAlert(`✅ تم إنشاء الطلب بنجاح!\nرقم الطلب: #${newOrderId}`);
+  showCustomAlert(`✅ تم إنشاء الطلب بنجاح! #${newOrderId}`);
   closeOrderModal();
 }
 
@@ -318,12 +330,10 @@ function renderOrders() {
   const container = document.getElementById('ordersContainer');
   if (!container) return;
   container.innerHTML = '';
-  
   if (myOrders.length === 0) {
     container.innerHTML = `<div style="text-align:center; color:var(--text-sub); padding:30px; font-size:13px;">لا توجد لديك طلبات سابقة حتى الآن 📦</div>`;
     return;
   }
-
   myOrders.forEach(ord => {
     const div = document.createElement('div');
     div.className = 'order-card';
@@ -339,69 +349,45 @@ function renderOrders() {
   });
 }
 
-/* 📱 شحن آسيا سيل */
 function submitAsiaCard() {
   const cardInput = document.getElementById('asiaCardInput');
   if (!cardInput) return;
   const card = cardInput.value.trim();
-  
   if (!card) {
     showCustomAlert("يرجى إدخال رقم كارت آسيا سيل أولاً!", false);
     return;
   }
-
   const phone = prompt("يرجى إدخال رقم هاتفك لتأكيد الشحن وتفعيل الرصيد:");
   if (!phone) {
     showCustomAlert("❌ يلزم إدخال رقم الهاتف لإكمال الطلب!", false);
     return;
   }
-
-  if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-    const user = tg.initDataUnsafe.user;
-    const userId = user.id;
-    const username = user.username ? `@${user.username}` : "بدون يوزر";
-    const firstName = user.first_name || "مستخدم";
-
-    const textData = `طلب_شحن_آسيا | الاسم: ${firstName} | المعرف: ${username} | الهاتف: ${phone} | الآيدي: ${userId} | الكارت: ${card}`;
-    
+  if (currentUser) {
+    const textData = `طلب_شحن_آسيا | الاسم: ${currentUser.first_name} | المعرف: @${currentUser.username || 'بدون'} | الهاتف: ${phone} | الآيدي: ${currentUser.id} | الكارت: ${card}`;
     cardInput.value = '';
     tg.close();
     window.location.href = `https://t.me/RoyalSocial_bot?start=${encodeURIComponent(textData)}`;
-  } else {
-    showCustomAlert("يرجى فتح التطبيق من داخل التليجرام!", false);
   }
 }
 
-/* 🏦 شحن الرافدين */
 function submitTransferNotice() {
   const recInput = document.getElementById('transferReceiptInput');
   if (!recInput) return;
   const rec = recInput.value.trim();
-
   if (!rec) {
     showCustomAlert("يرجى إدخال رقم الوصل أو اسم المحول!", false);
     return;
   }
-
   const phone = prompt("يرجى إدخال رقم هاتفك للتواصل وتأكيد الشحن:");
   if (!phone) {
     showCustomAlert("❌ يلزم إدخال رقم الهاتف لإكمال الطلب!", false);
     return;
   }
-
-  if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-    const user = tg.initDataUnsafe.user;
-    const userId = user.id;
-    const username = user.username ? `@${user.username}` : "بدون يوزر";
-    const firstName = user.first_name || "مستخدم";
-
-    const textData = `طلب_شحن_الرافدين | الاسم: ${firstName} | المعرف: ${username} | الهاتف: ${phone} | الآيدي: ${userId} | الوصل: ${rec}`;
-
+  if (currentUser) {
+    const textData = `طلب_شحن_الرافدين | الاسم: ${currentUser.first_name} | المعرف: @${currentUser.username || 'بدون'} | الهاتف: ${phone} | الآيدي: ${currentUser.id} | الوصل: ${rec}`;
     recInput.value = '';
     tg.close();
     window.location.href = `https://t.me/RoyalSocial_bot?start=${encodeURIComponent(textData)}`;
-  } else {
-    showCustomAlert("يرجى فتح التطبيق من داخل التليجرام!", false);
   }
 }
 
