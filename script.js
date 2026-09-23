@@ -108,92 +108,110 @@ function showCustomAlert(message, isSuccess = true) {
   }, 3500);
 }
 
-// --- بناء القائمة الجانبية المنسدلة (مطابقة لصورة بيرفكت فولو بالحرف الواحد) ---
-function buildDrawerMenu() {
-  let drawer = document.getElementById('customDrawerMenu');
-  if (!drawer) {
-    drawer = document.createElement('div');
-    drawer.id = 'customDrawerMenu';
-    drawer.style.cssText = `
-      position: fixed; top: 0; right: -100%; width: 85%; max-width: 330px; height: 100%;
-      background: linear-gradient(135deg, #181424, #221a35); z-index: 999999;
-      box-shadow: -15px 0 50px rgba(0,0,0,0.85); transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex; flex-direction: column; direction: rtl; text-align: right; color: #fff; padding: 20px; box-sizing: border-box; overflow-y: auto;
-    `;
+// --- إنشاء القائمة الجانبية المطابقة لصورة بيرفكت فولو بالحرف الواحد ---
+function createExactDrawer() {
+  let existingDrawer = document.getElementById('exactDrawerOverlay');
+  if (existingDrawer) existingDrawer.remove();
 
-    drawer.innerHTML = `
-      <!-- الهيدر وزر الإغلاق -->
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+  const overlay = document.createElement('div');
+  overlay.id = 'exactDrawerOverlay';
+  overlay.style.cssText = `
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7); z-index: 999998; display: none;
+    backdrop-filter: blur(3px); transition: opacity 0.3s ease;
+  `;
+  overlay.onclick = () => toggleExactDrawer(false);
+
+  const drawer = document.createElement('div');
+  drawer.id = 'exactDrawerMenu';
+  drawer.style.cssText = `
+    position: fixed; top: 0; right: -100%; width: 85%; max-width: 330px; height: 100%;
+    background: linear-gradient(135deg, #171424, #211936); z-index: 999999;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.8); transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column; direction: rtl; text-align: right; color: #fff; padding: 20px; box-sizing: border-box; overflow-y: auto;
+  `;
+
+  drawer.innerHTML = `
+    <!-- رأس القائمة وزر الإغلاق -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+      <div>
+        <div style="font-weight: bold; font-size: 15px; color: #f1c40f;">بيرفكت فولو</div>
+        <div style="font-size: 10px; color: #a29bfe;">خدمات السوشيال ميديا الحصرية</div>
+      </div>
+      <button onclick="toggleExactDrawer(false)" style="background: rgba(255,255,255,0.08); border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
+    </div>
+
+    <!-- بطاقة المستخدم المصغرة -->
+    <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 12px; margin-bottom: 16px;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <div style="width: 42px; height: 42px; background: linear-gradient(135deg, #f1c40f, #e67e22); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold;">👑</div>
+        <div style="flex: 1; overflow: hidden;">
+          <div style="font-weight: bold; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${currentUser.first_name || 'مستخدم'}</div>
+          <div style="font-size: 10px; color: #a29bfe;">@${currentUser.username || 'l713i'}</div>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 8px 10px; border-radius: 8px;">
         <div>
-          <div style="font-weight: bold; font-size: 15px; color: #f1c40f;">RoyalSocial</div>
-          <div style="font-size: 10px; color: #a29bfe;">خدمات السوشيال ميديا الحصرية</div>
+          <div style="font-size: 9px; color: #888;">الرصيد المتاح</div>
+          <div style="font-size: 14px; font-weight: bold; color: #2ecc71;">$${userBalance.toFixed(4)}</div>
         </div>
-        <button onclick="toggleDrawer(false)" style="background: rgba(255,255,255,0.08); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center;">✕</button>
+        <button onclick="switchTab('walletTab'); toggleExactDrawer(false);" style="background: linear-gradient(135deg, #f39c12, #d35400); border: none; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer;">+ شحن الرصيد</button>
       </div>
+    </div>
 
-      <!-- بطاقة الحساب المصغرة -->
-      <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 14px; margin-bottom: 18px;">
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-          <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #f1c40f, #e67e22); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">👑</div>
-          <div style="flex: 1; overflow: hidden;">
-            <div style="font-weight: bold; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${currentUser.first_name || 'مستخدم'}</div>
-            <div style="font-size: 11px; color: #a29bfe;">@${currentUser.username || 'l713i'}</div>
-          </div>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 10px 12px; border-radius: 10px;">
-          <div>
-            <div style="font-size: 10px; color: #888;">الرصيد المتاح</div>
-            <div style="font-size: 15px; font-weight: bold; color: #2ecc71;">$${userBalance.toFixed(4)}</div>
-          </div>
-          <button onclick="switchTab('walletTab'); toggleDrawer(false);" style="background: linear-gradient(135deg, #f39c12, #d35400); border: none; color: #fff; padding: 7px 14px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(243,156,18,0.3);">+ شحن الرصيد</button>
-        </div>
-      </div>
+    <!-- القوائم -->
+    <div style="font-size: 10px; color: #888; margin-bottom: 6px; font-weight: bold;">القوائم</div>
+    <div onclick="switchTab('homeView'); toggleExactDrawer(false);" style="padding: 10px 12px; border-radius: 8px; background: rgba(241,196,15,0.1); border: 1px solid rgba(241,196,15,0.3); margin-bottom: 5px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 12px;">
+      <span style="font-size: 14px;">🔲</span> <span style="font-weight: bold; color: #f1c40f;">الرئيسية</span>
+    </div>
+    <div onclick="switchTab('ordersTab'); toggleExactDrawer(false);" style="padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); margin-bottom: 5px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 12px;">
+      <span style="font-size: 14px;">📦</span> <span>طلباتي</span>
+    </div>
+    <div onclick="switchTab('notificationsTab'); toggleExactDrawer(false);" style="padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); margin-bottom: 14px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 12px;">
+      <span style="font-size: 14px;">🔔</span> <span>الإشعارات</span>
+    </div>
 
-      <!-- القوائم -->
-      <div style="font-size: 11px; color: #888; margin-bottom: 6px; font-weight: bold;">القوائم</div>
-      <div onclick="switchTab('homeView'); toggleDrawer(false);" style="padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.04); margin-bottom: 6px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px; border: 1px solid rgba(241,196,15,0.2);">
-        <span style="font-size: 16px;">🔲</span> <span style="font-weight: bold; color: #f1c40f;">الرئيسية</span>
-      </div>
-      <div onclick="switchTab('ordersTab'); toggleDrawer(false);" style="padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 6px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px;">
-        <span style="font-size: 16px;">📦</span> <span>طلباتي</span>
-      </div>
-      <div onclick="switchTab('notificationsTab'); toggleDrawer(false);" style="padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px;">
-        <span style="font-size: 16px;">🔔</span> <span>الإشعارات</span>
-      </div>
+    <!-- الرصيد -->
+    <div style="font-size: 10px; color: #888; margin-bottom: 6px; font-weight: bold;">الرصيد</div>
+    <div onclick="switchTab('walletTab'); toggleExactDrawer(false);" style="padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); margin-bottom: 5px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 12px;">
+      <span style="font-size: 14px;">💳</span> <span>إضافة رصيد</span>
+    </div>
+    <div onclick="switchTab('walletTab'); toggleExactDrawer(false);" style="padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); margin-bottom: 14px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 12px;">
+      <span style="font-size: 14px;">🔄</span> <span>تحويل رصيد</span>
+    </div>
 
-      <!-- الرصيد -->
-      <div style="font-size: 11px; color: #888; margin-bottom: 6px; font-weight: bold;">الرصيد</div>
-      <div onclick="switchTab('walletTab'); toggleDrawer(false);" style="padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 6px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px;">
-        <span style="font-size: 16px;">💳</span> <span>إضافة رصيد</span>
-      </div>
-      <div onclick="switchTab('walletTab'); toggleDrawer(false);" style="padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px;">
-        <span style="font-size: 16px;">🔄</span> <span>تحويل رصيد</span>
-      </div>
+    <!-- المساعدة -->
+    <div style="font-size: 10px; color: #888; margin-bottom: 6px; font-weight: bold;">المساعدة</div>
+    <div onclick="window.open('https://t.me/l713i', '_blank')" style="padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,0.03); margin-bottom: 20px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 12px;">
+      <span style="font-size: 14px;">🎧</span> <span>الدعم الفني</span>
+    </div>
 
-      <!-- المساعدة -->
-      <div style="font-size: 11px; color: #888; margin-bottom: 6px; font-weight: bold;">المساعدة</div>
-      <div onclick="window.open('https://t.me/l713i', '_blank')" style="padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 25px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px;">
-        <span style="font-size: 16px;">🎧</span> <span>الدعم الفني</span>
-      </div>
+    <!-- تسجيل الخروج -->
+    <button onclick="if(tg) tg.close();" style="width: 100%; background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; border: none; padding: 11px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: auto;">
+      <span>🚪</span> <span>تسجيل الخروج</span>
+    </button>
+  `;
 
-      <!-- تسجيل الخروج -->
-      <button onclick="if(tg) tg.close();" style="width: 100%; background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 13px; box-shadow: 0 5px 15px rgba(255,65,108,0.4); display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: auto;">
-        <span>🚪</span> <span>تسجيل الخروج</span>
-      </button>
-    `;
-    document.body.appendChild(drawer);
+  document.body.appendChild(overlay);
+  document.body.appendChild(drawer);
+}
+
+function toggleExactDrawer(show) {
+  createExactDrawer();
+  const overlay = document.getElementById('exactDrawerOverlay');
+  const drawer = document.getElementById('exactDrawerMenu');
+  if (overlay && drawer) {
+    if (show) {
+      overlay.style.display = 'block';
+      setTimeout(() => { drawer.style.right = '0'; }, 10);
+    } else {
+      drawer.style.right = '-100%';
+      setTimeout(() => { overlay.style.display = 'none'; }, 300);
+    }
   }
 }
 
-function toggleDrawer(show) {
-  buildDrawerMenu();
-  const drawer = document.getElementById('customDrawerMenu');
-  if (drawer) {
-    drawer.style.right = show ? '0' : '-100%';
-  }
-}
-
-// --- بناء صفحة البروفايل (عامة للجميع) ---
+// --- بناء صفحة البروفايل ---
 function buildProfileTab() {
   let profileTab = document.getElementById('profileTab');
   if (!profileTab) {
@@ -248,7 +266,7 @@ function buildProfileTab() {
   }
 }
 
-// --- بناء لوحة تحكم الأدمن الخاصة بك وحدك ---
+// --- لوحة الأدمن الخاصة بك ---
 function buildAdminTab() {
   if (currentUser && Number(currentUser.id) === ADMIN_ID) {
     let adminTab = document.getElementById('adminTab');
@@ -260,16 +278,12 @@ function buildAdminTab() {
       adminTab.innerHTML = `
         <div style="background: linear-gradient(135deg, #1f1c2c, #393154); border: 2px solid #ff416c; border-radius: 20px; padding: 20px; margin-top: 15px; color: #fff; direction: rtl; text-align: right;">
           <div style="font-weight: bold; font-size: 16px; margin-bottom: 15px; color: #ff758c; text-align: center;">🛠 لوحة تحكم الأدمن الخاصة بك</div>
-          
           <div style="margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 12px;">
-            <div style="font-size: 12px; color: #f1c40f; margin-bottom: 8px; font-weight: bold;">💰 تعديل رصيد زبون:</div>
             <input type="number" id="adminTargetId" placeholder="آيدي الزبون..." style="width: 100%; padding: 10px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: #fff; margin-bottom: 8px; font-size: 12px; text-align: right;">
             <input type="number" id="adminAmount" placeholder="المبلغ ($)..." step="0.01" style="width: 100%; padding: 10px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: #fff; margin-bottom: 10px; font-size: 12px; text-align: right;">
             <button onclick="executeAdminBalanceAction()" style="width: 100%; background: #00b09b; color: #fff; border: none; padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px;">➕ تعديل الرصيد فوراً</button>
           </div>
-
           <button onclick="fetchUsersListInApp()" style="width: 100%; background: #2980b9; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; margin-bottom: 12px;">👥 عرض قائمة المشتركين كاملة</button>
-
           <div id="adminDirectOutput" style="display: none; background: rgba(0,0,0,0.8); border: 1px solid #ff416c; border-radius: 10px; padding: 12px; max-height: 250px; overflow-y: auto; font-size: 11px; color: #fff; text-align: right; direction: rtl;"></div>
         </div>
       `;
@@ -279,7 +293,7 @@ function buildAdminTab() {
   }
 }
 
-// --- بناء قسم الإشعارات الحقيقية ---
+// --- قسم الإشعارات الحقيقية ---
 function buildNotificationsTab() {
   let notifTab = document.getElementById('notificationsTab');
   if (!notifTab) {
@@ -303,13 +317,7 @@ function buildNotificationsTab() {
 }
 
 function addNotification(title, text, isSuccess = true) {
-  const newNotif = {
-    id: Date.now(),
-    title: title,
-    text: text,
-    time: "الآن",
-    isSuccess: isSuccess
-  };
+  const newNotif = { id: Date.now(), title: title, text: text, time: "الآن", isSuccess: isSuccess };
   notificationsList.unshift(newNotif);
   localStorage.setItem('notificationsList', JSON.stringify(notificationsList));
   renderNotificationsList();
@@ -325,18 +333,8 @@ function renderNotificationsList() {
   }
   notificationsList.forEach(n => {
     const card = document.createElement('div');
-    card.style.cssText = `
-      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
-      padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
-    `;
-    card.innerHTML = `
-      <div>
-        <div style="font-weight: bold; font-size: 13px; color: ${n.isSuccess ? '#2ecc71' : '#ff758c'};">${n.title}</div>
-        <div style="font-size: 11px; color: #bbb; margin-top: 3px;">${n.text}</div>
-        <div style="font-size: 9px; color: #777; margin-top: 5px;">⏰ ${n.time}</div>
-      </div>
-      <div style="font-size: 20px;">${n.isSuccess ? '✅' : 'ℹ️'}</div>
-    `;
+    card.style.cssText = `background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;`;
+    card.innerHTML = `<div><div style="font-weight: bold; font-size: 13px; color: ${n.isSuccess ? '#2ecc71' : '#ff758c'};">${n.title}</div><div style="font-size: 11px; color: #bbb; margin-top: 3px;">${n.text}</div></div><div style="font-size: 20px;">${n.isSuccess ? '✅' : 'ℹ️'}</div>`;
     container.appendChild(card);
   });
 }
@@ -348,7 +346,7 @@ function clearNotifications() {
   showCustomAlert("✅ تم تحديد جميع الإشعارات كمقروءة!");
 }
 
-// --- ترتيب الشريط السفلي وربط زر "المزيد" بدقة ---
+// --- إعداد شريط التنقل السفلي وربط زر "المزيد" بدقة ---
 function setupCustomNavbar() {
   const navbar = document.querySelector('.navbar') || document.querySelector('.nav-bar');
   if (!navbar) return;
@@ -356,7 +354,7 @@ function setupCustomNavbar() {
   const oldAdded = navbar.querySelectorAll('.custom-nav-item');
   oldAdded.forEach(el => el.remove());
 
-  // زر البروفايل [بجانب الإشعارات]
+  // 1. زر البروفايل [بجانب الإشعارات]
   let profileNavBtn = document.createElement('div');
   profileNavBtn.id = 'nav-profileTab';
   profileNavBtn.className = 'nav-item custom-nav-item';
@@ -364,7 +362,7 @@ function setupCustomNavbar() {
   profileNavBtn.onclick = () => switchTab('profileTab');
   navbar.appendChild(profileNavBtn);
 
-  // زر لوحة تحكم الأدمن (يظهر لك وحدك)
+  // 2. زر التحكم (للأدمن فقط)
   if (currentUser && Number(currentUser.id) === ADMIN_ID) {
     let adminNavBtn = document.createElement('div');
     adminNavBtn.id = 'nav-adminTab';
@@ -374,13 +372,13 @@ function setupCustomNavbar() {
     navbar.appendChild(adminNavBtn);
   }
 
-  // ربط زر "المزيد" لفتح القائمة الجانبية المنسدلة من اليمين
+  // 3. ربط زر "المزيد" بدقة لفتح القائمة الجانبية المطابقة للصورة
   const navItems = navbar.querySelectorAll('.nav-item');
   navItems.forEach(item => {
     if (item.innerText.includes('المزيد') || item.innerText.includes('≡')) {
       item.onclick = (e) => {
         e.preventDefault();
-        toggleDrawer(true);
+        toggleExactDrawer(true);
       };
     }
   });
@@ -389,15 +387,9 @@ function setupCustomNavbar() {
 // --- دوال شحن الرصيد الفعالة ---
 function submitAsiaCard() {
   const cardInput = document.getElementById('asiaCardInput');
-  if (!cardInput) {
-    showCustomAlert("❌ حقل كارت آسيا سيل غير موجود!", false);
-    return;
-  }
+  if (!cardInput) { showCustomAlert("❌ حقل كارت آسيا سيل غير موجود!", false); return; }
   const card = cardInput.value.trim();
-  if (!card || card.length < 5) {
-    showCustomAlert("⚠️ يرجى إدخال رقم كارت آسيا سيل بشكل صحيح!", false);
-    return;
-  }
+  if (!card || card.length < 5) { showCustomAlert("⚠️ يرجى إدخال رقم كارت آسيا سيل بشكل صحيح!", false); return; }
 
   const textData = `طلب_شحن_آسيا | الاسم: ${currentUser.first_name} | المعرف: @${currentUser.username || 'بدون'} | الآيدي: ${currentUser.id} | الكارت: ${card}`;
   cardInput.value = '';
@@ -413,15 +405,9 @@ function submitAsiaCard() {
 
 function submitTransferNotice() {
   const recInput = document.getElementById('transferReceiptInput');
-  if (!recInput) {
-    showCustomAlert("❌ حقل وصل التحويل غير موجود!", false);
-    return;
-  }
+  if (!recInput) { showCustomAlert("❌ حقل وصل التحويل غير موجود!", false); return; }
   const rec = recInput.value.trim();
-  if (!rec || rec.length < 3) {
-    showCustomAlert("⚠️ يرجى إدخال رقم الوصل أو اسم المحول بشكل صحيح!", false);
-    return;
-  }
+  if (!rec || rec.length < 3) { showCustomAlert("⚠️ يرجى إدخال رقم الوصل أو اسم المحول بشكل صحيح!", false); return; }
 
   const textData = `طلب_شحن_الرافدين | الاسم: ${currentUser.first_name} | المعرف: @${currentUser.username || 'بدون'} | الآيدي: ${currentUser.id} | الوصل: ${rec}`;
   recInput.value = '';
@@ -438,10 +424,7 @@ function submitTransferNotice() {
 function executeAdminBalanceAction() {
   const targetId = document.getElementById('adminTargetId').value.trim();
   const amount = parseFloat(document.getElementById('adminAmount').value);
-  if (!targetId || isNaN(amount)) {
-    showCustomAlert("❌ يرجى إدخال آيدي صحيح ومبلغ صالح!", false);
-    return;
-  }
+  if (!targetId || isNaN(amount)) { showCustomAlert("❌ يرجى إدخال آيدي صحيح ومبلغ صالح!", false); return; }
   fetch(`https://laythaziz.pythonanywhere.com/api/admin_action?action=balance&admin_id=${currentUser.id}&target_id=${targetId}&amount=${amount}`)
     .then(res => res.json())
     .then(data => {
