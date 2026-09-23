@@ -149,22 +149,45 @@
       box-shadow: 0 4px 12px var(--accent-purple-glow);
     }
 
-    /* Section Titles */
-    .section-title {
-      font-size: 14px;
+    /* Section Titles & Counter Stats */
+    .stats-bar {
+      display: flex;
+      justify-content: space-around;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 10px;
+      margin: 0 12px 12px 12px;
+      font-size: 12px;
       color: var(--text-sub);
-      margin: 16px 16px 10px 16px;
-      font-weight: 600;
+    }
+
+    .stat-item {
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    /* Platforms Grid */
+    .stat-num {
+      font-weight: 800;
+      color: white;
+    }
+
+    .section-title {
+      font-size: 14px;
+      color: var(--text-sub);
+      margin: 12px 16px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Platforms Grid (10 Platforms Grid) */
     .platforms-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
       padding: 0 12px;
     }
 
@@ -172,48 +195,52 @@
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 16px;
-      padding: 14px;
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       cursor: pointer;
-      transition: transform 0.15s ease;
+      transition: transform 0.15s ease, border-color 0.15s ease;
     }
 
     .platform-card:active {
       transform: scale(0.97);
+      border-color: var(--accent-purple);
     }
 
     .card-top {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
     }
 
     .platform-badge {
       font-size: 10px;
-      background: rgba(124, 58, 237, 0.2);
-      color: #c4b5fd;
-      padding: 3px 8px;
-      border-radius: 8px;
-      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-sub);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .platform-icon-box {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.03);
     }
 
     .platform-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      object-fit: cover;
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
     }
 
     .platform-name {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
-    }
-
-    .platform-desc {
-      font-size: 11px;
-      color: var(--text-sub);
     }
 
     /* Services List */
@@ -275,7 +302,54 @@
       font-weight: 700;
     }
 
-    /* CHARGE SECTION STYLES (من الصورة 3) */
+    /* ORDERS TAB STYLES (قسم طلباتي الحقيقي) */
+    .orders-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 0 12px;
+    }
+
+    .order-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .order-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .order-id {
+      font-size: 12px;
+      font-weight: 800;
+      color: #c4b5fd;
+    }
+
+    .order-status {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-weight: 700;
+    }
+
+    .status-completed {
+      background: rgba(16, 185, 129, 0.15);
+      color: #6ee7b7;
+    }
+
+    .status-pending {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fde047;
+    }
+
+    /* CHARGE TAB STYLES */
     .charge-card {
       background: var(--card-bg);
       border: 1px solid #3d1b54;
@@ -300,19 +374,6 @@
       font-weight: 700;
     }
 
-    .charge-title {
-      font-size: 14px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .charge-sub {
-      font-size: 11px;
-      color: var(--text-sub);
-    }
-
     .charge-input {
       background: rgba(0, 0, 0, 0.3);
       border: 1px solid var(--card-border);
@@ -335,34 +396,7 @@
       cursor: pointer;
     }
 
-    .copy-box {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 10px 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .card-number {
-      font-size: 16px;
-      font-weight: 800;
-      letter-spacing: 1px;
-    }
-
-    .btn-copy {
-      background: var(--accent-purple);
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    /* MORE SECTION STYLES (من الصورة 1) */
+    /* MORE & NOTIFICATIONS STYLES */
     .support-list {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -381,45 +415,15 @@
       color: white;
     }
 
-    .support-item:last-child {
-      border-bottom: none;
-    }
-
-    .support-handle {
-      font-size: 13px;
-      font-weight: 700;
-      color: #c4b5fd;
-      direction: ltr;
-    }
-
-    .support-label {
-      font-size: 12px;
-      color: var(--text-sub);
-    }
-
-    /* NOTIFICATIONS SECTION STYLES (من الصورة 2) */
     .notif-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 16px;
       padding: 16px;
       margin: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
     }
 
-    .notif-title {
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .notif-body {
-      font-size: 12px;
-      color: var(--text-sub);
-    }
-
-    /* MODAL SLIDE DOWN FROM TOP */
+    /* MODAL SLIDE FROM TOP */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -446,19 +450,6 @@
     @keyframes slideDown {
       from { transform: translateY(-100%); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .close-modal {
-      font-size: 20px;
-      color: var(--text-sub);
-      cursor: pointer;
     }
 
     /* Bottom Nav Bar */
@@ -517,58 +508,111 @@
     </div>
   </div>
 
-  <!-- SECTION 1: HOME TAB (الرئيسية) -->
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stat-item"><span>📦 مكتمل:</span> <span class="stat-num" id="completedCount">65</span></div>
+    <div class="stat-item"><span>⚡ قيد التنفيذ:</span> <span class="stat-num" id="pendingCount">1</span></div>
+    <div class="stat-item"><span>🚀 خدمة:</span> <span class="stat-num">118</span></div>
+  </div>
+
+  <!-- SECTION 1: HOME TAB (10 المنصات) -->
   <div id="homeTab" class="tab-content fade-in">
     <div id="homeView">
-      <div class="section-title">المنصات والخدمات المتاحة</div>
+      <div class="section-title">
+        <span>المنصات</span>
+        <span style="font-size:11px;">10 منصة</span>
+      </div>
+
       <div class="platforms-grid">
         
-        <!-- Free Services -->
+        <!-- 1. خدمات مجانية -->
         <div class="platform-card" onclick="openPlatform('free')">
           <div class="card-top">
-            <img src="https://cdn-icons-png.flaticon.com/512/4213/4213958.png" class="platform-icon" alt="Free">
-            <span class="platform-badge" style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7;">4 خدمات</span>
-          </div>
-          <div>
+            <div class="platform-icon-box"><img src="https://cdn-icons-png.flaticon.com/512/4213/4213958.png" class="platform-icon"></div>
             <div class="platform-name">خدمات مجانية</div>
-            <div class="platform-desc">تجارب وهدايا 0.00$</div>
           </div>
+          <span class="platform-badge">3 فئة | 8 خدمة</span>
         </div>
 
-        <!-- Instagram -->
+        <!-- 2. إنستغرام -->
         <div class="platform-card" onclick="openPlatform('instagram')">
           <div class="card-top">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" class="platform-icon" alt="Instagram">
-            <span class="platform-badge">22 خدمة</span>
-          </div>
-          <div>
+            <div class="platform-icon-box"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" class="platform-icon"></div>
             <div class="platform-name">إنستغرام</div>
-            <div class="platform-desc">متابعين، لايكات، ريلز</div>
           </div>
+          <span class="platform-badge">9 فئة | 22 خدمة</span>
         </div>
 
-        <!-- Telegram -->
-        <div class="platform-card" onclick="openPlatform('telegram')">
-          <div class="card-top">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" class="platform-icon" alt="Telegram">
-            <span class="platform-badge">50 خدمة</span>
-          </div>
-          <div>
-            <div class="platform-name">تليجرام</div>
-            <div class="platform-desc">أعضاء، تفاعل، ستوري</div>
-          </div>
-        </div>
-
-        <!-- TikTok -->
+        <!-- 3. تيك توك -->
         <div class="platform-card" onclick="openPlatform('tiktok')">
           <div class="card-top">
-            <img src="https://sf-tb-sg.ibytedtos.com/obj/ecom-ip-sg/tiktok_logo.png" class="platform-icon" alt="TikTok">
-            <span class="platform-badge">20 خدمة</span>
-          </div>
-          <div>
+            <div class="platform-icon-box"><img src="https://cdn-icons-png.flaticon.com/512/3046/3046124.png" class="platform-icon"></div>
             <div class="platform-name">تيك توك</div>
-            <div class="platform-desc">متابعين، تكبيسات، مشاهدات</div>
           </div>
+          <span class="platform-badge">9 فئة | 20 خدمة</span>
+        </div>
+
+        <!-- 4. تليجرام -->
+        <div class="platform-card" onclick="openPlatform('telegram')">
+          <div class="card-top">
+            <div class="platform-icon-box"><img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" class="platform-icon"></div>
+            <div class="platform-name">تليجرام</div>
+          </div>
+          <span class="platform-badge">6 فئة | 50 خدمة</span>
+        </div>
+
+        <!-- 5. فيسبوك -->
+        <div class="platform-card" onclick="openPlatform('facebook')">
+          <div class="card-top">
+            <div class="platform-icon-box"><img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" class="platform-icon"></div>
+            <div class="platform-name">فيسبوك</div>
+          </div>
+          <span class="platform-badge">4 فئة | 14 خدمة</span>
+        </div>
+
+        <!-- 6. تمويل حقيقي -->
+        <div class="platform-card" onclick="openPlatform('funding')">
+          <div class="card-top">
+            <div class="platform-icon-box"><img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png" class="platform-icon"></div>
+            <div class="platform-name">تمويل حقيقي</div>
+          </div>
+          <span class="platform-badge">2 فئة | 2 خدمة</span>
+        </div>
+
+        <!-- 7. يوتيوب -->
+        <div class="platform-card" onclick="openPlatform('youtube')">
+          <div class="card-top">
+            <div class="platform-icon-box"><img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" class="platform-icon"></div>
+            <div class="platform-name">يوتيوب</div>
+          </div>
+          <span class="platform-badge">3 فئة | 2 خدمة</span>
+        </div>
+
+        <!-- 8. تويتر (X) -->
+        <div class="platform-card" onclick="openPlatform('twitter')">
+          <div class="card-top">
+            <div class="platform-icon-box"><img src="https://upload.wikimedia.org/wikipedia/commons/5/53/X_logo_2023_original.svg" class="platform-icon"></div>
+            <div class="platform-name">تويتر (X)</div>
+          </div>
+          <span class="platform-badge">2 فئة | 5 خدمة</span>
+        </div>
+
+        <!-- 9. سناب شات -->
+        <div class="platform-card" onclick="openPlatform('snapchat')">
+          <div class="card-top">
+            <div class="platform-icon-box"><img src="https://cdn-icons-png.flaticon.com/512/3670/3670014.png" class="platform-icon"></div>
+            <div class="platform-name">سناب شات</div>
+          </div>
+          <span class="platform-badge">2 فئة | 4 خدمة</span>
+        </div>
+
+        <!-- 10. تويتش -->
+        <div class="platform-card" onclick="openPlatform('twitch')">
+          <div class="card-top">
+            <div class="platform-icon-box"><img src="https://cdn-icons-png.flaticon.com/512/5968/5968908.png" class="platform-icon"></div>
+            <div class="platform-name">تويتش</div>
+          </div>
+          <span class="platform-badge">1 فئة | 3 خدمة</span>
         </div>
 
       </div>
@@ -584,61 +628,74 @@
     </div>
   </div>
 
-  <!-- SECTION 2: CHARGE TAB (قسم شحن) -->
+  <!-- SECTION 2: ORDERS TAB (قسم طلباتي الحقيقي) -->
+  <div id="ordersTab" class="tab-content fade-in" style="display: none;">
+    <div class="section-title">📋 قائمة طلباتي الأخيرة</div>
+    <div class="orders-list" id="ordersContainer">
+      <div class="order-card">
+        <div class="order-top">
+          <span class="order-id">#119312992</span>
+          <span class="order-status status-completed">مكتمل ✅</span>
+        </div>
+        <div style="font-size:13px; font-weight:700;">مشاهدات ستوري تليجرام - سريع</div>
+        <div style="font-size:11px; color:var(--text-sub);">الكمية: 1000 | السعر: $0.4050</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: CHARGE TAB -->
   <div id="chargeTab" class="tab-content fade-in" style="display: none;">
     <div class="section-title">💳 طرق شحن الرصيد المتاحة</div>
     
-    <!-- Asia Cell Card -->
     <div class="charge-card">
       <span class="charge-tag">شحن آلي</span>
-      <div class="charge-title">💳 كارت آسيا سيل</div>
-      <div class="charge-sub">قم بإدخال كود كارت شحن آسيا سيل للتعبئة:</div>
+      <div style="font-size:14px; font-weight:700;">💳 كارت آسيا سيل</div>
+      <div style="font-size:11px; color:var(--text-sub);">قم بإدخال كود كارت شحن آسيا سيل للتعبئة:</div>
       <input type="text" class="charge-input" placeholder="أدخل رقم الكارت هنا..." id="asiaCardInput">
       <button class="btn-charge-submit" onclick="submitAsiaCard()">تأكيد شحن الكارت</button>
     </div>
 
-    <!-- Rafidain Master Card -->
-    <div class="charge-card" style="border-color: var(--card-border);">
+    <div class="charge-card">
       <span class="charge-tag" style="background: rgba(124, 58, 237, 0.15); color: #c4b5fd;">تحويل مباشر</span>
-      <div class="charge-title">💳 ماستر كارد الرافدين</div>
-      <div class="charge-sub">حول المبلغ إلى رقم البطاقة الموضح بالأسفل:</div>
-      <div class="copy-box">
-        <span class="card-number" id="cardNumberText">7168843873</span>
-        <button class="btn-copy" onclick="copyCardNum()">نسخ الرقم 📋</button>
+      <div style="font-size:14px; font-weight:700;">💳 ماستر كارد الرافدين</div>
+      <div style="font-size:11px; color:var(--text-sub);">حول المبلغ إلى رقم البطاقة الموضح بالأسفل:</div>
+      <div style="background:rgba(0,0,0,0.3); border:1px solid var(--card-border); border-radius:12px; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:16px; font-weight:800;" id="cardNumberText">7168843873</span>
+        <button style="background:var(--accent-purple); color:white; border:none; padding:6px 12px; border-radius:8px; font-size:11px; font-weight:700;" onclick="navigator.clipboard.writeText('7168843873'); alert('تم النسخ!');">نسخ 📋</button>
       </div>
       <input type="text" class="charge-input" placeholder="أدخل رقم الوصل أو اسم المحول..." id="transferReceiptInput">
       <button class="btn-charge-submit" style="background: linear-gradient(135deg, var(--accent-purple), #6366f1);" onclick="submitTransferNotice()">إرسال إشعار التحويل 🚀</button>
     </div>
   </div>
 
-  <!-- SECTION 3: NOTIFICATIONS TAB (قسم الإشعارات) -->
+  <!-- SECTION 4: NOTIFICATIONS TAB -->
   <div id="notifTab" class="tab-content fade-in" style="display: none;">
     <div class="section-title">🔔 الإشعارات</div>
     <div class="notif-card">
-      <div class="notif-title">أهلاً بك في رويال سوشال 👑</div>
-      <div class="notif-body">تصفح الخدمات المصورة واطلب ما تحتاج بسهولة.</div>
+      <div style="font-size:14px; font-weight:700;">أهلاً بك في رويال سوشال 👑</div>
+      <div style="font-size:12px; color:var(--text-sub); margin-top:4px;">تصفح الخدمات المصورة واطلب ما تحتاج بسهولة.</div>
     </div>
   </div>
 
-  <!-- SECTION 4: MORE TAB (قسم المزيد - القنوات والدعم) -->
+  <!-- SECTION 5: MORE TAB -->
   <div id="moreTab" class="tab-content fade-in" style="display: none;">
     <div class="section-title">⚙️ القنوات والدعم الفني</div>
     <div class="support-list">
       <a href="https://t.me/ittttvii" target="_blank" class="support-item">
-        <span class="support-handle">↗ @ittttvii</span>
-        <span class="support-label">قناة التليجرام الأولى</span>
+        <span style="font-size:13px; font-weight:700; color:#c4b5fd;">↗ @ittttvii</span>
+        <span style="font-size:12px; color:var(--text-sub);">قناة التليجرام الأولى</span>
       </a>
       <a href="https://t.me/ciner_fx" target="_blank" class="support-item">
-        <span class="support-handle">↗ @ciner_fx</span>
-        <span class="support-label">قناة التليجرام الثانية</span>
+        <span style="font-size:13px; font-weight:700; color:#c4b5fd;">↗ @ciner_fx</span>
+        <span style="font-size:12px; color:var(--text-sub);">قناة التليجرام الثانية</span>
       </a>
       <a href="https://t.me/l713i" target="_blank" class="support-item">
-        <span class="support-handle">↗ @l713i</span>
-        <span class="support-label">الدعم الفني (تليجرام)</span>
+        <span style="font-size:13px; font-weight:700; color:#c4b5fd;">↗ @l713i</span>
+        <span style="font-size:12px; color:var(--text-sub);">الدعم الفني (تليجرام)</span>
       </a>
       <a href="https://instagram.com/_v365" target="_blank" class="support-item">
-        <span class="support-handle" style="color:#f472b6;">↗ _v365</span>
-        <span class="support-label">الدعم الفني (إنستغرام)</span>
+        <span style="font-size:13px; font-weight:700; color:#f472b6;">↗ _v365</span>
+        <span style="font-size:12px; color:var(--text-sub);">الدعم الفني (إنستغرام)</span>
       </a>
     </div>
   </div>
@@ -646,9 +703,9 @@
   <!-- ORDER MODAL (SLIDE FROM TOP) -->
   <div class="modal-overlay" id="orderModal">
     <div class="modal-content">
-      <div class="modal-header">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
         <span style="font-size:15px; font-weight:800;" id="modalServiceTitle">تفاصيل الطلب</span>
-        <span class="close-modal" onclick="closeOrderModal()">✕</span>
+        <span style="font-size:20px; color:var(--text-sub); cursor:pointer;" onclick="closeOrderModal()">✕</span>
       </div>
 
       <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:14px;">
@@ -661,7 +718,7 @@
         <input type="number" class="charge-input" id="quantityInput" value="1000" min="100" oninput="calculatePrice()">
       </div>
 
-      <div style="background:rgba(124, 58, 237, 0.1); border:1px dashed var(--accent-purple); padding:12px; border-radius:12px; display:flex; justify-space-between; align-items:center; margin-bottom:16px;">
+      <div style="background:rgba(124, 58, 237, 0.1); border:1px dashed var(--accent-purple); padding:12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
         <span style="font-size:12px; color:var(--text-sub);">السعر الإجمالي:</span>
         <span style="font-size:18px; font-weight:800; color:#a7f3d0;" id="totalPriceDisplay">$0.0000</span>
       </div>
@@ -676,7 +733,7 @@
       <span style="font-size:18px;">🏠</span>
       <span>الرئيسية</span>
     </div>
-    <div class="nav-item" id="nav-orders" onclick="alert('قسم الطلبات قيد التحديث!')">
+    <div class="nav-item" id="nav-ordersTab" onclick="switchTab('ordersTab')">
       <span style="font-size:18px;">📋</span>
       <span>طلباتي</span>
     </div>
@@ -711,22 +768,57 @@
         price: (0.05 + (i * 0.03)).toFixed(4),
         speed: `${(i % 5) + 1} دقائق`
       })),
-      telegram: Array.from({length: 50}, (_, i) => ({
+      tiktok: Array.from({length: 20}, (_, i) => ({
         id: 300 + i,
+        title: `تيك توك - ${['مشاهدات سريعة', 'تكبيسات بث مباشر', 'إعجابات فيديوهات', 'متابعين حقيقيين'][i % 4]} #${i + 1}`,
+        price: (0.01 + (i * 0.04)).toFixed(4),
+        speed: `${(i % 3) + 1} دقائق`
+      })),
+      telegram: Array.from({length: 50}, (_, i) => ({
+        id: 400 + i,
         title: `تليجرام - ${['أعضاء بريميوم', 'مشاهدات ستوري', 'تفاعلات إيجابية 👍', 'أعضاء قنوات حقيقيين', 'تصويت استطلاع'][i % 5]} #${i + 1}`,
         price: (0.02 + (i * 0.05)).toFixed(4),
         speed: `${(i % 10) + 1} دقائق`
       })),
-      tiktok: Array.from({length: 20}, (_, i) => ({
-        id: 400 + i,
-        title: `تيك توك - ${['مشاهدات سريعة', 'تكبيسات بث مباشر', 'إعجابات فيديوهات', 'متابعين حقيقيين'][i % 4]} #${i + 1}`,
-        price: (0.01 + (i * 0.04)).toFixed(4),
-        speed: `${(i % 3) + 1} دقائق`
+      facebook: Array.from({length: 14}, (_, i) => ({
+        id: 500 + i,
+        title: `فيسبوك - ${['متابعين صفحات وحسابات', 'لايكات منشورات', 'مشاهدات فيديو', 'تفاعلات ريلز'][i % 4]} #${i + 1}`,
+        price: (0.08 + (i * 0.02)).toFixed(4),
+        speed: "فوري"
+      })),
+      funding: [
+        { id: 601, title: "تمويل قنوات تليجرام حقيقي ومضمون", price: 12.0000, speed: "12 ساعة" },
+        { id: 602, title: "تمويل صفحات إنستغرام عربية 100%", price: 15.0000, speed: "24 ساعة" }
+      ],
+      youtube: [
+        { id: 701, title: "مشتركين يوتيوب ثبات عالي", price: 4.5000, speed: "1 ساعة" },
+        { id: 702, title: "مشاهدات يوتيوب جودة عالية 4k", price: 1.2000, speed: "فوري" }
+      ],
+      twitter: Array.from({length: 5}, (_, i) => ({
+        id: 800 + i,
+        title: `تويتر (X) - ${['متابعين حقيقيين', 'إعادة تغريد Retweet', 'إعجابات تغريدات'][i % 3]} #${i + 1}`,
+        price: (0.90 + (i * 0.2)).toFixed(4),
+        speed: "فوري"
+      })),
+      snapchat: Array.from({length: 4}, (_, i) => ({
+        id: 900 + i,
+        title: `سناب شات - ${['متابعين منصة الأضواء', 'مشاهدات ستايل ستوري'][i % 2]} #${i + 1}`,
+        price: (2.50 + (i * 0.5)).toFixed(4),
+        speed: "30 دقيقة"
+      })),
+      twitch: Array.from({length: 3}, (_, i) => ({
+        id: 1000 + i,
+        title: `تويتش - ${['متابعين قناة', 'مشاهدات بث مباشر'][i % 2]} #${i + 1}`,
+        price: (0.80 + (i * 0.1)).toFixed(4),
+        speed: "فوري"
       }))
     };
 
     let currentService = null;
     let userBalance = 0.0000;
+    let myOrders = [
+      { id: "119312992", title: "مشاهدات ستوري تليجرام - سريع", qty: 1000, price: 0.4050, status: "مكتمل ✅" }
+    ];
 
     if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
       document.getElementById('userName').innerText = tg.initDataUnsafe.user.first_name || "Layth Aziz";
@@ -809,13 +901,37 @@
 
       userBalance -= total;
       document.getElementById('userBalance').innerText = `$${userBalance.toFixed(4)}`;
-      alert(`✅ تم إنشاء الطلب بنجاح!\nرقم الطلب: #${Math.floor(Math.random() * 899999 + 100000)}\nالخدمة: ${currentService.title}\nالكمية: ${qty}`);
+      
+      const newOrderId = Math.floor(Math.random() * 899999 + 119000000).toString();
+      myOrders.unshift({
+        id: newOrderId,
+        title: currentService.title,
+        qty: qty,
+        price: total,
+        status: "قيد التنفيذ ⚡"
+      });
+      
+      renderOrders();
+      alert(`✅ تم إنشاء الطلب بنجاح!\nرقم الطلب: #${newOrderId}\nالخدمة: ${currentService.title}`);
       closeOrderModal();
     }
 
-    function copyCardNum() {
-      navigator.clipboard.writeText("7168843873");
-      alert("تم نسخ رقم بطاقة الماستر كارد بنجاح! 📋");
+    function renderOrders() {
+      const container = document.getElementById('ordersContainer');
+      container.innerHTML = '';
+      myOrders.forEach(ord => {
+        const div = document.createElement('div');
+        div.className = 'order-card';
+        div.innerHTML = `
+          <div class="order-top">
+            <span class="order-id">#${ord.id}</span>
+            <span class="order-status ${ord.status.includes('مكتمل') ? 'status-completed' : 'status-pending'}">${ord.status}</span>
+          </div>
+          <div style="font-size:13px; font-weight:700;">${ord.title}</div>
+          <div style="font-size:11px; color:var(--text-sub);">الكمية: ${ord.qty} | السعر: $${parseFloat(ord.price).toFixed(4)}</div>
+        `;
+        container.appendChild(div);
+      });
     }
 
     function submitAsiaCard() {
