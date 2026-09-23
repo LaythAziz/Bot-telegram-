@@ -71,39 +71,60 @@ if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
   }
 }
 
-// --- لوحة تحكم الأدمن السرية داخل الميني أب (تظهر لك وحدك) ---
+// --- لوحة تحكم الأدمن المتكاملة داخل الواجهة (تظهر لك وحدك) ---
 const ADMIN_ID = 1414595876;
 const currentUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
 
 if (currentUser && currentUser.id === ADMIN_ID) {
-  const adminPanelBtn = document.createElement('div');
-  adminPanelBtn.innerHTML = `
-    <div style="background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; padding: 12px; border-radius: 12px; margin: 15px 0; text-align: center; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(255,65,108,0.4);">
-      🛠 لوحة تحكم الأدمن (خاصة بك وحدك)
+  // حقن واجهة لوحة التحكم في التطبيق
+  const adminPanelContainer = document.createElement('div');
+  adminPanelContainer.innerHTML = `
+    <div id="adminPanelModal" style="background: linear-gradient(135deg, #1f1c2c, #928dab); border: 2px solid #ff416c; border-radius: 16px; padding: 15px; margin: 15px 0; color: #fff; box-shadow: 0 8px 25px rgba(255,65,108,0.3);">
+      <div style="font-weight: bold; font-size: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+        🛠 لوحة تحكم الأدمن (إدارة رصيد الزبائن)
+      </div>
+      <div style="margin-bottom: 8px;">
+        <label style="font-size: 11px; color: #ddd;">آيدي الزبون:</label>
+        <input type="number" id="adminTargetId" placeholder="مثال: 8816331690" style="width: 100%; padding: 10px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: #fff; margin-top: 4px; font-size: 13px;">
+      </div>
+      <div style="margin-bottom: 12px;">
+        <label style="font-size: 11px; color: #ddd;">المبلغ ($):</label>
+        <input type="number" id="adminAmount" placeholder="مثال: 10.00" step="0.01" style="width: 100%; padding: 10px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: #fff; margin-top: 4px; font-size: 13px;">
+      </div>
+      <button onclick="executeAdminBalanceTransfer()" style="width: 100%; background: linear-gradient(135deg, #ff416c, #ff4b2b); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; box-shadow: 0 4px 12px rgba(255,65,108,0.4);">
+        ⚡ تحويل ورسملة الرصيد للزبون فوراَ
+      </button>
     </div>
   `;
-  adminPanelBtn.onclick = openAdminPanel;
   
   const homeView = document.getElementById('homeView');
   if (homeView) {
-    homeView.insertBefore(adminPanelBtn, homeView.firstChild);
+    homeView.insertBefore(adminPanelContainer, homeView.firstChild);
   }
 }
 
-function openAdminPanel() {
-  const targetId = prompt("أدخل آيدي الزبون المراد تعديل رصيده:");
-  if (!targetId) return;
+function executeAdminBalanceTransfer() {
+  const targetIdInput = document.getElementById('adminTargetId');
+  const amountInput = document.getElementById('adminAmount');
   
-  const newBalance = prompt(`أدخل الرصيد الجديد للآيدي (${targetId}):`, "0.0000");
-  if (newBalance === null) return;
+  if (!targetIdInput || !amountInput) return;
+  const targetId = targetIdInput.value.trim();
+  const amount = parseFloat(amountInput.value);
+
+  if (!targetId || isNaN(amount) || amount <= 0) {
+    alert("❌ يرجى إدخال آيدي صحيح ومبلغ صالح للاستخدام!");
+    return;
+  }
 
   if (tg) {
     tg.sendData(JSON.stringify({
-      action: "admin_update_balance",
+      action: "admin_real_transfer",
       target_id: targetId,
-      new_balance: parseFloat(newBalance)
+      amount: amount
     }));
-    alert(`✅ تم إرسال أمر تحديث الرصيد للآيدي ${targetId} بقيمة $${newBalance} للبوت بنجاح!`);
+    alert(`✅ تم تنفيذ عملية تحويل $${amount.toFixed(4)} للآيدي ${targetId} وإرسال الإشعارات بنجاح!`);
+    targetIdInput.value = '';
+    amountInput.value = '';
     tg.close();
   } else {
     alert("يرجى فتح التطبيق من داخل التليجرام!");
