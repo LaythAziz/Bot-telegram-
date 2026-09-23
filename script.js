@@ -78,7 +78,7 @@ const currentUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initD
   photo_url: ""
 };
 
-const ADMIN_ID = 1414595876;
+const ADMIN_ID = 1414595876; // آيديك الخاص بالأدمن
 
 if (currentUser) {
   const userNameEl = document.getElementById('userName');
@@ -108,7 +108,7 @@ function showCustomAlert(message, isSuccess = true) {
   }, 3500);
 }
 
-// --- 1. بناء القائمة المنسدلة الجانبية (Drawer Menu) بثيم البنفسجي وطابقاً للصورة ---
+// --- 1. بناء القائمة الجانبية (Drawer Menu) عند الضغط على "المزيد" ---
 function buildDrawerMenu() {
   let drawer = document.getElementById('customDrawerMenu');
   if (!drawer) {
@@ -123,18 +123,16 @@ function buildDrawerMenu() {
 
     drawer.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <div style="font-weight: bold; font-size: 16px; color: #a29bfe;">RoyalSocial - قائمة المنسدلة</div>
+        <div style="font-weight: bold; font-size: 16px; color: #a29bfe;">RoyalSocial - القائمة</div>
         <button onclick="toggleDrawer(false)" style="background: rgba(255,255,255,0.1); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer;">✕</button>
       </div>
 
-      <!-- بطاقة المستخدم المصغرة داخل القائمة -->
       <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
         <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #f1c40f, #e67e22); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold;">👑</div>
         <div style="flex: 1;">
           <div style="font-weight: bold; font-size: 14px;">${currentUser.first_name || 'مستخدم'}</div>
-          <div style="font-size: 11px; color: #a29bfe;">الرصيد: <span id="drawerBalance" style="color: #2ecc71; font-weight: bold;">$0.0000</span></div>
+          <div style="font-size: 11px; color: #a29bfe;">الرصيد: <span style="color: #2ecc71; font-weight: bold;">$${userBalance.toFixed(4)}</span></div>
         </div>
-        <button onclick="switchTab('walletTab'); toggleDrawer(false);" style="background: #9b59b6; border: none; color: #fff; padding: 6px 10px; border-radius: 8px; font-size: 11px; cursor: pointer; font-weight: bold;">+ شحن</button>
       </div>
 
       <div style="font-size: 11px; color: #888; margin-bottom: 8px; font-weight: bold;">القوائم</div>
@@ -144,7 +142,6 @@ function buildDrawerMenu() {
 
       <div style="font-size: 11px; color: #888; margin-bottom: 8px; font-weight: bold;">الرصيد</div>
       <div onclick="switchTab('walletTab'); toggleDrawer(false);" style="padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 6px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 13px;"><span>💳</span> إضافة رصيد</div>
-      <div onclick="switchTab('walletTab'); toggleDrawer(false);" style="padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 13px;"><span>🔄</span> تحويل رصيد</div>
 
       <div style="font-size: 11px; color: #888; margin-bottom: 8px; font-weight: bold;">المساعدة</div>
       <div onclick="window.open('https://t.me/l713i', '_blank')" style="padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 25px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 13px;"><span>🎧</span> الدعم الفني</div>
@@ -163,7 +160,93 @@ function toggleDrawer(show) {
   }
 }
 
-// --- 2. بناء وتحديث قسم الإشعارات الحقيقية ---
+// --- 2. بناء صفحة البروفايل (عامة للجميع) ---
+function buildProfileTab() {
+  let profileTab = document.getElementById('profileTab');
+  if (!profileTab) {
+    profileTab = document.createElement('div');
+    profileTab.id = 'profileTab';
+    profileTab.className = 'tab-content';
+    profileTab.style.display = 'none';
+
+    profileTab.innerHTML = `
+      <div style="background: linear-gradient(135deg, #1b1828, #2a2438); border-radius: 20px; padding: 20px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.1); text-align: right; direction: rtl;">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #f1c40f, #e67e22); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 34px;">👑</div>
+          <h3 style="margin: 0; color: #fff; font-size: 19px;">${currentUser.first_name || 'مستخدم'}</h3>
+          <p style="color: #a29bfe; font-size: 11px; margin: 4px 0 0;">✨ حساب موثق وفعّال في النظام</p>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.4); padding: 14px; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 11px; color: #aaa;">الرصيد المتاح:</div>
+            <div id="profileBalance" style="font-size: 18px; font-weight: bold; color: #2ecc71;">$0.0000</div>
+          </div>
+          <button onclick="switchTab('walletTab')" style="background: #9b59b6; border: none; color: #fff; padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer;">شحن الرصيد</button>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 10px; color: #aaa;">الاسم العام:</div>
+            <div style="font-size: 13px; color: #fff; font-weight: bold;">${currentUser.first_name || 'مستخدم'}</div>
+          </div>
+          <button onclick="copyText('${currentUser.first_name}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 10px; color: #aaa;">يوزر التليجرام:</div>
+            <div style="font-size: 13px; color: #fff; font-weight: bold;">@${currentUser.username || 'بدون'}</div>
+          </div>
+          <button onclick="copyText('@${currentUser.username}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 10px; color: #aaa;">آيدي الحساب (ID):</div>
+            <div style="font-size: 13px; color: #fff; font-weight: bold;">${currentUser.id}</div>
+          </div>
+          <button onclick="copyText('${currentUser.id}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
+        </div>
+      </div>
+    `;
+    const appContainer = document.querySelector('.app-container') || document.body;
+    appContainer.appendChild(profileTab);
+  }
+}
+
+// --- 3. بناء لوحة التحكم الخاصة بك وحدك كأدمن داخل الميني أب ---
+function buildAdminTab() {
+  if (currentUser && Number(currentUser.id) === ADMIN_ID) {
+    let adminTab = document.getElementById('adminTab');
+    if (!adminTab) {
+      adminTab = document.createElement('div');
+      adminTab.id = 'adminTab';
+      adminTab.className = 'tab-content';
+      adminTab.style.display = 'none';
+      adminTab.innerHTML = `
+        <div style="background: linear-gradient(135deg, #1f1c2c, #393154); border: 2px solid #ff416c; border-radius: 20px; padding: 20px; margin-top: 15px; color: #fff; direction: rtl; text-align: right;">
+          <div style="font-weight: bold; font-size: 16px; margin-bottom: 15px; color: #ff758c; text-align: center;">🛠 لوحة تحكم الأدمن الخاصة بك</div>
+          
+          <div style="margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 12px;">
+            <div style="font-size: 12px; color: #f1c40f; margin-bottom: 8px; font-weight: bold;">💰 تعديل رصيد زبون:</div>
+            <input type="number" id="adminTargetId" placeholder="آيدي الزبون..." style="width: 100%; padding: 10px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: #fff; margin-bottom: 8px; font-size: 12px; text-align: right;">
+            <input type="number" id="adminAmount" placeholder="المبلغ ($)..." step="0.01" style="width: 100%; padding: 10px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: #fff; margin-bottom: 10px; font-size: 12px; text-align: right;">
+            <button onclick="executeAdminBalanceAction()" style="width: 100%; background: #00b09b; color: #fff; border: none; padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px;">➕ تعديل الرصيد فوراً</button>
+          </div>
+
+          <button onclick="fetchUsersListInApp()" style="width: 100%; background: #2980b9; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; margin-bottom: 12px;">👥 عرض قائمة المشتركين كاملة</button>
+
+          <div id="adminDirectOutput" style="display: none; background: rgba(0,0,0,0.8); border: 1px solid #ff416c; border-radius: 10px; padding: 12px; max-height: 250px; overflow-y: auto; font-size: 11px; color: #fff; text-align: right; direction: rtl;"></div>
+        </div>
+      `;
+      const appContainer = document.querySelector('.app-container') || document.body;
+      appContainer.appendChild(adminTab);
+    }
+  }
+}
+
+// --- 4. بناء قسم الإشعارات الحقيقية ---
 function buildNotificationsTab() {
   let notifTab = document.getElementById('notificationsTab');
   if (!notifTab) {
@@ -217,7 +300,7 @@ function renderNotificationsList() {
       <div>
         <div style="font-weight: bold; font-size: 13px; color: ${n.isSuccess ? '#2ecc71' : '#ff758c'};">${n.title}</div>
         <div style="font-size: 11px; color: #bbb; margin-top: 3px;">${n.text}</div>
-        <div style="font-size: 9px; color: #771; margin-top: 5px;">⏰ ${n.time}</div>
+        <div style="font-size: 9px; color: #777; margin-top: 5px;">⏰ ${n.time}</div>
       </div>
       <div style="font-size: 20px;">${n.isSuccess ? '✅' : 'ℹ️'}</div>
     `;
@@ -232,88 +315,7 @@ function clearNotifications() {
   showCustomAlert("✅ تم تحديد جميع الإشعارات كمقروءة!");
 }
 
-// --- 3. بناء صفحة البروفايل ولوحة الأدمن الخاصة بك وحدك ---
-function buildProfileTab() {
-  let profileTab = document.getElementById('profileTab');
-  if (!profileTab) {
-    profileTab = document.createElement('div');
-    profileTab.id = 'profileTab';
-    profileTab.className = 'tab-content';
-    profileTab.style.display = 'none';
-
-    profileTab.innerHTML = `
-      <div style="background: linear-gradient(135deg, #1b1828, #2a2438); border-radius: 20px; padding: 20px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.1); text-align: right; direction: rtl;">
-        <div style="text-align: center; margin-bottom: 20px;">
-          <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #f1c40f, #e67e22); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 34px;">👑</div>
-          <h3 style="margin: 0; color: #fff; font-size: 19px;">${currentUser.first_name || 'مستخدم'}</h3>
-          <p style="color: #a29bfe; font-size: 11px; margin: 4px 0 0;">✨ حساب موثق وفعّال في النظام</p>
-        </div>
-        
-        <div style="background: rgba(0,0,0,0.4); padding: 14px; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <div style="font-size: 11px; color: #aaa;">الرصيد المتاح:</div>
-            <div id="profileBalance" style="font-size: 18px; font-weight: bold; color: #2ecc71;">$0.0000</div>
-          </div>
-          <button onclick="switchTab('walletTab')" style="background: #9b59b6; border: none; color: #fff; padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer;">شحن الرصيد</button>
-        </div>
-
-        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <div style="font-size: 10px; color: #aaa;">الاسم العام في تليجرام:</div>
-            <div style="font-size: 13px; color: #fff; font-weight: bold;">${currentUser.first_name || 'مستخدم'}</div>
-          </div>
-          <button onclick="copyText('${currentUser.first_name}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
-        </div>
-
-        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <div style="font-size: 10px; color: #aaa;">اسم مستخدم تليجرام (Username):</div>
-            <div style="font-size: 13px; color: #fff; font-weight: bold;">@${currentUser.username || 'بدون'}</div>
-          </div>
-          <button onclick="copyText('@${currentUser.username}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
-        </div>
-
-        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <div style="font-size: 10px; color: #aaa;">آيدي الحساب (ID):</div>
-            <div style="font-size: 13px; color: #fff; font-weight: bold;">${currentUser.id}</div>
-          </div>
-          <button onclick="copyText('${currentUser.id}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
-        </div>
-      </div>
-    `;
-    const appContainer = document.querySelector('.app-container') || document.body;
-    appContainer.appendChild(profileTab);
-  }
-}
-
-function buildAdminTab() {
-  if (currentUser && Number(currentUser.id) === ADMIN_ID) {
-    let adminTab = document.getElementById('adminTab');
-    if (!adminTab) {
-      adminTab = document.createElement('div');
-      adminTab.id = 'adminTab';
-      adminTab.className = 'tab-content';
-      adminTab.style.display = 'none';
-      adminTab.innerHTML = `
-        <div style="background: linear-gradient(135deg, #1f1c2c, #393154); border: 2px solid #ff416c; border-radius: 20px; padding: 20px; margin-top: 15px; color: #fff; direction: rtl; text-align: right;">
-          <div style="font-weight: bold; font-size: 16px; margin-bottom: 15px; color: #ff758c; text-align: center;">🛠 لوحة تحكم الأدمن الخاصة بك</div>
-          <div style="margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 12px;">
-            <input type="number" id="adminTargetId" placeholder="آيدي الزبون..." style="width: 100%; padding: 10px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: #fff; margin-bottom: 8px; font-size: 12px; text-align: right;">
-            <input type="number" id="adminAmount" placeholder="المبلغ ($)..." step="0.01" style="width: 100%; padding: 10px; border-radius: 8px; border: none; background: rgba(255,255,255,0.1); color: #fff; margin-bottom: 10px; font-size: 12px; text-align: right;">
-            <button onclick="executeAdminBalanceAction()" style="width: 100%; background: #00b09b; color: #fff; border: none; padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px;">➕ تعديل الرصيد</button>
-          </div>
-          <button onclick="fetchUsersListInApp()" style="width: 100%; background: #2980b9; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; margin-bottom: 12px;">👥 عرض قائمة المشتركين</button>
-          <div id="adminDirectOutput" style="display: none; background: rgba(0,0,0,0.8); border: 1px solid #ff416c; border-radius: 10px; padding: 12px; max-height: 250px; overflow-y: auto; font-size: 11px; color: #fff; text-align: right; direction: rtl;"></div>
-        </div>
-      `;
-      const appContainer = document.querySelector('.app-container') || document.body;
-      appContainer.appendChild(adminTab);
-    }
-  }
-}
-
-// --- 4. إعداد الشريط السفلي (زر "المزيد" يفتح القائمة المنسدلة، والبروفايل بجانب الإشعارات) ---
+// --- 5. ترتيب الشريط السفلي بالترتيب الدقيق المطلوب وبدون تداخل ---
 function setupCustomNavbar() {
   const navbar = document.querySelector('.navbar') || document.querySelector('.nav-bar');
   if (!navbar) return;
@@ -321,7 +323,7 @@ function setupCustomNavbar() {
   const oldAdded = navbar.querySelectorAll('.custom-nav-item');
   oldAdded.forEach(el => el.remove());
 
-  // زر البروفايل بجانب الإشعارات
+  // 1. زر البروفايل [بجانب الإشعارات]
   let profileNavBtn = document.createElement('div');
   profileNavBtn.id = 'nav-profileTab';
   profileNavBtn.className = 'nav-item custom-nav-item';
@@ -329,17 +331,17 @@ function setupCustomNavbar() {
   profileNavBtn.onclick = () => switchTab('profileTab');
   navbar.appendChild(profileNavBtn);
 
-  // زر للأدمن بجانب الرئيسية إن وجد
+  // 2. زر لوحة تحكم الأدمن (يظهر لك أنت وحدك فقط)
   if (currentUser && Number(currentUser.id) === ADMIN_ID) {
     let adminNavBtn = document.createElement('div');
     adminNavBtn.id = 'nav-adminTab';
     adminNavBtn.className = 'nav-item custom-nav-item';
-    adminNavBtn.innerHTML = `<span>👑</span><span>الأدمن</span>`;
+    adminNavBtn.innerHTML = `<span>👑</span><span>التحكم</span>`;
     adminNavBtn.onclick = () => switchTab('adminTab');
     navbar.appendChild(adminNavBtn);
   }
 
-  // ربط زر "المزيد" الموجود في الشريط السفلي ليفتح القائمة الجانبية المنسدلة
+  // 3. ربط زر "المزيد" بالقائمة المنسدلة الجانبية
   const navItems = navbar.querySelectorAll('.nav-item');
   navItems.forEach(item => {
     if (item.innerText.includes('المزيد') || item.innerText.includes('≡')) {
@@ -508,8 +510,7 @@ function submitOrder() {
   myOrders.unshift({ id: newOrderId, title: currentService.title, qty: qty, price: total, status: "قيد التنفيذ ⚡" });
   localStorage.setItem('myOrders', JSON.stringify(myOrders));
   
-  // إضافة إشعار حقيقي للطلب الجديد
-  addNotification(`طلب جديد #${newOrderId}`, `تم إنشاء الطلب رقم ${newOrderId} بنجاح وتم خصم التكلفة.`);
+  addNotification(`طلب جديد #${newOrderId}`, `تم إنشاء الطلب رقم ${newOrderId} بنجاح.`);
   
   updateStatsDisplay();
   showCustomAlert(`✅ تم إنشاء الطلب بنجاح! #${newOrderId}`);
