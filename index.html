@@ -3,24 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RoyalSocial App</title>
+    <title>RoyalSocial Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #0d0914;
-            --card-bg: #181124;
-            --input-bg: #09050e;
+            --bg-color: #0c0714;
+            --card-bg: #160d27;
+            --card-border: rgba(255, 255, 255, 0.08);
             --accent-purple: #7000ff;
             --accent-pink: #d946ef;
             --text-color: #ffffff;
             --text-muted: #9ca3af;
+            --input-bg: #090412;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: system-ui, -apple-system, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -28,7 +30,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             padding: 16px;
-            padding-bottom: 80px;
+            padding-bottom: 90px;
         }
 
         .header {
@@ -36,40 +38,104 @@
             justify-content: space-between;
             align-items: center;
             background: var(--card-bg);
-            padding: 15px;
-            border-radius: 16px;
+            padding: 16px;
+            border-radius: 18px;
             margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .balance-box {
+            text-align: left;
         }
 
         .balance-title {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
         }
 
         .balance-amount {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
-            color: #fff;
-        }
-
-        .charge-btn {
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
+            color: #4ade80;
         }
 
         .section-title {
-            font-size: 14px;
+            font-size: 15px;
+            font-weight: bold;
             margin-bottom: 12px;
-            color: var(--text-muted);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+        }
+
+        .grid-services {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .service-card:active {
+            transform: scale(0.97);
+        }
+
+        .service-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .icon-insta { background: rgba(217, 70, 239, 0.15); color: #d946ef; }
+        .icon-telegram { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+        .icon-tiktok { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .icon-pubg { background: rgba(234, 179, 8, 0.15); color: #eab308; }
+
+        .service-title {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         .card {
@@ -77,40 +143,17 @@
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            position: relative;
-        }
-
-        .badge {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            font-size: 10px;
-            padding: 4px 8px;
-            border-radius: 8px;
-            background: rgba(217, 70, 239, 0.15);
-            color: var(--accent-pink);
-        }
-
-        .card-header {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .card-desc {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-bottom: 12px;
+            border: 1px solid var(--card-border);
         }
 
         input {
             width: 100%;
             background: var(--input-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--card-border);
             padding: 12px;
             border-radius: 10px;
             color: white;
+            margin-top: 8px;
             margin-bottom: 12px;
             outline: none;
             text-align: center;
@@ -124,127 +167,178 @@
             font-weight: bold;
             color: white;
             cursor: pointer;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
         }
 
-        .asia-btn {
-            background: linear-gradient(90deg, #ec4899, #d946ef);
-        }
-
-        .rafidain-btn {
-            background: linear-gradient(90deg, #6366f1, #8b5cf6);
-        }
-
-        .copy-box {
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #110820;
+            border-top: 1px solid var(--card-border);
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: var(--input-bg);
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 12px;
-            font-weight: bold;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 100;
         }
 
-        .copy-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 12px;
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            font-size: 11px;
             cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--accent-pink);
+        }
+
+        .nav-item i {
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
 
+    <!-- الهيدر والمعلومات -->
     <div class="header">
-        <div>
+        <div class="user-info">
+            <div class="avatar" id="userAvatar">R</div>
+            <div>
+                <div style="font-weight: bold; font-size: 14px;" id="userName">مستخدم Royal</div>
+                <div style="font-size: 11px; color: var(--text-muted);">حساب فعال</div>
+            </div>
+        </div>
+        <div class="balance-box">
             <div class="balance-title">الرصيد المتاح</div>
             <div class="balance-amount">$0.0000</div>
         </div>
-        <button class="charge-btn">+ شحن الرصيد</button>
     </div>
 
-    <div class="section-title">💳 طرق شحن الرصيد المتاحة</div>
-
-    <!-- كارت آسيا سيل -->
-    <div class="card">
-        <span class="badge">شحن آلي</span>
-        <div class="card-header">💳 كارت آسيا سيل</div>
-        <div class="card-desc">قم بإدخال كود كارت شحن آسيا سيل للتعبئة:</div>
-        <input type="number" id="asiaCardInput" placeholder="أدخل رقم الكارت هنا...">
-        <button onclick="sendAsiaCard()" class="submit-btn asia-btn">تأكيد شحن الكارت</button>
-    </div>
-
-    <!-- ماستر كارد الرافدين -->
-    <div class="card">
-        <span class="badge">تحويل مباشر</span>
-        <div class="card-header">💳 ماستر كارد الرافدين</div>
-        <div class="card-desc">حول المبلغ إلى رقم البطاقة الموضح بالأسفل:</div>
-        <div class="copy-box">
-            <span id="cardNumber">7168843873</span>
-            <button onclick="copyNumber()" class="copy-btn">📋 نسخ الرقم</button>
+    <!-- تبويب الرئيسية (الخدمات والأيقونات) -->
+    <div id="tab-home" class="tab-content active">
+        <div class="section-title"><i class="fa-solid fa-fire" style="color: #f97316;"></i> الخدمات المتاحة</div>
+        <div class="grid-services">
+            <div class="service-card" onclick="alert('قسم إنستغرام: اختر الخدمة المطلوبة من القائمة')">
+                <div class="service-icon icon-insta"><i class="fa-brands fa-instagram"></i></div>
+                <div class="service-title">إنستغرام - متابعين وتفاعلات</div>
+            </div>
+            <div class="service-card" onclick="alert('قسم تليجرام: أعضاء وقنوات')">
+                <div class="service-icon icon-telegram"><i class="fa-brands fa-telegram"></i></div>
+                <div class="service-title">تليجرام - أعضاء وخدمات</div>
+            </div>
+            <div class="service-card" onclick="alert('قسم تيك توك: مشاهدات ومتابعين')">
+                <div class="service-icon icon-tiktok"><i class="fa-brands fa-tiktok"></i></div>
+                <div class="service-title">تيك توك - خدمات شاملة</div>
+            </div>
+            <div class="service-card" onclick="alert('شحن شدات ببجي')">
+                <div class="service-icon icon-pubg"><i class="fa-solid fa-gamepad"></i></div>
+                <div class="service-title">شحن ألعاب - PUBG</div>
+            </div>
         </div>
-        <input type="text" id="rafidainReceiptInput" placeholder="أدخل رقم الوصل أو اسم المحول...">
-        <button onclick="sendRafidainReceipt()" class="submit-btn rafidain-btn">إرسال إشعار التحويل 🚀</button>
+    </div>
+
+    <!-- تبويب الشحن -->
+    <div id="tab-charge" class="tab-content">
+        <div class="section-title"><i class="fa-solid fa-wallet" style="color: #a855f7;"></i> طرق شحن الرصيد</div>
+        
+        <div class="card">
+            <div style="font-weight: bold;">💳 كارت آسيا سيل</div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">أدخل كود كارت الشحن لتعبئة الرصيد:</div>
+            <input type="number" id="asiaInput" placeholder="أدخل رقم الكارت هنا...">
+            <button onclick="sendAsiaCard()" class="submit-btn">تأكيد شحن الكارت</button>
+        </div>
+
+        <div class="card">
+            <div style="font-weight: bold;">💳 ماستر كارد الرافدين</div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">رقم البطاقة للتحويل: <b style="color: #fff;">7168843873</b></div>
+            <input type="text" id="rafidainInput" placeholder="أدخل رقم الوصل أو اسم المحول...">
+            <button onclick="sendRafidain()" class="submit-btn" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">إرسال إشعار التحويل 🚀</button>
+        </div>
+    </div>
+
+    <!-- تبويب الطلبات -->
+    <div id="tab-orders" class="tab-content">
+        <div class="section-title"><i class="fa-solid fa-clock-rotate-left"></i> سجل طلباتي</div>
+        <div class="card" style="text-align: center; color: var(--text-muted); padding: 30px;">
+            لا توجد طلبات سابقة حالياً
+        </div>
+    </div>
+
+    <!-- شريط التنقل السفلي -->
+    <div class="nav-bar">
+        <div class="nav-item active" onclick="switchTab('home', this)">
+            <i class="fa-solid fa-house"></i>
+            <span>الرئيسية</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('charge', this)">
+            <i class="fa-solid fa-credit-card"></i>
+            <span>شحن</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('orders', this)">
+            <i class="fa-solid fa-list-check"></i>
+            <span>طلباتي</span>
+        </div>
     </div>
 
     <script>
         const tg = window.Telegram ? window.Telegram.WebApp : null;
-        if (tg) tg.expand();
+        if (tg) {
+            tg.expand();
+            const user = tg.initDataUnsafe?.user;
+            if (user) {
+                document.getElementById('userName').innerText = user.first_name || "مستخدم Royal";
+                document.getElementById('userAvatar').innerText = (user.first_name || "R")[0].toUpperCase();
+            }
+        }
 
-        function copyNumber() {
-            navigator.clipboard.writeText("7168843873");
-            alert("تم نسخ رقم البطاقة بنجاح! 📋");
+        function switchTab(tabName, el) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabName).classList.add('active');
+            el.classList.add('active');
         }
 
         function sendAsiaCard() {
-            const cardCode = document.getElementById('asiaCardInput').value.trim();
-            if (!cardCode) {
-                alert("يرجى إدخال رقم الكارت أولاً!");
-                return;
-            }
-
+            const code = document.getElementById('asiaInput').value.trim();
+            if (!code) return alert("يرجى إدخال رقم الكارت!");
             if (tg) {
                 const user = tg.initDataUnsafe?.user || {};
-                const data = {
+                tg.sendData(JSON.stringify({
                     action: "charge_asia",
-                    card_code: cardCode,
+                    card_code: code,
                     user_id: user.id || "غير معروف",
                     username: user.username || "بدون يوزر",
                     first_name: user.first_name || "مستخدم"
-                };
-                tg.sendData(JSON.stringify(data));
-                alert("تم إرسال الكارت إلى الأدمن بنجاح! ✅\nسيتم التحقق وإضافة الرصيد لحسابك.");
+                }));
+                alert("تم إرسال الكارت للأدمن بنجاح! ✅");
                 tg.close();
             } else {
-                alert("يرجى فتح التطبيق من داخل التليجرام ليعمل الشحن!");
+                alert("يرجى فتح التطبيق من داخل التليجرام!");
             }
         }
 
-        function sendRafidainReceipt() {
-            const receiptCode = document.getElementById('rafidainReceiptInput').value.trim();
-            if (!receiptCode) {
-                alert("يرجى إدخال رقم الوصل أو الاسم أولاً!");
-                return;
-            }
-
+        function sendRafidain() {
+            const receipt = document.getElementById('rafidainInput').value.trim();
+            if (!receipt) return alert("يرجى إدخال الوصل!");
             if (tg) {
                 const user = tg.initDataUnsafe?.user || {};
-                const data = {
+                tg.sendData(JSON.stringify({
                     action: "charge_rafidain",
-                    receipt: receiptCode,
+                    receipt: receipt,
                     user_id: user.id || "غير معروف",
                     username: user.username || "بدون يوزر",
                     first_name: user.first_name || "مستخدم"
-                };
-                tg.sendData(JSON.stringify(data));
-                alert("تم إرسال إشعار التحويل إلى الأدمن بنجاح! ✅\nسيتم التحقق منه وتفعيل الرصيد.");
+                }));
+                alert("تم إرسال الوصل للأدمن بنجاح! ✅");
                 tg.close();
             } else {
-                alert("يرجى فتح التطبيق من داخل التليجرام ليعمل الشحن!");
+                alert("يرجى فتح التطبيق من داخل التليجرام!");
             }
         }
     </script>
