@@ -21,85 +21,51 @@
       background-color: var(--bg-main);
       color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      direction: rtl;
+      margin: 0; padding: 0; direction: rtl;
     }
     .app-container {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 15px;
-      padding-bottom: 90px;
+      max-width: 480px; margin: 0 auto; padding: 15px; padding-bottom: 90px;
     }
-    /* الهيدر العلوي والإحصائيات */
     .header-card {
       background: linear-gradient(135deg, #1b162c, #2a2240);
-      border-radius: 20px;
-      padding: 18px;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      margin-bottom: 15px;
+      border-radius: 20px; padding: 18px; border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 15px;
     }
     .stats-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-top: 12px;
-      background: rgba(0,0,0,0.3);
-      padding: 10px;
-      border-radius: 12px;
-      text-align: center;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px;
+      background: rgba(0,0,0,0.3); padding: 10px; border-radius: 12px; text-align: center;
     }
     .stat-box { font-size: 11px; color: var(--text-sub); }
     .stat-num { font-size: 14px; font-weight: bold; color: #fff; margin-top: 2px; }
 
-    /* شبكة المنصات */
     .service-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 15px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px;
     }
     .platform-card {
-      background: var(--bg-card);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 16px;
-      padding: 16px;
-      cursor: pointer;
-      transition: 0.2s;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      background: var(--bg-card); border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px; padding: 16px; cursor: pointer; transition: 0.2s;
+      display: flex; flex-direction: column; justify-content: space-between;
     }
-    .platform-card:hover { background: var(--bg-card-hover); border-color: rgba(155,89,182,0.3); }
+    .platform-card:hover { background: var(--bg-card-hover); border-color: rgba(241,196,15,0.3); }
 
-    /* كروت الخدمات والطلبات */
     .service-card, .order-card {
-      background: var(--bg-card);
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 10px;
-      border: 1px solid rgba(255,255,255,0.05);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      background: var(--bg-card); border-radius: 14px; padding: 14px; margin-bottom: 10px;
+      border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;
     }
     .service-title { font-size: 13px; font-weight: bold; color: #fff; }
     .service-price { font-size: 12px; color: #2ecc71; font-weight: bold; }
     .btn-order-action {
-      background: var(--accent-gradient);
-      color: #fff; border: none; padding: 6px 12px;
+      background: var(--gold); color: #120f1d; border: none; padding: 6px 14px;
       border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer;
     }
 
-    /* النافذة المنبثقة للطلب (Modal) */
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.8); z-index: 99999; display: none;
       align-items: center; justify-content: center; backdrop-filter: blur(5px);
     }
     .modal-content {
-      background: #1e1832; border: 1px solid rgba(155,89,182,0.4);
+      background: #1e1832; border: 1px solid rgba(241,196,15,0.4);
       border-radius: 20px; width: 90%; max-width: 380px; padding: 20px; box-sizing: border-box;
     }
     .modal-input {
@@ -107,7 +73,7 @@
       background: rgba(0,0,0,0.4); color: #fff; margin-bottom: 12px; box-sizing: border-box; text-align: right;
     }
 
-    /* الشريط السفلي الثابت بالترتيب الدقيق */
+    /* الشريط السفلي الثابت بالترتيب الدقيق المطابق للصورة */
     .navbar {
       position: fixed; bottom: 0; left: 0; width: 100%;
       background: #171324; border-top: 1px solid rgba(255,255,255,0.08);
@@ -125,18 +91,18 @@
 
   <div class="app-container">
     
-    <!-- الواجهة الرئيسية (HomeView) -->
+    <!-- الواجهة الرئيسية -->
     <div id="homeView" class="tab-content">
       <div class="header-card">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <div>
             <div style="font-size: 11px; color: var(--text-sub);">الرصيد المتاح</div>
-            <div id="userBalance" style="font-size: 20px; font-weight: bold; color: #2ecc71; margin-top: 2px;">$0.0000</div>
+            <div id="userBalance" style="font-size: 20px; font-weight: bold; color: #2ecc71; margin-top: 2px;">$4.0700</div>
           </div>
-          <button onclick="switchTab('walletTab')" style="background: var(--accent-gradient); border: none; color: #fff; padding: 8px 16px; border-radius: 12px; font-weight: bold; font-size: 12px; cursor: pointer;">+ شحن الرصيد</button>
+          <button onclick="switchTab('walletTab')" style="background: var(--gold); border: none; color: #120f1d; padding: 8px 16px; border-radius: 12px; font-weight: bold; font-size: 12px; cursor: pointer;">+ شحن الرصيد</button>
         </div>
         <div class="stats-row">
-          <div class="stat-box">مكتمل<div id="completedCount" class="stat-num">0</div></div>
+          <div class="stat-box">مكتمل<div id="completedCount" class="stat-num">69</div></div>
           <div class="stat-box">قيد التنفيذ<div id="pendingCount" class="stat-num">0</div></div>
           <div class="stat-box">الخدمات<div class="stat-num">118</div></div>
         </div>
@@ -161,22 +127,6 @@
           <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">تيك توك 🎬</div>
           <div style="font-size: 11px; color: var(--text-sub);">9 فئة | 20 خدمة</div>
         </div>
-        <div class="platform-card" onclick="openPlatform('facebook')">
-          <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">فيسبوك 📘</div>
-          <div style="font-size: 11px; color: var(--text-sub);">4 فئة | 14 خدمة</div>
-        </div>
-        <div class="platform-card" onclick="openPlatform('funding')">
-          <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">تمويل حقيقي 💵</div>
-          <div style="font-size: 11px; color: var(--text-sub);">2 فئة | 2 خدمة</div>
-        </div>
-        <div class="platform-card" onclick="openPlatform('youtube')">
-          <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">يوتيوب 📺</div>
-          <div style="font-size: 11px; color: var(--text-sub);">3 فئة | 2 خدمة</div>
-        </div>
-        <div class="platform-card" onclick="openPlatform('twitter')">
-          <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px;">تويتر (X) 🐦</div>
-          <div style="font-size: 11px; color: var(--text-sub);">2 فئة | 5 خدمة</div>
-        </div>
       </div>
     </div>
 
@@ -188,33 +138,75 @@
 
     <!-- تبويب شحن الرصيد (Wallet) -->
     <div id="walletTab" class="tab-content" style="display: none;">
-      <h3 style="color: #fff; margin-bottom: 15px;">💳 طرق شحن الرصيد المتاحة</h3>
-      
-      <!-- كارت آسيا سيل -->
+      <h3 style="color: #fff; margin-bottom: 15px;">شحن الرصيد</h3>
       <div style="background: var(--bg-card); border-radius: 16px; padding: 16px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05);">
-        <div style="font-weight: bold; font-size: 14px; margin-bottom: 8px; color: #f1c40f;">💳 كارت آسيا سيل</div>
-        <input type="text" id="asiaCardInput" placeholder="أدخل رقم كارت شحن آسيا..." class="modal-input">
-        <button onclick="submitAsiaCard()" style="width: 100%; background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff; border: none; padding: 11px; border-radius: 10px; font-weight: bold; cursor: pointer;">تأكيد شحن الكارت</button>
+        <div style="font-weight: bold; font-size: 14px; margin-bottom: 6px; color: #f1c40f;">شحن الرصيد سريع وآمن ومضمون</div>
+        <div style="font-size: 11px; color: #aaa; margin-bottom: 12px;">للكروت، تواصل معنا عبر بوت التليجرام الرسمي وسنقوم بمساعدتك في إتمام العملية.</div>
+        <button onclick="submitAsiaCard()" style="width: 100%; background: var(--gold); color: #120f1d; border: none; padding: 11px; border-radius: 10px; font-weight: bold; cursor: pointer;">فتح بوت الشحن ↗</button>
       </div>
 
-      <!-- ماستر كارد الرافدين -->
+      <!-- باقات الشحن السريعة -->
+      <div style="font-weight: bold; font-size: 13px; margin-bottom: 10px; color: var(--gold);">✨ باقات الشحن الفوري</div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px;">
+        <div onclick="quickRecharge(5)" style="background: var(--bg-card); padding: 12px; border-radius: 12px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.05);"><b>$5</b><br><span style="font-size:10px; color:#aaa;">دولار</span></div>
+        <div onclick="quickRecharge(10)" style="background: var(--bg-card); padding: 12px; border-radius: 12px; text-align: center; cursor: pointer; border: 1px solid var(--gold);"><b>$10</b><br><span style="font-size:10px; color:var(--gold);">الأكثر طلباً</span></div>
+        <div onclick="quickRecharge(25)" style="background: var(--bg-card); padding: 12px; border-radius: 12px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.05);"><b>$25</b><br><span style="font-size:10px; color:#aaa;">دولار</span></div>
+      </div>
+    </div>
+
+    <!-- تبويب تحويل الرصيد -->
+    <div id="transferTab" class="tab-content" style="display: none;">
+      <h3 style="color: #fff; margin-bottom: 5px;">تحويل رصيد</h3>
+      <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 15px;">أرسل رصيداً لمستخدم آخر داخل المنصة</p>
       <div style="background: var(--bg-card); border-radius: 16px; padding: 16px; border: 1px solid rgba(255,255,255,0.05);">
-        <div style="font-weight: bold; font-size: 14px; margin-bottom: 8px; color: #3498db;">💳 ماستر كارد الرافدين</div>
-        <div style="font-size: 12px; color: #aaa; margin-bottom: 10px;">حول المبلغ إلى الرقم: <code style="color:#f1c40f; font-weight:bold;">7168843873</code></div>
-        <input type="text" id="transferReceiptInput" placeholder="أدخل رقم الوصل أو اسم المحول..." class="modal-input">
-        <button onclick="submitTransferNotice()" style="width: 100%; background: var(--accent-gradient); color: #fff; border: none; padding: 11px; border-radius: 10px; font-weight: bold; cursor: pointer;">إرسال إشعار التحويل 🚀</button>
+        <input type="text" id="transferUserTarget" placeholder="اسم المستخدم أو الآيدي المستلم..." class="modal-input">
+        <input type="number" id="transferAmountTarget" placeholder="المبلغ (بالدولار)..." class="modal-input">
+        <button onclick="executeBalanceTransfer()" style="width: 100%; background: var(--gold); color: #120f1d; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer;">تحويل الرصيد ↗</button>
       </div>
     </div>
 
     <!-- تبويب طلباتي (Orders) -->
     <div id="ordersTab" class="tab-content" style="display: none;">
-      <h3 style="color: #fff; margin-bottom: 15px;">📦 طلباتي السابقة</h3>
+      <h3 style="color: #fff; margin-bottom: 15px;">طلباتي (69 طلب)</h3>
       <div id="ordersContainer"></div>
+    </div>
+
+    <!-- تبويب الإعدادات (Settings) -->
+    <div id="settingsTab" class="tab-content" style="display: none;">
+      <h3 style="color: #fff; margin-bottom: 15px;">الإعدادات والتفضيلات</h3>
+      <div style="background: var(--bg-card); border-radius: 16px; padding: 16px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05);">
+        <div style="font-weight: bold; font-size: 14px; margin-bottom: 10px; color: var(--gold);">معلومات الحساب</div>
+        <div style="font-size: 12px; color: #ccc; margin-bottom: 6px;">الاسم: ليث عزيز 🚩</div>
+        <div style="font-size: 12px; color: #ccc; margin-bottom: 6px;">اسم المستخدم: @l713i</div>
+        <div style="font-size: 12px; color: #2ecc71;">الرصيد المتاح: $4.0700</div>
+      </div>
+      <div style="background: var(--bg-card); border-radius: 16px; padding: 16px; border: 1px solid rgba(255,255,255,0.05);">
+        <div style="font-weight: bold; font-size: 14px; margin-bottom: 10px; color: var(--gold);">API Key للربط الخارجي</div>
+        <input type="text" readonly value="rs_live_998372641092837465" style="width:100%; padding:10px; background:rgba(0,0,0,0.4); border:none; color:#f1c40f; border-radius:8px; text-align:center; font-size:11px;">
+      </div>
+    </div>
+
+    <!-- تبويب لوحة الأدمن السرية (تظهر لك وحدك) -->
+    <div id="adminTab" class="tab-content" style="display: none;">
+      <div style="background: linear-gradient(135deg, #1f1c2c, #393154); border: 2px solid var(--gold); border-radius: 20px; padding: 20px; color: #fff;">
+        <h3 style="color: var(--gold); text-align: center; margin-top:0;">👑 لوحة تحكم الأدمن السرية</h3>
+        <p style="font-size: 11px; text-align: center; color: #a29bfe;">هذه القائمة مرئية لك وحدك ولا تظهر لأي مستخدم آخر.</p>
+        
+        <div style="margin-bottom: 15px; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 12px;">
+          <div style="font-size: 12px; color: var(--gold); margin-bottom: 8px; font-weight: bold;">➕ إضافة / ➖ خصم رصيد زبون:</div>
+          <input type="number" id="adminTargetId" placeholder="آيدي الزبون (User ID)..." class="modal-input">
+          <input type="number" id="adminAmount" placeholder="المبلغ ($) [استخدم سالب للخصم مثلاً -5]..." step="0.01" class="modal-input">
+          <button onclick="executeAdminBalanceModify()" style="width: 100%; background: #2ecc71; color: #fff; border: none; padding: 11px; border-radius: 8px; font-weight: bold; cursor: pointer;">تنفيذ تعديل الرصيد فوراً</button>
+        </div>
+
+        <button onclick="fetchAdminLogsAndUsers()" style="width: 100%; background: #2980b9; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 12px;">📊 عرض سجلات المستخدمين والطلبات</button>
+        <div id="adminDirectOutput" style="display: none; background: rgba(0,0,0,0.8); border: 1px solid var(--gold); border-radius: 10px; padding: 12px; max-height: 250px; overflow-y: auto; font-size: 11px; color: #fff; text-align: right;"></div>
+      </div>
     </div>
 
   </div>
 
-  <!-- النافذة المنبثقة للطلب (Order Modal) -->
+  <!-- النافذة المنبثقة للطلب -->
   <div id="orderModal" class="modal-overlay">
     <div class="modal-content">
       <div id="modalServiceTitle" style="font-weight: bold; font-size: 14px; margin-bottom: 12px; color: #fff;"></div>
@@ -225,13 +217,13 @@
         <span id="totalPriceDisplay" style="color: #2ecc71; font-weight: bold;">$0.0000</span>
       </div>
       <div style="display: flex; gap: 10px;">
-        <button onclick="submitOrder()" style="flex: 1; background: #2ecc71; color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer;">تأكيد الطلب</button>
+        <button onclick="submitOrder()" style="flex: 1; background: var(--gold); color: #120f1d; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer;">تأكيد الطلب</button>
         <button onclick="closeOrderModal()" style="flex: 1; background: rgba(255,255,255,0.1); color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer;">إلغاء</button>
       </div>
     </div>
   </div>
 
-  <!-- الشريط السفلي الثابت بالترتيب الحرفي الدقيق -->
+  <!-- الشريط السفلي الثابت المطابق للصورة تماماً -->
   <div class="navbar">
     <div class="nav-item" onclick="toggleExactDrawer(true)">
       <span>≡</span>
