@@ -1,585 +1,684 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>رويال سوشال - متجر الرشق الملكي</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            background-color: #0b0712;
-            color: #f3f0ff;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            padding-bottom: 95px;
-            user-select: none;
-            -webkit-user-select: none;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>RoyalSocial - SMM Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0b0713;
+      --card-bg: #140d24;
+      --card-border: #261942;
+      --accent-purple: #7c3aed;
+      --accent-purple-glow: rgba(124, 58, 237, 0.4);
+      --accent-blue: #3b82f6;
+      --text-main: #ffffff;
+      --text-sub: #9ca3af;
+      --green-status: #10b981;
+    }
 
-        .purple-card {
-            background: rgba(23, 15, 38, 0.75);
-            border: 1px solid rgba(139, 92, 246, 0.22);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        .purple-gradient-btn {
-            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
-            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.35);
-        }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding-bottom: 90px;
+      overflow-x: hidden;
+      user-select: none;
+    }
 
-        .purple-gradient-btn:active {
-            transform: scale(0.97);
-            opacity: 0.9;
-        }
+    /* Container Animations */
+    .fade-in {
+      animation: fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
 
-        /* سلاسة الحركة للانتقالات - 120Hz Refresh Rate */
-        .tab-anim {
-            will-change: transform, opacity;
-            animation: fadeInSlide 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        @keyframes fadeInSlide {
-            from {
-                opacity: 0;
-                transform: translateY(10px) scale(0.985);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
+    /* Top User Card */
+    .profile-card {
+      background: linear-gradient(135deg, #180f2d 0%, #110920 100%);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 16px;
+      margin: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
 
-        .btn-hover-effect {
-            transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.15s ease;
-        }
+    .profile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        .btn-hover-effect:active {
-            transform: scale(0.96);
-        }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-        /* تحسين مظهر الصور والأيقونات */
-        .platform-icon {
-            width: 32px;
-            height: 32px;
-            object-fit: contain;
-        }
-        .platform-icon-lg {
-            width: 42px;
-            height: 42px;
-            object-fit: contain;
-        }
-    </style>
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #a855f7, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 0 12px rgba(168, 85, 247, 0.3);
+    }
+
+    .user-det {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .user-badge {
+      font-size: 11px;
+      color: var(--text-sub);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 8px;
+      border-radius: 10px;
+      width: fit-content;
+    }
+
+    .status-badge {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--green-status);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--green-status);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green-status);
+    }
+
+    .balance-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .balance-val {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .btn-charge {
+      background: linear-gradient(135deg, var(--accent-purple), #6366f1);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--accent-purple-glow);
+      transition: transform 0.1s ease;
+    }
+
+    .btn-charge:active {
+      transform: scale(0.95);
+    }
+
+    /* Platforms Grid */
+    .section-title {
+      font-size: 14px;
+      color: var(--text-sub);
+      margin: 16px 16px 10px 16px;
+      font-weight: 600;
+    }
+
+    .platforms-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 0 12px;
+    }
+
+    .platform-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .platform-card:active {
+      transform: scale(0.97);
+      border-color: var(--accent-purple);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .platform-badge {
+      font-size: 10px;
+      background: rgba(124, 58, 237, 0.2);
+      color: #c4b5fd;
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    .platform-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .platform-name {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .platform-desc {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    /* Service List View */
+    .services-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+    }
+
+    .btn-back {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .service-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px;
+      margin: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .service-card:active {
+      transform: scale(0.98);
+      border-color: var(--accent-purple);
+    }
+
+    .service-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .service-title {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .service-meta {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .service-price {
+      font-size: 11px;
+      color: #a7f3d0;
+      background: rgba(16, 185, 129, 0.1);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .service-speed {
+      font-size: 10px;
+      color: var(--text-sub);
+    }
+
+    .btn-order-action {
+      background: rgba(124, 58, 237, 0.15);
+      color: #c4b5fd;
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* Order Modal Window */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: #160d29;
+      border-top: 1px solid var(--card-border);
+      border-radius: 24px 24px 0 0;
+      width: 100%;
+      padding: 20px;
+      animation: slideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .close-modal {
+      font-size: 20px;
+      color: var(--text-sub);
+      cursor: pointer;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      color: var(--text-sub);
+      font-weight: 600;
+    }
+
+    .form-input {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px;
+      color: white;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent-purple);
+    }
+
+    .total-box {
+      background: rgba(124, 58, 237, 0.1);
+      border: 1px dashed var(--accent-purple);
+      padding: 12px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .total-price {
+      font-size: 18px;
+      font-weight: 800;
+      color: #a7f3d0;
+    }
+
+    .btn-submit-order {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent-purple), #6366f1);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px var(--accent-purple-glow);
+    }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(15, 9, 28, 0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      z-index: 900;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-sub);
+      font-size: 11px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .nav-item.active {
+      color: var(--accent-purple);
+      font-weight: 700;
+    }
+
+    .nav-icon {
+      font-size: 18px;
+    }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col p-3">
+<body>
 
-    <!-- خلفية نيون بنفسجية مضيئة -->
-    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-72 h-72 bg-violet-600/15 rounded-full blur-3xl pointer-events-none"></div>
-
-    <!-- الهيدر العلوي الملكي -->
-    <div class="purple-card p-4 rounded-3xl mb-3 relative overflow-hidden">
-        <div class="flex items-center justify-between mb-3 relative z-10">
-            <div class="flex items-center gap-3">
-                <div class="w-11 h-11 purple-gradient-btn rounded-2xl flex items-center justify-center font-black text-2xl text-white shadow-lg shadow-violet-500/30">
-                    👑
-                </div>
-                <div>
-                    <div class="flex items-center gap-1.5">
-                        <h1 id="userDisplayName" class="font-bold text-sm text-purple-100">مستخدم جديد</h1>
-                        <span class="text-xs">🚩</span>
-                    </div>
-                    <span class="text-[10px] text-violet-300 font-mono bg-violet-500/10 px-2 py-0.5 rounded-full border border-violet-500/20">حساب فعال</span>
-                </div>
-            </div>
-            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded-full font-bold flex items-center gap-1">
-                <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span> متصل
-            </span>
+  <!-- Top User Profile Header -->
+  <div class="profile-card">
+    <div class="profile-header">
+      <div class="user-info">
+        <div class="avatar">👑</div>
+        <div class="user-det">
+          <span class="user-name" id="userName">Layth Aziz</span>
+          <span class="user-badge">حساب فعال</span>
         </div>
-
-        <div class="flex items-center justify-between pt-3 border-t border-purple-500/20 relative z-10">
-            <div>
-                <span class="block text-[10px] text-violet-300/70">الرصيد المتاح</span>
-                <span id="userBalance" class="font-black text-violet-300 text-xl tracking-tight">$0.0000</span>
-            </div>
-            <button onclick="switchTab('wallet')" class="purple-gradient-btn text-white font-bold text-xs py-2.5 px-5 rounded-2xl btn-hover-effect flex items-center gap-1.5">
-                <span class="text-base">+</span>
-                <span>شحن الرصيد</span>
-            </button>
-        </div>
+      </div>
+      <div class="status-badge">
+        <div class="status-dot"></div>
+        <span>متصل</span>
+      </div>
     </div>
+    <div class="balance-box">
+      <div>
+        <div style="font-size: 11px; color: var(--text-sub);">الرصيد المتاح</div>
+        <div class="balance-val" id="userBalance">$0.0000</div>
+      </div>
+      <button class="btn-charge" onclick="openChargeAlert()">+ شحن الرصيد</button>
+    </div>
+  </div>
 
-    <!-- محتوى الصفحات المتغير -->
-    <div id="appContent" class="tab-anim"></div>
+  <!-- MAIN HOME VIEW (PLATFORMS) -->
+  <div id="homeView" class="fade-in">
+    <div class="section-title">المنصات والخدمات المتاحة</div>
+    <div class="platforms-grid">
+      
+      <!-- Free Services -->
+      <div class="platform-card" onclick="openPlatform('free')">
+        <div class="card-top">
+          <img src="https://cdn-icons-png.flaticon.com/512/4213/4213958.png" class="platform-icon" alt="Free">
+          <span class="platform-badge" style="background: rgba(16, 185, 129, 0.2); color: #6ee7b7;">4 خدمات</span>
+        </div>
+        <div>
+          <div class="platform-name">خدمات مجانية</div>
+          <div class="platform-desc">تجارب وهدايا 0.00$</div>
+        </div>
+      </div>
 
-    <!-- شريط التنقل السفلي -->
-    <nav class="fixed bottom-0 right-0 left-0 bg-[#0b0712]/92 border-t border-violet-500/20 backdrop-blur-2xl py-2 px-3 flex justify-between items-center text-[11px] text-violet-300/60 z-40">
-        <button onclick="switchTab('more')" id="nav-more" class="flex flex-col items-center gap-1 transition-all btn-hover-effect">
-            <span class="text-lg">☰</span>
-            <span>المزيد</span>
-        </button>
-        <button onclick="switchTab('notifications')" id="nav-notifications" class="flex flex-col items-center gap-1 transition-all btn-hover-effect">
-            <span class="text-lg">🔔</span>
-            <span>الإشعارات</span>
-        </button>
-        <button onclick="switchTab('wallet')" id="nav-wallet" class="flex flex-col items-center gap-1 transition-all btn-hover-effect">
-            <span class="text-lg">💳</span>
-            <span>شحن</span>
-        </button>
-        <button onclick="switchTab('orders')" id="nav-orders" class="flex flex-col items-center gap-1 transition-all btn-hover-effect">
-            <span class="text-lg">📋</span>
-            <span>طلباتي</span>
-        </button>
-        <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 text-violet-400 font-bold transition-all btn-hover-effect">
-            <span class="text-lg">🏠</span>
-            <span>الرئيسية</span>
-        </button>
-    </nav>
+      <!-- Instagram -->
+      <div class="platform-card" onclick="openPlatform('instagram')">
+        <div class="card-top">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" class="platform-icon" alt="Instagram">
+          <span class="platform-badge">22 خدمة</span>
+        </div>
+        <div>
+          <div class="platform-name">إنستغرام</div>
+          <div class="platform-desc">متابعين، لايكات، ريلز</div>
+        </div>
+      </div>
 
-    <script>
-        let tg = window.Telegram.WebApp;
-        tg.expand();
+      <!-- Telegram -->
+      <div class="platform-card" onclick="openPlatform('telegram')">
+        <div class="card-top">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" class="platform-icon" alt="Telegram">
+          <span class="platform-badge">50 خدمة</span>
+        </div>
+        <div>
+          <div class="platform-name">تليجرام</div>
+          <div class="platform-desc">أعضاء، تفاعل، ستوري</div>
+        </div>
+      </div>
 
-        // روابط صور الشعارات الرسمية عالية الجودة
-        const PLATFORM_IMAGES = {
-            instagram: "https://png.pngtree.com/png-vector/20221018/ourmid/pngtree-instagram-icon-png-image_6315974.png",
-            telegram: "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/3840px-Telegram_logo.svg.png",
-            tiktok: "https://images.seeklogo.com/logo-png/37/1/tiktok-app-icon-logo-png_seeklogo-373800.png",
-            free: "https://cdn-icons-png.flaticon.com/512/3702/3702999.png"
-        };
+      <!-- TikTok -->
+      <div class="platform-card" onclick="openPlatform('tiktok')">
+        <div class="card-top">
+          <img src="https://sf-tb-sg.ibytedtos.com/obj/ecom-ip-sg/tiktok_logo.png" class="platform-icon" alt="TikTok">
+          <span class="platform-badge">20 خدمة</span>
+        </div>
+        <div>
+          <div class="platform-name">تيك توك</div>
+          <div class="platform-desc">متابعين، تكبيسات، مشاهدات</div>
+        </div>
+      </div>
 
-        let appData = {
-            balance: 0.00,
-            orders: []
-        };
+    </div>
+  </div>
 
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            document.getElementById('userDisplayName').innerText = tg.initDataUnsafe.user.first_name;
-        }
+  <!-- SERVICES LIST VIEW (HIDDEN INITIALLY) -->
+  <div id="servicesView" style="display: none;" class="fade-in">
+    <div class="services-header">
+      <span class="section-title" id="platformTitle" style="margin:0;">قائمة خدمات المنصة</span>
+      <button class="btn-back" onclick="goHome()">رجوع ↩</button>
+    </div>
+    <div id="servicesList"></div>
+  </div>
 
-        function updateBalanceUI() {
-            document.getElementById('userBalance').innerText = '$' + appData.balance.toFixed(4);
-        }
+  <!-- ORDER MODAL WINDOW -->
+  <div class="modal-overlay" id="orderModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title" id="modalServiceTitle">طلب الخدمة</span>
+        <span class="close-modal" onclick="closeOrderModal()">✕</span>
+      </div>
 
-        function switchTab(tab) {
-            document.querySelectorAll('nav button').forEach(b => b.className = "flex flex-col items-center gap-1 text-violet-300/60 transition-all btn-hover-effect");
-            document.getElementById('nav-' + tab).className = "flex flex-col items-center gap-1 text-violet-400 font-bold transition-all btn-hover-effect";
+      <div class="form-group">
+        <label class="form-label">الرابط أو اسم المستخدم:</label>
+        <input type="text" class="form-input" id="targetInput" placeholder="https://t.me/example أو @username">
+      </div>
 
-            let content = document.getElementById('appContent');
-            content.className = "";
-            void content.offsetWidth;
-            content.className = "tab-anim";
+      <div class="form-group">
+        <label class="form-label">الكمية المطلوبة:</label>
+        <input type="number" class="form-input" id="quantityInput" value="1000" min="100" oninput="calculatePrice()">
+      </div>
 
-            if (tab === 'home') renderPlatforms();
-            else if (tab === 'orders') renderOrders();
-            else if (tab === 'wallet') renderWallet();
-            else if (tab === 'notifications') renderNotifications();
-            else if (tab === 'more') renderMore();
-        }
+      <div class="total-box">
+        <span style="font-size: 12px; color: var(--text-sub);">السعر الإجمالي:</span>
+        <span class="total-price" id="totalPriceDisplay">$0.000</span>
+      </div>
 
-        const servicesData = {
-            free: [
-                { id: "800", name: "مشاهدات ستوري انستغرام لجميع الاستوريات - بطيء", img: PLATFORM_IMAGES.instagram, category: "أنستغرام - مجانية", price: 0.00, min: 500, max: 500, speed: "242د", timeBadge: "4 س", badge: "الأعلى اكتمالاً" },
-                { id: "801", name: "لايكات إنستغرام ريلز + بوست مجانية", img: PLATFORM_IMAGES.instagram, category: "أنستغرام - مجانية", price: 0.00, min: 100, max: 500, speed: "15د", timeBadge: "15 د", badge: "مجاني فوري" },
-                { id: "802", name: "مشاهدات فيديو تيك توك مجانية", img: PLATFORM_IMAGES.tiktok, category: "تيك توك - مجانية", price: 0.00, min: 1000, max: 1000, speed: "10د", timeBadge: "10 د", badge: "مجاني" },
-                { id: "803", name: "تفاعلات تليجرام إيجابية مجانية 👍🔥", img: PLATFORM_IMAGES.telegram, category: "تليجرام - مجانية", price: 0.00, min: 50, max: 200, speed: "30د", timeBadge: "30 د", badge: "تفاعل مجاني" }
-            ],
-            instagram: [
-                { id: "101", name: "متابعين انستغرام حقيقي - ضمان تعويض 30 يوم", img: PLATFORM_IMAGES.instagram, category: "إنستغرام", price: 0.5000, min: 100, max: 50000, speed: "44د", timeBadge: "غضون ساعة", badge: "الأكثر طلباً" },
-                { id: "102", name: "لايكات إنستغرام ريلز + بوست - سرعة فائقة", img: PLATFORM_IMAGES.instagram, category: "إنستغرام", price: 0.1800, min: 50, max: 100000, speed: "12د", timeBadge: "30 دقيقة", badge: "فوري" },
-                { id: "103", name: "مشاهدات ريلز وانستغرام فوري جداً", img: PLATFORM_IMAGES.instagram, category: "إنستغرام", price: 0.0250, min: 100, max: 1000000, speed: "5د", timeBadge: "15 دقيقة", badge: "أرخص سعر" }
-            ],
-            telegram: [
-                { id: "637", name: "مشاهدات ستوري تليجرام - سريع", img: PLATFORM_IMAGES.telegram, category: "تليجرام", price: 0.4050, min: 15, max: 150000, speed: "3د", timeBadge: "3 دقائق", badge: "سريع" },
-                { id: "638", name: "مشاهدات ستوري تليجرام - عالي الجودة", img: PLATFORM_IMAGES.telegram, category: "تليجرام", price: 0.2025, min: 10, max: 5000, speed: "2د", timeBadge: "2 دقيقة", badge: "الأكثر طلباً" },
-                { id: "751", name: "أعضاء تليجرام بريميوم ضمان 15 يوم", img: PLATFORM_IMAGES.telegram, category: "تليجرام", price: 4.2750, min: 500, max: 50000, speed: "43د", timeBadge: "43 دقيقة", badge: "تعويض 15 يوم" },
-                { id: "752", name: "أعضاء تليجرام بريميوم ضمان 30-60 يوم", img: PLATFORM_IMAGES.telegram, category: "تليجرام", price: 8.7750, min: 100, max: 50000, speed: "29د", timeBadge: "29 دقيقة", badge: "تعويض 30 يوم" },
-                { id: "761", name: "تليجرام - تفاعلات رموز إيجابية 👍❤️", img: PLATFORM_IMAGES.telegram, category: "تليجرام", price: 0.1013, min: 10, max: 1000000, speed: "1د", timeBadge: "1 دقيقة", badge: "الأعلى اكتمالاً" }
-            ],
-            tiktok: [
-                { id: "836", name: "تكبيس لايف تيك توك - لايكات فورية وسريعة", img: PLATFORM_IMAGES.tiktok, category: "تيك توك", price: 0.0312, min: 100, max: 2147483647, speed: "7د", timeBadge: "7 دقائق", badge: "الأكثر طلباً" },
-                { id: "874", name: "مشاهدات فيديو تيك توك بدون ضمان", img: PLATFORM_IMAGES.tiktok, category: "تيك توك", price: 0.0208, min: 100, max: 999999999, speed: "9د", timeBadge: "9 دقائق", badge: "سريع" }
-            ]
-        };
+      <button class="btn-submit-order" onclick="submitOrder()">تأكيد وإرسال الطلب 🔥</button>
+    </div>
+  </div>
 
-        // 1. شبكة المنصات الرئيسية مع صور الشعارات الرسمية
-        function renderPlatforms() {
-            document.getElementById('appContent').innerHTML = `
-                <div class="mb-3">
-                    <input type="text" placeholder="ابحث بالاسم أو رقم الخدمة (ID)..." class="w-full bg-slate-950/80 border border-violet-500/20 p-3 rounded-2xl text-xs text-purple-100 placeholder-violet-300/40 focus:outline-none focus:border-violet-500">
-                </div>
+  <!-- Bottom Navigation Bar -->
+  <div class="bottom-nav">
+    <a class="nav-item active" onclick="goHome()">
+      <span class="nav-icon">🏠</span>
+      <span>الرئيسية</span>
+    </a>
+    <a class="nav-item" onclick="openChargeAlert()">
+      <span class="nav-icon">💳</span>
+      <span>شحن</span>
+    </a>
+    <a class="nav-item" onclick="alert('قسم الطلبات قيد التحديث!')">
+      <span class="nav-icon">📋</span>
+      <span>طلباتي</span>
+    </a>
+  </div>
 
-                <div class="flex justify-between items-center mb-2.5 px-1">
-                    <h2 class="font-bold text-xs text-violet-300/80">المنصات والخدمات المتاحة</h2>
-                    <span class="text-[10px] text-violet-300/50">4 منصات</span>
-                </div>
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
 
-                <div class="grid grid-cols-2 gap-2.5">
-                    <!-- كارت الخدمات المجانية -->
-                    <div onclick="openPlatform('free')" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 btn-hover-effect flex flex-col justify-between">
-                        <div class="flex justify-between items-start mb-3">
-                            <img src="${PLATFORM_IMAGES.free}" alt="Free" class="platform-icon-lg">
-                            <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold">4 خدمات</span>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-xs text-purple-100">خدمات مجانية</h3>
-                            <p class="text-[9px] text-violet-300/60 mt-0.5">تجارب وهدايا $0.00</p>
-                        </div>
-                    </div>
+    // Data Store for Real Services
+    const servicesData = {
+      free: [
+        { id: 101, title: "مشاهدات منشورات تليجرام - مجاني 🎁", price: 0.0000, speed: "فوري" },
+        { id: 102, title: "تفاصيل لايكات إنستغرام تجريبية 🎁", price: 0.0000, speed: "1 دقيقة" }
+      ],
+      telegram: [
+        { id: 201, title: "مشاهدات ستوري تليجرام - سريع", price: 0.4050, speed: "3 دقائق" },
+        { id: 202, title: "مشاهدات ستوري تليجرام - عالي الجودة", price: 0.2025, speed: "2 دقيقة" },
+        { id: 203, title: "أعضاء تليجرام بريميوم ضمان 15 يوم", price: 4.2750, speed: "43 دقيقة" },
+        { id: 204, title: "أعضاء تليجرام بريميوم ضمان 30-60 يوم", price: 8.7750, speed: "29 دقيقة" },
+        { id: 205, title: "تليجرام - تفاعلات رموز إيجابية ❤️👍", price: 0.1013, speed: "1 دقيقة" }
+      ],
+      instagram: [
+        { id: 301, title: "متابعين إنستغرام - ضمان 30 يوم", price: 0.8500, speed: "5 دقائق" },
+        { id: 302, title: "إعجابات إنستغرام - حقيقي وسريع", price: 0.1200, speed: "فوري" },
+        { id: 303, title: "مشاهدات ريلز إنستغرام - فائقة السرعة", price: 0.0500, speed: "فوري" }
+      ],
+      tiktok: [
+        { id: 401, title: "مشاهدات تيك توك - سرعة خيالية", price: 0.0200, speed: "فوري" },
+        { id: 402, title: "إعجابات تيك توك - جودة عالية", price: 0.4500, speed: "10 دقائق" },
+        { id: 403, title: "متابعين تيك توك - حقيقيين", price: 1.2000, speed: "15 دقيقة" }
+      ]
+    };
 
-                    <!-- كارت إنستغرام -->
-                    <div onclick="openPlatform('instagram')" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 btn-hover-effect flex flex-col justify-between">
-                        <div class="flex justify-between items-start mb-3">
-                            <img src="${PLATFORM_IMAGES.instagram}" alt="Instagram" class="platform-icon-lg">
-                            <span class="text-[9px] bg-pink-500/20 text-pink-300 px-2 py-0.5 rounded-full font-bold">22 خدمة</span>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-xs text-purple-100">إنستغرام</h3>
-                            <p class="text-[9px] text-violet-300/60 mt-0.5">متابعين، لايكات، ريلز</p>
-                        </div>
-                    </div>
+    let currentService = null;
+    let userBalance = 0.0000;
 
-                    <!-- كارت تليجرام -->
-                    <div onclick="openPlatform('telegram')" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 btn-hover-effect flex flex-col justify-between">
-                        <div class="flex justify-between items-start mb-3">
-                            <img src="${PLATFORM_IMAGES.telegram}" alt="Telegram" class="platform-icon-lg">
-                            <span class="text-[9px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full font-bold">50 خدمة</span>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-xs text-purple-100">تليجرام</h3>
-                            <p class="text-[9px] text-violet-300/60 mt-0.5">أعضاء، تفاعل، ستوري</p>
-                        </div>
-                    </div>
+    // Load User Data from Telegram
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+      document.getElementById('userName').innerText = tg.initDataUnsafe.user.first_name || "المستخدم";
+    }
 
-                    <!-- كارت تيك توك -->
-                    <div onclick="openPlatform('tiktok')" class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 btn-hover-effect flex flex-col justify-between">
-                        <div class="flex justify-between items-start mb-3">
-                            <img src="${PLATFORM_IMAGES.tiktok}" alt="TikTok" class="platform-icon-lg">
-                            <span class="text-[9px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full font-bold">20 خدمة</span>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-xs text-purple-100">تيك توك</h3>
-                            <p class="text-[9px] text-violet-300/60 mt-0.5">متابعين، تكبيسات، مشاهدات</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
+    function goHome() {
+      document.getElementById('homeView').style.display = 'block';
+      document.getElementById('servicesView').style.display = 'none';
+      closeOrderModal();
+    }
 
-        // 2. قائمة خدمات المنصة مع صور الشعارات
-        function openPlatform(platformKey) {
-            let list = servicesData[platformKey] || [];
-            let html = `
-                <div class="flex items-center gap-2 mb-3">
-                    <button onclick="renderPlatforms()" class="bg-violet-950/60 border border-violet-500/30 px-3 py-1.5 rounded-xl text-xs text-violet-300 font-bold btn-hover-effect">⬅ رجوع</button>
-                    <h2 class="font-bold text-xs text-purple-100">قائمة خدمات المنصة</h2>
-                </div>
-                <div class="space-y-2.5">
-            `;
+    function openPlatform(platformKey) {
+      const listContainer = document.getElementById('servicesList');
+      listContainer.innerHTML = '';
+      
+      const list = servicesData[platformKey] || [];
+      list.forEach(srv => {
+        const item = document.createElement('div');
+        item.className = 'service-card';
+        item.onclick = () => openOrderModal(srv);
+        item.innerHTML = `
+          <div class="service-info">
+            <div class="service-title">${srv.title}</div>
+            <div class="service-meta">
+              <span class="service-price">$${srv.price.toFixed(4)} / 1000</span>
+              <span class="service-speed">⚡ ${srv.speed}</span>
+            </div>
+          </div>
+          <div class="btn-order-action">طلب ↗</div>
+        `;
+        listContainer.appendChild(item);
+      });
 
-            list.forEach(item => {
-                html += `
-                    <div onclick='openServiceDetails(${JSON.stringify(item)})' class="purple-card p-3.5 rounded-2xl cursor-pointer hover:border-violet-500/60 btn-hover-effect flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                            <img src="${item.img}" class="platform-icon">
-                            <div>
-                                <h3 class="font-bold text-xs text-purple-100">${item.name}</h3>
-                                <div class="flex items-center gap-2 mt-1">
-                                    <span class="text-[10px] text-violet-300 font-bold">$${item.price.toFixed(4)} <span class="font-normal text-violet-300/60">/1000</span></span>
-                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.2 rounded font-bold">⏱️ ${item.timeBadge}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <span class="text-xs text-violet-300/60">طلب ↗</span>
-                    </div>
-                `;
-            });
+      document.getElementById('homeView').style.display = 'none';
+      document.getElementById('servicesView').style.display = 'block';
+    }
 
-            html += `</div>`;
-            document.getElementById('appContent').innerHTML = html;
-        }
+    function openOrderModal(service) {
+      currentService = service;
+      document.getElementById('modalServiceTitle').innerText = service.title;
+      document.getElementById('quantityInput').value = 1000;
+      calculatePrice();
+      document.getElementById('orderModal').style.display = 'flex';
+    }
 
-        // 3. صفحة تفاصيل الخدمة مع صورة شعار المنصة بداخل الهيدر
-        function openServiceDetails(item) {
-            let content = document.getElementById('appContent');
-            content.className = "";
-            void content.offsetWidth;
-            content.className = "tab-anim";
+    function closeOrderModal() {
+      document.getElementById('orderModal').style.display = 'none';
+    }
 
-            content.innerHTML = `
-                <div class="flex items-center gap-2 mb-3">
-                    <button onclick="renderPlatforms()" class="bg-violet-950/60 border border-violet-500/30 px-3 py-1.5 rounded-xl text-xs text-violet-300 font-bold btn-hover-effect">⬅ إغلاق / رجوع</button>
-                </div>
+    function calculatePrice() {
+      if (!currentService) return;
+      const qty = parseInt(document.getElementById('quantityInput').value) || 0;
+      const total = (qty / 1000) * currentService.price;
+      document.getElementById('totalPriceDisplay').innerText = `$${total.toFixed(4)}`;
+    }
 
-                <!-- بطاقة الخدمة بالصور -->
-                <div class="purple-card p-4 rounded-3xl mb-3">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-violet-300/70 font-mono">#${item.id}</span>
-                            <span class="text-[10px] text-violet-300/50">• ${item.category}</span>
-                        </div>
-                        <img src="${item.img}" class="platform-icon-lg">
-                    </div>
-                    <h2 class="font-bold text-sm text-purple-100 mb-3">${item.name}</h2>
+    function submitOrder() {
+      const target = document.getElementById('targetInput').value.trim();
+      const qty = parseInt(document.getElementById('quantityInput').value) || 0;
+      const total = (qty / 1000) * currentService.price;
 
-                    <!-- جدول الأدنى / الأقصى / السعر / التنفيذ -->
-                    <div class="grid grid-cols-4 gap-1 bg-slate-950/80 p-2.5 rounded-2xl text-center border border-violet-500/20 mb-3">
-                        <div>
-                            <span class="block text-[9px] text-violet-300/60">الأدنى</span>
-                            <span class="font-bold text-xs text-purple-100">${item.min}</span>
-                        </div>
-                        <div>
-                            <span class="block text-[9px] text-violet-300/60">الأقصى</span>
-                            <span class="font-bold text-xs text-purple-100">${item.max}</span>
-                        </div>
-                        <div>
-                            <span class="block text-[9px] text-violet-300/60">1000/</span>
-                            <span class="font-bold text-xs text-violet-300">$${item.price.toFixed(4)}</span>
-                        </div>
-                        <div>
-                            <span class="block text-[9px] text-violet-300/60">التنفيذ</span>
-                            <span class="font-bold text-xs text-purple-100">د${item.speed}</span>
-                        </div>
-                    </div>
+      if (!target) {
+        alert('يرجى إدخال الرابط أو اسم المستخدم بشكل صحيح!');
+        return;
+      }
 
-                    <div class="flex items-center gap-1.5 text-[10px] text-emerald-400 font-bold bg-emerald-500/10 p-2 rounded-xl border border-emerald-500/20">
-                        <span>⏱️ ${item.timeBadge}</span>
-                        <span class="bg-emerald-500/20 px-2 py-0.5 rounded-md ml-auto">${item.badge}</span>
-                    </div>
-                </div>
+      if (userBalance < total) {
+        alert('❌ رصيدك غير كافٍ لتنفيذ هذا الطلب! يرجى شحن حسابك عبر البوت.');
+        return;
+      }
 
-                <!-- تنبيه -->
-                <div class="purple-card p-3.5 rounded-2xl mb-3 text-[11px] text-violet-300/80 space-y-1">
-                    <p class="font-bold text-amber-400 flex items-center gap-1">ℹ️ ادخل رابط حسابك أو اليوزر فقط</p>
-                    <p class="text-[10px] text-violet-300/60">لازم يكون حسابك عام وليس خاص لضمان وصول الخدمة.</p>
-                </div>
+      // Successful Order Simulation
+      userBalance -= total;
+      document.getElementById('userBalance').innerText = `$${userBalance.toFixed(4)}`;
+      alert(`✅ تم إنشاء الطلب بنجاح!\nرقم الطلب: #${Math.floor(Math.random() * 899999 + 100000)}\nالخدمة: ${currentService.title}\nالكمية: ${qty}`);
+      closeOrderModal();
+    }
 
-                <!-- حقول الإدخال -->
-                <div class="purple-card p-4 rounded-3xl space-y-3.5 mb-3">
-                    <div>
-                        <label class="text-[11px] font-bold text-purple-100 block mb-1.5 flex items-center gap-1">
-                            <span class="text-amber-400">•</span> رابط الحساب أو اسم المستخدم
-                        </label>
-                        <div class="relative">
-                            <input type="text" id="serviceLink" placeholder="https://..." class="w-full bg-slate-950/80 border border-violet-500/30 p-3 rounded-2xl text-xs text-purple-100 focus:outline-none focus:border-violet-500">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-violet-300/40 text-sm">🔗</span>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="flex justify-between items-center mb-1.5">
-                            <label class="text-[11px] font-bold text-purple-100 flex items-center gap-1">
-                                <span class="text-amber-400">•</span> الكمية المطلوبة
-                            </label>
-                            <span class="text-[9px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-mono">${item.min} - ${item.max}</span>
-                        </div>
-                        <div class="relative">
-                            <input type="number" id="serviceQty" value="${item.min}" min="${item.min}" max="${item.max}" oninput="calcOrderCost(${item.price})" class="w-full bg-slate-950/80 border border-violet-500/30 p-3 rounded-2xl text-xs text-purple-100 focus:outline-none focus:border-violet-500">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-violet-300/40 font-mono text-xs">#</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ملخص الطلب -->
-                <div class="purple-card p-4 rounded-3xl space-y-3 mb-4">
-                    <h3 class="text-xs font-bold text-amber-400 flex items-center gap-1">💲 ملخص الطلب</h3>
-                    <div class="grid grid-cols-2 gap-2.5">
-                        <div class="bg-emerald-950/40 border border-emerald-500/30 p-3 rounded-2xl text-center">
-                            <span class="block text-[10px] text-emerald-300/70 mb-0.5">التكلفة</span>
-                            <span id="orderCostDisplay" class="font-black text-emerald-400 text-sm">$0.0000</span>
-                        </div>
-                        <div class="bg-amber-950/30 border border-amber-500/30 p-3 rounded-2xl text-center">
-                            <span class="block text-[10px] text-amber-300/70 mb-0.5">رصيدك</span>
-                            <span class="font-black text-amber-400 text-sm">$${appData.balance.toFixed(4)}</span>
-                        </div>
-                    </div>
-
-                    <button onclick="submitFinalOrder('${item.name}', ${item.price})" class="w-full purple-gradient-btn text-white font-bold py-3.5 rounded-2xl text-xs btn-hover-effect shadow-xl flex items-center justify-center gap-2">
-                        <span>إرسال الطلب</span>
-                        <span>📐</span>
-                    </button>
-                </div>
-            `;
-            calcOrderCost(item.price);
-        }
-
-        function calcOrderCost(pricePerThousand) {
-            let qtyInput = document.getElementById('serviceQty');
-            if (!qtyInput) return;
-            let qty = parseFloat(qtyInput.value) || 0;
-            let totalCost = (qty / 1000) * pricePerThousand;
-            document.getElementById('orderCostDisplay').innerText = '$' + totalCost.toFixed(4);
-        }
-
-        function submitFinalOrder(serviceName, pricePerThousand) {
-            let link = document.getElementById('serviceLink').value;
-            let qty = parseFloat(document.getElementById('serviceQty').value) || 0;
-            let totalCost = (qty / 1000) * pricePerThousand;
-
-            if (!link || link.length < 3) {
-                alert("يرجى إدخال رابط أو اسم مستخدم صحيح!");
-                return;
-            }
-
-            if (appData.balance < totalCost) {
-                alert("عذراً، رصيدك غير كافي! يرجى شحن الرصيد أولاً.");
-                switchTab('wallet');
-                return;
-            }
-
-            appData.balance -= totalCost;
-            updateBalanceUI();
-
-            let orderId = "#" + Math.floor(Math.random() * 899999 + 100000);
-            appData.orders.unshift({
-                id: orderId,
-                service: serviceName + ` (${qty})`,
-                status: "قيد التنفيذ ⏳",
-                time: "الآن"
-            });
-
-            if (tg.sendData) {
-                tg.sendData(JSON.stringify({
-                    order: orderId,
-                    service: serviceName,
-                    link: link,
-                    qty: qty,
-                    cost: totalCost
-                }));
-            }
-
-            tg.showAlert(`✅ تم إرسال الطلب بنجاح! رقم الطلب: ${orderId}`);
-            switchTab('orders');
-        }
-
-        // 4. وسائل الشحن (آسيا سيل وماستر الرافدين 7168843873)
-        function renderWallet() {
-            document.getElementById('appContent').innerHTML = `
-                <h2 class="font-bold text-xs text-violet-300/70 mb-3 tracking-wider">طرق شحن الرصيد المتاحة 💳</h2>
-                
-                <div class="space-y-3.5">
-                    <div class="purple-card p-4 rounded-3xl border-r-4 border-r-pink-500">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="font-bold text-xs text-purple-100 flex items-center gap-2">🏷️ كارت آسيا سيل</span>
-                            <span class="text-[9px] bg-pink-500/20 text-pink-400 px-2 py-0.5 rounded-full font-bold">شحن آلي</span>
-                        </div>
-                        <p class="text-[11px] text-violet-300/80 mb-2.5">قم بإدخال كود كارت شحن آسيا سيل للتعبئة:</p>
-                        <input type="text" id="asiaCode" placeholder="أدخل رقم الكارت هنا..." class="w-full bg-slate-950/80 border border-violet-500/30 p-3 rounded-2xl text-xs text-purple-100 mb-3 focus:outline-none focus:border-violet-500">
-                        <button onclick="submitAsiaCharge()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-2.5 rounded-2xl text-xs btn-hover-effect shadow-lg">
-                            تأكيد شحن الكارت
-                        </button>
-                    </div>
-
-                    <div class="purple-card p-4 rounded-3xl border-r-4 border-r-violet-500">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="font-bold text-xs text-purple-100 flex items-center gap-2">💳 ماستر كارد الرافدين</span>
-                            <span class="text-[9px] bg-violet-500/20 text-violet-300 px-2 py-0.5 rounded-full font-bold">تحويل مباشر</span>
-                        </div>
-                        <p class="text-[11px] text-violet-300/80 mb-2">حول المبلغ إلى رقم البطاقة الموضح بالأسفل:</p>
-                        
-                        <div class="flex items-center justify-between bg-slate-950/90 p-3 rounded-2xl border border-violet-500/30 mb-3">
-                            <span id="rafidainNum" class="font-mono font-bold text-violet-300 text-sm tracking-wider">7168843873</span>
-                            <button onclick="copyRafidain()" class="purple-gradient-btn text-white text-[10px] font-bold px-3.5 py-1.5 rounded-xl btn-hover-effect">
-                                📋 نسخ الرقم
-                            </button>
-                        </div>
-
-                        <input type="text" id="rafidainTx" placeholder="أدخل رقم الوصل أو اسم المحول..." class="w-full bg-slate-950/80 border border-violet-500/30 p-3 rounded-2xl text-xs text-purple-100 mb-3 focus:outline-none focus:border-violet-500">
-                        <button onclick="submitRafidainCharge()" class="w-full purple-gradient-btn text-white font-bold py-2.5 rounded-2xl text-xs btn-hover-effect shadow-lg">
-                            إرسال إشعار التحويل 🚀
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function copyRafidain() {
-            navigator.clipboard.writeText("7168843873");
-            alert("تم نسخ رقم ماستر الرافدين بنجاح: 7168843873");
-        }
-
-        function submitRafidainCharge() {
-            let tx = document.getElementById('rafidainTx').value;
-            if (!tx || tx.length < 3) {
-                alert("يرجى إدخال تفاصيل الوصل الصحيحة!");
-                return;
-            }
-            alert("تم إرسال إشعار تحويل ماستر الرافدين للمراجعة، وسيتم الشحن فوراً!");
-            switchTab('home');
-        }
-
-        function submitAsiaCharge() {
-            let code = document.getElementById('asiaCode').value;
-            if (!code || code.length < 8) {
-                alert("يرجى إدخال رقم كارت شحن صحيح!");
-                return;
-            }
-            alert("تم إرسال كارت آسيا سيل للتدقيق وسيتم الشحن خلال دقائق!");
-            switchTab('home');
-        }
-
-        function renderOrders() {
-            let html = `<h2 class="font-bold text-xs text-violet-300/70 mb-3 tracking-wider">سجل طلباتي 📋</h2>`;
-            if (appData.orders.length === 0) {
-                html += `<div class="purple-card p-8 text-center rounded-3xl text-xs text-violet-300/50">لا توجد طلبات سابقة.</div>`;
-            } else {
-                appData.orders.forEach(o => {
-                    html += `
-                        <div class="purple-card p-4 rounded-2xl mb-3 border-r-4 border-r-violet-500">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="font-bold text-xs text-violet-300 font-mono">${o.id}</span>
-                                <span class="text-[10px] bg-violet-500/20 text-violet-300 px-2 py-0.5 rounded-full font-bold">${o.status}</span>
-                            </div>
-                            <p class="text-xs font-semibold text-purple-100 mt-1">${o.service}</p>
-                            <span class="text-[10px] text-violet-300/50 block mt-2">${o.time}</span>
-                        </div>
-                    `;
-                });
-            }
-            document.getElementById('appContent').innerHTML = html;
-        }
-
-        function renderNotifications() {
-            document.getElementById('appContent').innerHTML = `
-                <h2 class="font-bold text-xs text-violet-300/70 mb-3 tracking-wider">الإشعارات 🔔</h2>
-                <div class="purple-card p-4 rounded-2xl flex items-start gap-3">
-                    <span class="text-xl">👑</span>
-                    <div>
-                        <h4 class="font-bold text-xs text-purple-100">أهلاً بك في رويال سوشال</h4>
-                        <p class="text-[11px] text-violet-300/80 mt-1">تصفح الخدمات المصورة واطلب ما تحتاج بسهولة.</p>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderMore() {
-            document.getElementById('appContent').innerHTML = `
-                <h2 class="font-bold text-xs text-violet-300/70 mb-3 tracking-wider">القنوات والدعم الفني ⚙️</h2>
-                <div class="purple-card p-4 rounded-3xl text-xs space-y-3.5">
-                    <div class="flex justify-between items-center py-1 border-b border-violet-500/15">
-                        <span class="text-purple-100">قناة التليجرام الأولى</span>
-                        <a href="https://t.me/ittttvii" target="_blank" class="text-violet-300 font-bold">@ittttvii ↗</a>
-                    </div>
-                    <div class="flex justify-between items-center py-1 border-b border-violet-500/15">
-                        <span class="text-purple-100">قناة التليجرام الثانية</span>
-                        <a href="https://t.me/ciner_fx" target="_blank" class="text-violet-300 font-bold">@ciner_fx ↗</a>
-                    </div>
-                    <div class="flex justify-between items-center py-1 border-b border-violet-500/15">
-                        <span class="text-purple-100">الدعم الفني (تليجرام)</span>
-                        <a href="https://t.me/l713i" target="_blank" class="text-emerald-400 font-bold">@l713i ↗</a>
-                    </div>
-                    <div class="flex justify-between items-center py-1">
-                        <span class="text-purple-100">الدعم الفني (إنستغرام)</span>
-                        <a href="https://instagram.com/v365_" target="_blank" class="text-pink-400 font-bold">v365_ ↗</a>
-                    </div>
-                </div>
-            `;
-        }
-
-        renderPlatforms();
-        updateBalanceUI();
-    </script>
+    function openChargeAlert() {
+      alert('💡 لشحن رصيدك داخل التطبيق، يرجى العودة لمحادثة البوت والضغط على زر "💰 شحن رصيدي".');
+    }
+  </script>
 </body>
 </html>
