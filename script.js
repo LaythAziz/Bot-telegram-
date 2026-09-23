@@ -1,9 +1,15 @@
+// =====================================================================
+// ROYALSOCIAL MINI APP - CORE JAVASCRIPT ENGINE (2026)
+// تم تطوير هذا الملف خصيصاً ليكون متكاملاً واحترافياً لمنصة رويال سوشال
+// =====================================================================
+
 const tg = window.Telegram ? window.Telegram.WebApp : null;
 if (tg) {
   tg.expand();
   if (tg.setHeaderColor) tg.setHeaderColor('#120f1d');
 }
 
+// قاعدة بيانات الخدمات الحقيقية لجميع المنصات
 const servicesData = {
   free: [
     { id: 101, title: "مشاهدات منشورات تليجرام - مجاني 🎁", price: 0.0000, speed: "فوري ⚡" },
@@ -35,15 +41,17 @@ let myOrders = JSON.parse(localStorage.getItem('myOrders') || '[]');
 let notificationsList = JSON.parse(localStorage.getItem('notificationsList') || '[]');
 let systemLogs = JSON.parse(localStorage.getItem('systemLogs') || '[]');
 
+// قاعدة بيانات المشتركين (خاصة بلوحة تحكم المطور)
 let subscribersDatabase = JSON.parse(localStorage.getItem('subscribersDatabase') || JSON.stringify([
   { id: 1414595876, name: "ليث عزيز", username: "l713i", balance: userBalance },
   { id: 1029384756, name: "أحمد علي", username: "ahmed_99", balance: 1.5000 }
 ]));
 
+// استخراج بيانات مستخدم تليجرام الفعلي
 const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
 const ADMIN_ID = 1414595876;
 
-// التحقق الصارم من الأدمن (لا تظهر اللوحة إلا لك حصرياً)
+// التحقق الصارم من صلاحيات المطور (الأدمن) لإظهار اللوحة السرية في الواجهة لك وحدك
 function checkAdminAccess() {
   const adminDash = document.getElementById('adminMainDashboard');
   if (!adminDash) return;
@@ -55,12 +63,14 @@ function checkAdminAccess() {
   }
 }
 
+// تسجيل الأحداث في سجل المطور
 function logSystemEvent(action, desc) {
   const timestamp = new Date().toLocaleString('ar-IQ');
   systemLogs.unshift({ timestamp, action, desc });
   localStorage.setItem('systemLogs', JSON.stringify(systemLogs));
 }
 
+// تحديث الإحصائيات والأرصدة على الواجهة
 function updateUIStats() {
   const balEl = document.getElementById('userBalance');
   if (balEl) balEl.innerText = `$${userBalance.toFixed(4)}`;
@@ -70,6 +80,7 @@ function updateUIStats() {
   if (pendEl) pendEl.innerText = myOrders.filter(o => o.status.includes('قيد')).length;
 }
 
+// نظام التنبيهات البصرية الاحترافي داخل المني أب
 function showCustomAlert(message, isSuccess = true) {
   const existingAlert = document.getElementById('customAlertBox');
   if (existingAlert) existingAlert.remove();
@@ -85,7 +96,7 @@ function showCustomAlert(message, isSuccess = true) {
   setTimeout(() => alertBox.remove(), 3000);
 }
 
-// القائمة الجانبية (Drawer)
+// --- القائمة الجانبية (Drawer) مع عرض الاسم، اليوزر، والآيدي الخاص بالمستخدم حصرياً ---
 function createExactDrawer() {
   let existingOverlay = document.getElementById('exactDrawerOverlay');
   if (existingOverlay) existingOverlay.remove();
@@ -107,6 +118,11 @@ function createExactDrawer() {
     display: flex; flex-direction: column; direction: rtl; text-align: right; color: #fff; padding: 20px; box-sizing: border-box; overflow-y: auto;
   `;
 
+  // جلب بيانات المستخدم الحقيقي
+  const userName = tgUser ? tgUser.first_name : 'ليث عزيز';
+  const userUsername = tgUser && tgUser.username ? `@${tgUser.username}` : '@l713i';
+  const userId = tgUser ? tgUser.id : '1414595876';
+
   drawer.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px;">
       <div>
@@ -116,12 +132,14 @@ function createExactDrawer() {
       <button onclick="toggleExactDrawer(false)" style="background: rgba(255,255,255,0.08); border: none; color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 14px; cursor: pointer;">✕</button>
     </div>
 
+    <!-- بطاقة الملف الشخصي (الاسم، يوزر التليجرام، والآيدي الظاهر للمستخدم حصرياً) -->
     <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 12px; margin-bottom: 14px;">
       <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
         <div style="width: 40px; height: 40px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color:#120f1d;">👑</div>
         <div style="flex: 1; overflow: hidden;">
-          <div style="font-weight: bold; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${tgUser ? tgUser.first_name : 'ليث عزيز'}</div>
-          <div style="font-size: 10px; color: #a29bfe;">@${tgUser && tgUser.username ? tgUser.username : 'l713i'}</div>
+          <div style="font-weight: bold; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${userName}</div>
+          <div style="font-size: 11px; color: var(--accent); direction: ltr; text-align: right;">${userUsername}</div>
+          <div style="font-size: 9px; color: #888; margin-top: 2px;">الآيدي: <code>${userId}</code></div>
         </div>
       </div>
       <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 8px 10px; border-radius: 8px;">
@@ -161,6 +179,7 @@ function toggleExactDrawer(show) {
   }
 }
 
+// --- وظائف لوحة المطور الخاصة بك (البحث عن المشتركين وإدارة الأرصدة) ---
 function searchSubscriberByName() {
   const query = document.getElementById('searchUserInput').value.trim().toLowerCase();
   const resultBox = document.getElementById('searchUserResult');
@@ -230,6 +249,7 @@ function fetchAdminSystemLogs() {
   outputBox.innerHTML = html;
 }
 
+// التبديل بين التبويبات والمنصات
 function switchTab(tabId) {
   document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
   const target = document.getElementById(tabId);
@@ -304,5 +324,6 @@ function submitAsiaCard() {
   showCustomAlert("✅ تم إرسال طلب الشحن للإدارة بنجاح!");
 }
 
+// التشغيل الأولي
 checkAdminAccess();
 updateUIStats();
