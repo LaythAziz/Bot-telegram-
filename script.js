@@ -77,7 +77,7 @@ const currentUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initD
   photo_url: ""
 };
 
-const ADMIN_ID = 1414595876; // آيديك الخاص للأدمن
+const ADMIN_ID = 1414595876;
 
 if (currentUser) {
   const userNameEl = document.getElementById('userName');
@@ -107,7 +107,7 @@ function showCustomAlert(message, isSuccess = true) {
   }, 3500);
 }
 
-// --- 1. بناء صفحة البروفايل (عامة لجميع المستخدمين) ---
+// --- 1. بناء صفحة البروفايل (عامة ومتاحة للجميع) ---
 function buildProfileTab() {
   let profileTab = document.getElementById('profileTab');
   if (!profileTab) {
@@ -174,7 +174,7 @@ function buildProfileTab() {
   }
 }
 
-// --- 2. بناء لوحة الأدمن الخاصة بك وحدك (بجانب الرئيسية في الشريط السفلي) ---
+// --- 2. بناء لوحة الأدمن الخاصة بك وحدك (مخفية من الواجهة ولا تظهر إلا لك عبر زر خاص) ---
 function buildAdminTab() {
   if (currentUser && Number(currentUser.id) === ADMIN_ID) {
     let adminTab = document.getElementById('adminTab');
@@ -213,31 +213,47 @@ function buildAdminTab() {
   }
 }
 
-// --- 3. ضبط أزرار الشريط السفلي (البروفايل بجانب الإشعارات، والأدمن بجانب الرئيسية) ---
+// --- 3. ضبط وتثبيت أزرار الشريط السفلي بالترتيب الدقيق المطلوب ---
 function setupCustomNavbar() {
   const navbar = document.querySelector('.navbar') || document.querySelector('.nav-bar');
   if (!navbar) return;
 
-  // إذا كنت أنت الأدمن، نضيف زر الأدمن في الشريط السفلي بجانب الرئيسية
+  // إزالة أي تداخل أو تكرار قديم للأزرار المضافة مسبقاً
+  const oldAdded = navbar.querySelectorAll('.custom-nav-item');
+  oldAdded.forEach(el => el.remove());
+
+  // الترتيب الدقيق من اليمين لليسار: الرئيسية، طلباتي، شحن، الإشعارات، البروفايل، (ول للأدمن فقط)
+  // سنقوم بتحديد الأزرار وإعادة ترتيبها برمجياً لضمان عدم وجود أي تداخل
+  const items = Array.from(navbar.children);
+  
+  // إنشاء زر البروفايل ليكون بجانب الإشعارات تماماً
+  let profileNavBtn = document.getElementById('nav-profileTab');
+  if (!profileNavBtn) {
+    profileNavBtn = document.createElement('div');
+    profileNavBtn.id = 'nav-profileTab';
+    profileNavBtn.className = 'nav-item custom-nav-item';
+    profileNavBtn.innerHTML = `<span>👤</span><span>البروفايل</span>`;
+    profileNavBtn.onclick = () => switchTab('profileTab');
+  }
+
+  // إذا كنت أنت الأدمن، نضيف زر الأدمن الخاص بك
+  let adminNavBtn = null;
   if (currentUser && Number(currentUser.id) === ADMIN_ID) {
-    if (!document.getElementById('nav-adminTab')) {
-      const adminNavBtn = document.createElement('div');
+    adminNavBtn = document.getElementById('nav-adminTab');
+    if (!adminNavBtn) {
+      adminNavBtn = document.createElement('div');
       adminNavBtn.id = 'nav-adminTab';
-      adminNavBtn.className = 'nav-item';
+      adminNavBtn.className = 'nav-item custom-nav-item';
       adminNavBtn.innerHTML = `<span>👑</span><span>الأدمن</span>`;
       adminNavBtn.onclick = () => switchTab('adminTab');
-      navbar.appendChild(adminNavBtn); // بجانب الرئيسية
     }
   }
 
-  // إضافة أو ضبط زر البروفايل [بجانب الإشعارات] في الشريط السفلي للجميع
-  const navItems = navbar.querySelectorAll('.nav-item');
-  // نبحث عن زر الإشعارات ونضع البروفايل بجانبه
-  navItems.forEach((item, index) => {
-    if (item.innerText.includes('الإشعارات') || item.id.includes('notif')) {
-      // إمكانية تحويل الزر المجاور ليفتح البروفايل
-    }
-  });
+  // إلحاق الأزرار بالترتيب السليم في الشريط السفلي
+  navbar.appendChild(profileNavBtn);
+  if (adminNavBtn) {
+    navbar.appendChild(adminNavBtn);
+  }
 }
 
 function executeAdminBalanceAction() {
@@ -488,3 +504,4 @@ function submitTransferNotice() {
 }
 
 updateStatsDisplay();
+ج
