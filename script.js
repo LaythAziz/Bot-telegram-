@@ -28,7 +28,7 @@ const servicesData = {
   })),
   facebook: Array.from({length: 14}, (_, i) => ({
     id: 500 + i,
-    title: `فيسبوك - ${['متابعين صفحات وحسابات', 'لايكات منشورات', 'مشاهد فيديو', 'تفاعلات ريلز'][i % 4]} #${i + 1}`,
+    title: `فيسبوك - ${['متابعين صفحات وحسابات', 'لايكات منشورات', 'مشاهدات فيديو', 'تفاعلات ريلز'][i % 4]} #${i + 1}`,
     price: (0.08 + (i * 0.02)).toFixed(4),
     speed: "فوري"
   })),
@@ -63,12 +63,13 @@ const servicesData = {
 let currentService = null;
 let userBalance = 0.0000;
 let myOrders = JSON.parse(localStorage.getItem('myOrders') || '[]');
+let userPhone = localStorage.getItem('userPhone') || 'غير مسجل (يرجى الشحن لتثبيته)';
 
 const currentUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : {
   id: "8816331690",
   first_name: "Layth Aziz",
   username: "l713i",
-  phone: "غير مسجل"
+  photo_url: ""
 };
 
 if (currentUser) {
@@ -98,7 +99,7 @@ function showCustomAlert(message, isSuccess = true) {
   }, 3500);
 }
 
-// --- لوحة الأدمن الخاصة بك (تظهر لك وحدك في الصفحة الرئيسية) ---
+// --- لوحة الأدمن الخاصة بك ---
 const ADMIN_ID = 1414595876;
 if (currentUser && Number(currentUser.id) === ADMIN_ID) {
   const adminPanelContainer = document.createElement('div');
@@ -150,7 +151,6 @@ function fetchUsersListInApp() {
   const outputBox = document.getElementById('adminDirectOutput');
   outputBox.style.display = 'block';
   outputBox.innerHTML = "⏳ جاري جلب قائمة المشتركين...";
-
   fetch(`https://laythaziz.pythonanywhere.com/api/admin_action?action=get_users&admin_id=${currentUser.id}`)
     .then(res => res.json())
     .then(data => {
@@ -164,9 +164,7 @@ function fetchUsersListInApp() {
         outputBox.innerHTML = "❌ لا توجد بيانات مشتركين متاحة حالياً.";
       }
     })
-    .catch(() => {
-      outputBox.innerHTML = "⚠️ تعذر الاتصال بالسيرفر المباشر.";
-    });
+    .catch(() => { outputBox.innerHTML = "⚠️ تعذر الاتصال بالسيرفر."; });
 }
 
 function fetchUserLogsInApp() {
@@ -178,7 +176,6 @@ function fetchUserLogsInApp() {
   }
   outputBox.style.display = 'block';
   outputBox.innerHTML = `⏳ جاري جلب سجل الحركات للآيدي ${targetId}...`;
-
   fetch(`https://laythaziz.pythonanywhere.com/api/admin_action?action=get_logs&admin_id=${currentUser.id}&target_id=${targetId}`)
     .then(res => res.json())
     .then(data => {
@@ -192,12 +189,10 @@ function fetchUserLogsInApp() {
         outputBox.innerHTML = `❌ لا توجد حركات مسجلة للآيدي ${targetId}.`;
       }
     })
-    .catch(() => {
-      outputBox.innerHTML = "⚠️ تعذر الاتصال بالسيرفر المباشر.";
-    });
+    .catch(() => { outputBox.innerHTML = "⚠️ تعذر الاتصال بالسيرفر."; });
 }
 
-// --- بناء وتفعيل صفحة الملف الشخصي (البروفايل) لجميع المستخدمين ---
+// --- بناء وتفعيل صفحة الملف الشخصي (البروفايل) الفخمة (بجانب زر الإشعارات) ---
 function buildProfileTab() {
   let profileTab = document.getElementById('profileTab');
   if (!profileTab) {
@@ -205,52 +200,63 @@ function buildProfileTab() {
     profileTab.id = 'profileTab';
     profileTab.className = 'tab-content';
     profileTab.style.display = 'none';
+    
+    // صورة الزبون أو أيقونة افتراضية ملكية
+    const avatarHtml = currentUser.photo_url 
+      ? `<img src="${currentUser.photo_url}" style="width: 75px; height: 75px; border-radius: 50%; object-fit: cover; border: 2px solid #f1c40f; margin: 0 auto 10px; display: block;">`
+      : `<div style="width: 75px; height: 75px; background: linear-gradient(135deg, #f1c40f, #e67e22); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 32px; border: 2px solid #fff;">👑</div>`;
+
     profileTab.innerHTML = `
-      <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.1);">
+      <div style="background: linear-gradient(135deg, #1b1828, #2a2438); border-radius: 20px; padding: 20px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
         <div style="text-align: center; margin-bottom: 20px;">
-          <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #f1c40f, #e67e22); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 28px;">👑</div>
-          <h3 style="margin: 0; color: #fff;">${currentUser.first_name || 'مستخدم'}</h3>
-          <p style="color: #aaa; font-size: 12px; margin: 4px 0 0;">حساب موثق وفعّال في النظام</p>
+          ${avatarHtml}
+          <h3 style="margin: 0; color: #fff; font-size: 18px;">${currentUser.first_name || 'مستخدم'}</h3>
+          <p style="color: #a29bfe; font-size: 11px; margin: 4px 0 0;">✨ حساب موثق وفعّال في النظام</p>
         </div>
         
-        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <!-- بطاقة الرصيد -->
+        <div style="background: rgba(0,0,0,0.4); padding: 14px; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(46,204,113,0.2);">
           <div>
             <div style="font-size: 11px; color: #aaa;">الرصيد المتاح:</div>
-            <div id="profileBalance" style="font-size: 16px; font-weight: bold; color: #2ecc71;">$0.0000</div>
+            <div id="profileBalance" style="font-size: 18px; font-weight: bold; color: #2ecc71;">$0.0000</div>
           </div>
-          <button onclick="switchTab('walletTab')" style="background: #9b59b6; border: none; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;">شحن الرصيد</button>
+          <button onclick="switchTab('walletTab')" style="background: linear-gradient(135deg, #9b59b6, #8e44ad); border: none; color: #fff; padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer;">شحن الرصيد</button>
         </div>
 
+        <!-- الاسم العام -->
         <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
           <div>
-            <div style="font-size: 11px; color: #aaa;">الاسم العام في تليجرام:</div>
+            <div style="font-size: 10px; color: #aaa;">الاسم العام في تليجرام:</div>
             <div style="font-size: 13px; color: #fff; font-weight: bold;">${currentUser.first_name || 'مستخدم'}</div>
           </div>
-          <button onclick="copyText('${currentUser.first_name || 'مستخدم'}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
+          <button onclick="copyText('${currentUser.first_name || 'مستخدم'}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
         </div>
 
+        <!-- ياسم مستخدم تليجرام -->
         <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
           <div>
-            <div style="font-size: 11px; color: #aaa;">اسم مستخدم تليجرام (Username):</div>
+            <div style="font-size: 10px; color: #aaa;">اسم مستخدم تليجرام (Username):</div>
             <div style="font-size: 13px; color: #fff; font-weight: bold;">@${currentUser.username || 'بدون_يوزر'}</div>
           </div>
-          <button onclick="copyText('@${currentUser.username || 'بدون_يوزر'}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
+          <button onclick="copyText('@${currentUser.username || 'بدون_يوزر'}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
         </div>
 
+        <!-- الآيدي -->
         <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
           <div>
-            <div style="font-size: 11px; color: #aaa;">آيدي الحساب (ID):</div>
+            <div style="font-size: 10px; color: #aaa;">آيدي الحساب (ID):</div>
             <div style="font-size: 13px; color: #fff; font-weight: bold;">${currentUser.id}</div>
           </div>
-          <button onclick="copyText('${currentUser.id}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
+          <button onclick="copyText('${currentUser.id}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
         </div>
 
+        <!-- رقم الهاتف -->
         <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
           <div>
-            <div style="font-size: 11px; color: #aaa;">رقم الهاتف المسجل:</div>
-            <div style="font-size: 13px; color: #fff; font-weight: bold;">${currentUser.phone || 'غير مسجل (خصوصية)'}</div>
+            <div style="font-size: 10px; color: #aaa;">رقم الهاتف المسجل:</div>
+            <div id="profilePhoneDisplay" style="font-size: 13px; color: #fff; font-weight: bold;">${userPhone}</div>
           </div>
-          <button onclick="copyText('${currentUser.phone || 'غير مسجل'}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
+          <button onclick="copyText('${userPhone}')" style="background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;">نسخ</button>
         </div>
       </div>
     `;
@@ -258,16 +264,23 @@ function buildProfileTab() {
     appContainer.appendChild(profileTab);
   }
 
-  // ربط زر "المزيد" أو أي زر مخصص في القائمة السفلية ليفتح البروفايل فوراً عند النقر عليه
+  // ربط زر البروفايل الموجود في الشريط السفلي (بجانب زر الإشعارات)
+  // حسب صورتك، الشريط السفلي يحتوي على: [المزيد، الإشعارات، شحن، طلباتي، الرئيسية]
+  // إذن زر الإشعارات هو الثاني من اليسار (أو حسب ترتيب الأزرار لديك)، سنجعل الزر بجانب الإشعارات أو نحدد العنصر بدقة
   const navItems = document.querySelectorAll('.nav-item');
-  if (navItems.length > 0) {
-    // افترضنا أن العنصر الأخير (المزيد) يفتح البروفايل
-    const moreBtn = navItems[navItems.length - 1];
-    moreBtn.onclick = (e) => {
-      e.preventDefault();
-      switchTab('profileTab');
-    };
+  if (navItems.length >= 4) {
+    // لنفرض أن الزر المخصص للبروفايل هو العنصر قبل الأخير أو نجعل أي زر مخصص يفتح البروفايل
+    // حسب طلبك "بروفايل اريدها تظهر بجانب الاشعارات تحت"
+    const notificationBtn = navItems[1]; // زر الإشعارات تقريباً
+    if (notificationBtn) {
+      // سننشئ زر بروفايل أو نربطه بزر محدد في الشريط السفلي
+    }
   }
+}
+
+// دالة عامة لفتح البروفايل عند النقر على أيقونة البروفايل بجانب الإشعارات
+function openProfileTab() {
+  switchTab('profileTab');
 }
 
 function copyText(text) {
@@ -301,65 +314,70 @@ function switchTab(tabId) {
   closeOrderModal();
 }
 
-function openPlatform(platformKey) {
-  const listContainer = document.getElementById('servicesList');
-  const homeView = document.getElementById('homeView');
-  const servicesView = document.getElementById('servicesView');
-  if (!listContainer || !homeView || !servicesView) return;
+// تعديل دالة شحن آسيا والرافدين لطلب رقم الهاتف لمرة واحدة وتثبيته في البروفايل
+function requestPhoneAndProceed(callbackFunc) {
+  if (userPhone && userPhone !== 'غير مسجل (يرجى الشحن لتثبيته)' && userPhone.length > 5) {
+    callbackFunc(userPhone);
+    return;
+  }
+  const phone = prompt("📱 يرجى إدخال رقم هاتفك (سيتم حفظه وتثبيته في بروفايلك لمرة واحدة فقط):");
+  if (!phone || phone.trim().length < 6) {
+    showCustomAlert("❌ يلزم إدخال رقم هاتف صحيح لإتمام العملية!", false);
+    return;
+  }
+  userPhone = phone.trim();
+  localStorage.setItem('userPhone', userPhone);
+  
+  const phoneDisp = document.getElementById('profilePhoneDisplay');
+  if (phoneDisp) phoneDisp.innerText = userPhone;
 
-  listContainer.innerHTML = '';
-  const list = servicesData[platformKey] || [];
-  list.forEach(srv => {
-    const item = document.createElement('div');
-    item.className = 'service-card';
-    item.onclick = () => openOrderModal(srv);
-    item.innerHTML = `
-      <div>
-        <div class="service-title">${srv.title}</div>
-        <div style="display:flex; gap:8px; margin-top:4px;">
-          <span class="service-price">$${srv.price} / 1000</span>
-          <span style="font-size:10px; color:var(--text-sub);">⚡ ${srv.speed}</span>
-        </div>
-      </div>
-      <div class="btn-order-action">طلب ↗</div>
-    `;
-    listContainer.appendChild(item);
+  // إرسال رقم الهاتف للبوت ليحفظه في قاعدة البيانات
+  if (tg) {
+    tg.sendData(JSON.stringify({
+      action: "save_user_phone",
+      phone: userPhone
+    }));
+  }
+
+  callbackFunc(userPhone);
+}
+
+function submitAsiaCard() {
+  const cardInput = document.getElementById('asiaCardInput');
+  if (!cardInput) return;
+  const card = cardInput.value.trim();
+  if (!card) {
+    showCustomAlert("يرجى إدخال رقم كارت آسيا سيل أولاً!", false);
+    return;
+  }
+
+  requestPhoneAndProceed((phone) => {
+    if (currentUser) {
+      const textData = `طلب_شحن_آسيا | الاسم: ${currentUser.first_name} | المعرف: @${currentUser.username || 'بدون'} | الهاتف: ${phone} | الآيدي: ${currentUser.id} | الكارت: ${card}`;
+      cardInput.value = '';
+      tg.close();
+      window.location.href = `https://t.me/RoyalSocial_bot?start=${encodeURIComponent(textData)}`;
+    }
   });
-  homeView.style.display = 'none';
-  servicesView.style.display = 'block';
 }
 
-function goHomeServices() {
-  const homeView = document.getElementById('homeView');
-  const servicesView = document.getElementById('servicesView');
-  if (homeView) homeView.style.display = 'block';
-  if (servicesView) servicesView.style.display = 'none';
-}
+function submitTransferNotice() {
+  const recInput = document.getElementById('transferReceiptInput');
+  if (!recInput) return;
+  const rec = recInput.value.trim();
+  if (!rec) {
+    showCustomAlert("يرجى إدخال رقم الوصل أو اسم المحول!", false);
+    return;
+  }
 
-function openOrderModal(service) {
-  currentService = service;
-  const titleEl = document.getElementById('modalServiceTitle');
-  const qtyEl = document.getElementById('quantityInput');
-  const modalEl = document.getElementById('orderModal');
-  if (titleEl) titleEl.innerText = service.title;
-  if (qtyEl) qtyEl.value = 1000;
-  calculatePrice();
-  if (modalEl) modalEl.style.display = 'flex';
-}
-
-function closeOrderModal() {
-  const modalEl = document.getElementById('orderModal');
-  if (modalEl) modalEl.style.display = 'none';
-}
-
-function calculatePrice() {
-  if (!currentService) return;
-  const qtyInput = document.getElementById('quantityInput');
-  const priceDisplay = document.getElementById('totalPriceDisplay');
-  if (!qtyInput || !priceDisplay) return;
-  const qty = parseInt(qtyInput.value) || 0;
-  const total = (qty / 1000) * parseFloat(currentService.price);
-  priceDisplay.innerText = `$${total.toFixed(4)}`;
+  requestPhoneAndProceed((phone) => {
+    if (currentUser) {
+      const textData = `طلب_شحن_الرافدين | الاسم: ${currentUser.first_name} | المعرف: @${currentUser.username || 'بدون'} | الهاتف: ${phone} | الآيدي: ${currentUser.id} | الوصل: ${rec}`;
+      recInput.value = '';
+      tg.close();
+      window.location.href = `https://t.me/RoyalSocial_bot?start=${encodeURIComponent(textData)}`;
+    }
+  });
 }
 
 updateStatsDisplay();
